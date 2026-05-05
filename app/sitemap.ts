@@ -1,6 +1,8 @@
 import type { MetadataRoute } from "next";
 import { PROJECTS, SITE } from "@/content/site";
 
+export const dynamic = "force-static";
+
 export default function sitemap(): MetadataRoute.Sitemap {
   const lastModified = new Date();
   const base = SITE.url.replace(/\/$/, "");
