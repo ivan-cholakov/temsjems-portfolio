@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { Eyebrow } from "@/components/Eyebrow";
+import { HomeCanvas } from "@/components/HomeCanvas";
 import { ProjectCard } from "@/components/ProjectCard";
 import { SITE, PROJECTS } from "@/content/site";
 
@@ -34,6 +35,9 @@ export default function Home() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
+
+      <HomeCanvas />
+
       {/* ── Selected Work ─────────────────────────────────────────────── */}
       <section className="max-w-[1600px] px-6 pt-16 pb-24 md:px-10 md:pt-24 md:pb-40">
         <div className="mb-16 flex items-baseline justify-between md:mb-24">

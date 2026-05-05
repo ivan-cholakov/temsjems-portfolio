@@ -92,9 +92,9 @@ export const PROJECTS: Project[] = [
     body: null,
     year: null,
     medium: null,
-    image: "/art/home/cyclical-dissonance.png",
-    width: 3281,
-    height: 1875,
+    image: "/art/home/cyclical-dissonance.webp",
+    width: 1800,
+    height: 1028,
   },
   {
     slug: "violet-strata",
@@ -103,9 +103,9 @@ export const PROJECTS: Project[] = [
     body: null,
     year: null,
     medium: null,
-    image: "/art/home/violet-strata.png",
-    width: 3375,
-    height: 4219,
+    image: "/art/home/violet-strata.webp",
+    width: 1600,
+    height: 2000,
   },
 ];
 
