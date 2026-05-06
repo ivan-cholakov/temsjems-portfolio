@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import Image from "next/image";
-import Link from "next/link";
 
 import { Eyebrow } from "@/components/Eyebrow";
 import { SITE } from "@/content/site";
@@ -76,44 +75,10 @@ export default function AboutPage() {
               sizes="(min-width: 768px) 40vw, 100vw"
               className="block h-auto w-full"
             />
-            <Eyebrow as="figcaption" className="mt-3 text-mute">
-              Portrait — {SITE.artist}
-            </Eyebrow>
           </div>
         </div>
       </section>
 
-      {/* ── Facts strip ──────────────────────────────────────────────── */}
-      <section className="max-w-[1600px] px-6 py-16 md:px-10 md:py-24">
-        <dl className="grid grid-cols-1 gap-x-6 gap-y-8 md:grid-cols-4">
-          <div>
-            <Eyebrow as="dt" className="text-mute">Education</Eyebrow>
-            <dd className="mt-3 leading-snug">
-              BA Visual Arts<br />
-              Sofia University &ldquo;St. Kliment Ohridski&rdquo;
-            </dd>
-          </div>
-          <div>
-            <Eyebrow as="dt" className="text-mute">Medium</Eyebrow>
-            <dd className="mt-3 leading-snug">Linocut · Watercolor</dd>
-          </div>
-          <div>
-            <Eyebrow as="dt" className="text-mute">Themes</Eyebrow>
-            <dd className="mt-3 leading-snug">
-              Transformation · Identity<br />
-              Figurative & symbolic subjects
-            </dd>
-          </div>
-          <div>
-            <Eyebrow as="dt" className="text-mute">Studio</Eyebrow>
-            <dd className="mt-3 leading-snug">
-              <Link href="/contact" className="underline-link">
-                {SITE.email}
-              </Link>
-            </dd>
-          </div>
-        </dl>
-      </section>
     </>
   );
 }

@@ -1,7 +1,20 @@
-// Curated source-of-truth for the rebuild. Sourced from content/crawl.json
-// (see scripts/crawl.mjs). Where the live Framer site has only template
-// placeholder copy, the field is left as `null` with a `// TODO` note so
-// the rebuild surfaces an editable slot rather than ships placeholder text.
+export type Category =
+  | "gel-plate-monoprint"
+  | "linocut-collage"
+  | "ink-work";
+
+export const CATEGORIES: ReadonlyArray<{ value: Category; label: string }> = [
+  { value: "gel-plate-monoprint", label: "Gel Plate Monoprints" },
+  { value: "linocut-collage",     label: "Linocut Collages" },
+  { value: "ink-work",            label: "Ink Works" },
+];
+
+export type ExtraImage = {
+  src: string;
+  width: number;
+  height: number;
+  alt?: string | null;
+};
 
 export type Project = {
   slug: string;
@@ -14,17 +27,21 @@ export type Project = {
   year: string | null;
   /** Medium label, e.g. "Linocut + Watercolor". */
   medium: string | null;
+  /** Body of work this piece belongs to. Null = unclassified (only shown under "All"). */
+  category: Category | null;
   /** Hero image — path under /public. */
   image: string;
   /** Intrinsic dimensions of the image (for next/image). */
   width: number;
   height: number;
+  /** Optional gallery of additional images of the same work, rendered on the detail page. */
+  extraImages?: ExtraImage[];
 };
 
 export const SITE = {
   name: "Moirae Moss",
   artist: "Teomira Smilenova",
-  tagline: "Linocut and watercolor. Transformation and identity.",
+  tagline: "Exploring the intersection of shadows, human form, and organic textures.",
   /** Short bio — the only real prose published on moiraemoss.com today. */
   bio: `Behind the brand Moirae Moss stands Teomira Smilenova, a visual artist who holds a Bachelor's degree in Visual Arts from Sofia University "St. Kliment Ohridski". Her practice is a dynamic intersection of structured graphic form and expressive, vivid color. Moving beyond the constraints of traditional analog printmaking, she merges the precision of linocut with the ethereal fluidity of watercolor to construct intricate visual narratives. Through figurative and symbolic subjects, Teomira explores themes of transformation and identity, utilizing the tension between raw texture, definitive lines, and vibrant hues as her primary visual language.`,
   /** Bio mentions Sofia University but not where the artist currently lives. */
@@ -59,6 +76,7 @@ export const PROJECTS: Project[] = [
     body: null,
     year: null,
     medium: null,
+    category: null, // TODO: assign — gel-plate-monoprint | linocut-collage | ink-work
     image: "/art/home/88857e5b2d52.png",
     width: 1440,
     height: 1390,
@@ -70,6 +88,7 @@ export const PROJECTS: Project[] = [
     body: null,
     year: null,
     medium: null,
+    category: null, // TODO: assign — gel-plate-monoprint | linocut-collage | ink-work
     image: "/art/home/42f49d304a72.png",
     width: 1440,
     height: 1746,
@@ -81,6 +100,7 @@ export const PROJECTS: Project[] = [
     body: null,
     year: null,
     medium: null,
+    category: null, // TODO: assign — gel-plate-monoprint | linocut-collage | ink-work
     image: "/art/home/0963d97a6379.png",
     width: 1440,
     height: 1800,
@@ -92,6 +112,7 @@ export const PROJECTS: Project[] = [
     body: null,
     year: null,
     medium: null,
+    category: null, // TODO: assign — gel-plate-monoprint | linocut-collage | ink-work
     image: "/art/home/cyclical-dissonance.webp",
     width: 1800,
     height: 1028,
@@ -103,6 +124,7 @@ export const PROJECTS: Project[] = [
     body: null,
     year: null,
     medium: null,
+    category: null, // TODO: assign — gel-plate-monoprint | linocut-collage | ink-work
     image: "/art/home/violet-strata.webp",
     width: 1600,
     height: 2000,

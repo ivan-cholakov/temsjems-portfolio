@@ -49,8 +49,6 @@ export default async function ProjectPage(
   const project = projectBySlug(slug);
   if (!project) notFound();
 
-  const idx = PROJECTS.findIndex((p) => p.slug === project.slug);
-
   // JSON-LD: each project page describes a VisualArtwork created by the artist.
   const jsonLd = {
     "@context": "https://schema.org",
@@ -73,9 +71,7 @@ export default async function ProjectPage(
 
       <section className="max-w-[1600px] px-6 pt-6 pb-24 md:px-10 md:pt-10 md:pb-40">
         {/* Title slab — full width above the two-column body */}
-        <Eyebrow as="p" className="text-mute">
-          ── No. {String(idx + 1).padStart(2, "0")} / Selected Work
-        </Eyebrow>
+        <Eyebrow as="p" className="text-mute">── Selected Work</Eyebrow>
         <h2 className="mt-6 text-h1 font-bold tracking-tight">
           {project.title}
         </h2>
@@ -101,17 +97,29 @@ export default async function ProjectPage(
               </p>
             )}
 
-            {project.body ? (
+            {project.body && (
               <p className={`max-w-[60ch] leading-relaxed ${project.tagline ? "mt-8" : ""}`}>
                 {project.body}
               </p>
-            ) : (
-              <Eyebrow as="p" className={`text-mute ${project.tagline ? "mt-8" : ""}`}>
-                ── Description forthcoming
-              </Eyebrow>
             )}
           </div>
         </div>
+
+        {project.extraImages && project.extraImages.length > 0 && (
+          <div className="mt-16 grid grid-cols-1 gap-6 sm:grid-cols-2 md:mt-24 md:gap-10 lg:grid-cols-3">
+            {project.extraImages.map((img, i) => (
+              <Image
+                key={`${img.src}-${i}`}
+                src={img.src}
+                alt={img.alt ?? `${project.title} — detail ${i + 1}`}
+                width={img.width}
+                height={img.height}
+                sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
+                className="block h-auto w-full"
+              />
+            ))}
+          </div>
+        )}
       </section>
     </>
   );

@@ -1,11 +1,12 @@
 import type { Metadata } from "next";
 
+import { ContactForm } from "@/components/ContactForm";
 import { Eyebrow } from "@/components/Eyebrow";
 import { SITE } from "@/content/site";
 
 export const metadata: Metadata = {
   title: "Contact",
-  description: `Get in touch with ${SITE.artist} — commissions, exhibitions, press.`,
+  description: `Get in touch with ${SITE.artist} — collaborations, commissions, available work.`,
   alternates: { canonical: "/contact" },
   openGraph: {
     title: `Contact — ${SITE.name}`,
@@ -17,26 +18,35 @@ export const metadata: Metadata = {
 export default function ContactPage() {
   return (
     <>
-      {/* ── Title slab ───────────────────────────────────────────────── */}
-      <section className="max-w-[1600px] px-6 pt-6 pb-16 md:px-10 md:pt-10 md:pb-24">
+      {/* ── Title slab ─────────────────────────────────────────────────
+           Left padding is bumped past the desktop rail (260px) so the
+           form and copy never sit beneath the nav. */}
+      <section className="max-w-[1600px] px-6 pt-6 pb-16 md:pt-10 md:pb-24 md:pl-[300px] md:pr-10">
         <div className="grid grid-cols-12 gap-x-6 gap-y-10">
           <div className="col-span-12 md:col-span-9">
             <Eyebrow as="p" className="text-mute">── Get in touch</Eyebrow>
             <h2 className="mt-6 text-h1 font-bold tracking-tight">
               Contact.
             </h2>
-            <p className="mt-8 max-w-[44ch] text-balance text-lead leading-tight">
-              Commissions, exhibitions, press — write directly.
+            <p className="mt-8 max-w-[60ch] text-lead leading-snug">
+              Whether you&rsquo;re interested in a collaboration or wish to acquire an
+              available piece, please reach out directly.
             </p>
           </div>
         </div>
       </section>
 
+      {/* ── Form ─────────────────────────────────────────────────────── */}
+      <section className="max-w-[1600px] px-6 py-16 md:py-24 md:pl-[300px] md:pr-10">
+        <div className="max-w-[640px]">
+          <ContactForm />
+        </div>
+      </section>
+
       {/* ── Channels ─────────────────────────────────────────────────── */}
-      <section className="max-w-[1600px] px-6 py-16 md:px-10 md:py-24">
+      <section className="max-w-[1600px] px-6 py-16 md:py-24 md:pl-[300px] md:pr-10">
         <dl className="grid grid-cols-1 gap-x-6 gap-y-12 md:grid-cols-3">
           <div>
-            <Eyebrow as="dt" className="text-mute">Email</Eyebrow>
             <dd className="mt-4 text-h3 font-bold tracking-tight">
               <a href={`mailto:${SITE.email}`} className="underline-link break-all">
                 {SITE.email}
@@ -45,7 +55,6 @@ export default function ContactPage() {
           </div>
 
           <div>
-            <Eyebrow as="dt" className="text-mute">Instagram</Eyebrow>
             <dd className="mt-4 text-h3 font-bold tracking-tight">
               {SITE.social.instagram ? (
                 <a
@@ -65,7 +74,6 @@ export default function ContactPage() {
           </div>
 
           <div>
-            <Eyebrow as="dt" className="text-mute">TikTok</Eyebrow>
             <dd className="mt-4 text-h3 font-bold tracking-tight">
               {SITE.social.tiktok ? (
                 <a
@@ -85,7 +93,6 @@ export default function ContactPage() {
           </div>
 
           <div>
-            <Eyebrow as="dt" className="text-mute">Pinterest</Eyebrow>
             <dd className="mt-4 text-h3 font-bold tracking-tight">
               {SITE.social.pinterest ? (
                 <a
@@ -101,13 +108,6 @@ export default function ContactPage() {
               ) : (
                 <span className="text-mute">— Coming soon</span>
               )}
-            </dd>
-          </div>
-
-          <div>
-            <Eyebrow as="dt" className="text-mute">Studio</Eyebrow>
-            <dd className="mt-4 leading-snug">
-              {SITE.location ?? <span className="text-mute">— By request</span>}
             </dd>
           </div>
         </dl>
