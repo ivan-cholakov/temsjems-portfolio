@@ -3,6 +3,7 @@
 import { useState } from "react";
 
 import { SITE } from "@/content/site";
+import { track } from "@/lib/analytics";
 
 type Fields = {
   firstName: string;
@@ -34,6 +35,7 @@ export function ContactForm() {
       `mailto:${SITE.email}` +
       `?subject=${encodeURIComponent(subject)}` +
       `&body=${encodeURIComponent(body)}`;
+    track("Contact Form Submit");
     window.location.href = href;
   };
 

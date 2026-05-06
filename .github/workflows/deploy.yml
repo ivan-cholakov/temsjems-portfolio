@@ -32,6 +32,8 @@ jobs:
       - run: pnpm install --frozen-lockfile
 
       - run: pnpm build
+        env:
+          NEXT_PUBLIC_PLAUSIBLE_SRC: ${{ secrets.NEXT_PUBLIC_PLAUSIBLE_SRC }}
 
       - uses: actions/upload-pages-artifact@v3
         with:

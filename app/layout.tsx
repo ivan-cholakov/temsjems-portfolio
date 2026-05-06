@@ -1,10 +1,15 @@
 import type { Metadata } from "next";
 import { Playfair_Display, Cormorant_Garamond, JetBrains_Mono } from "next/font/google";
+import Script from "next/script";
 import "./globals.css";
 
 import { Sidebar } from "@/components/Sidebar";
 import { Hero } from "@/components/Hero";
 import { SITE } from "@/content/site";
+
+const PLAUSIBLE_SRC = process.env.NEXT_PUBLIC_PLAUSIBLE_SRC;
+const PLAUSIBLE_INIT = `window.plausible=window.plausible||function(){(plausible.q=plausible.q||[]).push(arguments)},plausible.init=plausible.init||function(i){plausible.o=i||{}};plausible.init()`;
+const ANALYTICS_ENABLED = process.env.NODE_ENV === "production" && Boolean(PLAUSIBLE_SRC);
 
 // Playfair Display — high-contrast Didone with romantic curves; mirrors the
 // flowing serifed "M" of the logo better than Cinzel's monumental Roman caps.
@@ -70,6 +75,14 @@ export default function RootLayout({
           <Hero />
           {children}
         </main>
+        {ANALYTICS_ENABLED && PLAUSIBLE_SRC && (
+          <>
+            <Script src={PLAUSIBLE_SRC} strategy="afterInteractive" />
+            <Script id="plausible-init" strategy="afterInteractive">
+              {PLAUSIBLE_INIT}
+            </Script>
+          </>
+        )}
       </body>
     </html>
   );

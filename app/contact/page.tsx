@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 
 import { ContactForm } from "@/components/ContactForm";
 import { Eyebrow } from "@/components/Eyebrow";
+import { TrackedLink } from "@/components/TrackedLink";
 import { SITE } from "@/content/site";
 
 export const metadata: Metadata = {
@@ -48,16 +49,21 @@ export default function ContactPage() {
         <dl className="grid grid-cols-1 gap-x-6 gap-y-12 md:grid-cols-3">
           <div>
             <dd className="mt-4 text-h3 font-bold tracking-tight">
-              <a href={`mailto:${SITE.email}`} className="underline-link break-all">
+              <TrackedLink
+                event="Outbound: Email"
+                href={`mailto:${SITE.email}`}
+                className="underline-link break-all"
+              >
                 {SITE.email}
-              </a>
+              </TrackedLink>
             </dd>
           </div>
 
           <div>
             <dd className="mt-4 text-h3 font-bold tracking-tight">
               {SITE.social.instagram ? (
-                <a
+                <TrackedLink
+                  event="Outbound: Instagram"
                   href={`https://instagram.com/${SITE.social.instagram}`}
                   target="_blank"
                   rel="noopener noreferrer"
@@ -66,7 +72,7 @@ export default function ContactPage() {
                 >
                   <InstagramIcon className="h-6 w-6" />
                   <span>@{SITE.social.instagram}</span>
-                </a>
+                </TrackedLink>
               ) : (
                 <span className="text-mute">— Coming soon</span>
               )}
@@ -76,7 +82,8 @@ export default function ContactPage() {
           <div>
             <dd className="mt-4 text-h3 font-bold tracking-tight">
               {SITE.social.tiktok ? (
-                <a
+                <TrackedLink
+                  event="Outbound: TikTok"
                   href={`https://www.tiktok.com/@${SITE.social.tiktok}`}
                   target="_blank"
                   rel="noopener noreferrer"
@@ -85,7 +92,7 @@ export default function ContactPage() {
                 >
                   <TikTokIcon className="h-6 w-6" />
                   <span>@{SITE.social.tiktok}</span>
-                </a>
+                </TrackedLink>
               ) : (
                 <span className="text-mute">— Coming soon</span>
               )}
@@ -95,7 +102,8 @@ export default function ContactPage() {
           <div>
             <dd className="mt-4 text-h3 font-bold tracking-tight">
               {SITE.social.pinterest ? (
-                <a
+                <TrackedLink
+                  event="Outbound: Pinterest"
                   href={`https://www.pinterest.com/${SITE.social.pinterest}/`}
                   target="_blank"
                   rel="noopener noreferrer"
@@ -104,7 +112,7 @@ export default function ContactPage() {
                 >
                   <PinterestIcon className="h-6 w-6" />
                   <span>@{SITE.social.pinterest}</span>
-                </a>
+                </TrackedLink>
               ) : (
                 <span className="text-mute">— Coming soon</span>
               )}
