@@ -38,7 +38,7 @@ export default function Home() {
 
       <HomeCanvas />
 
-      {/* ── Selected Work ─────────────────────────────────────────────── */}
+      {/* ── Selected Work ───────────────────────────────────────────────
       <section className="max-w-[1600px] px-6 pt-16 pb-24 md:px-10 md:pt-24 md:pb-40">
         <div className="mb-16 flex items-baseline justify-between md:mb-24">
           <Eyebrow as="h2">── Selected Work</Eyebrow>
@@ -57,7 +57,7 @@ export default function Home() {
             />
           ))}
         </div>
-      </section>
+      </section> */}
 
     </>
   );
