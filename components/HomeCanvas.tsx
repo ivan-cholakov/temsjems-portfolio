@@ -185,7 +185,7 @@ export function HomeCanvas() {
                   alt={p.title}
                   width={p.width}
                   height={p.height}
-                  priority={i < 2}
+                  priority={i < 2 || p.lcp === true}
                   draggable={false}
                   className="block h-full w-auto select-none object-contain"
                   sizes="(max-width: 768px) 70vw, 32vw"

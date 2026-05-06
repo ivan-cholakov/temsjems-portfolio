@@ -4,6 +4,7 @@ import Image from "next/image";
 
 import { Eyebrow } from "@/components/Eyebrow";
 import { PROJECTS, projectBySlug, SITE } from "@/content/site";
+import { artworkSchema } from "@/lib/structured-data";
 
 export const dynamicParams = false;
 
@@ -49,24 +50,11 @@ export default async function ProjectPage(
   const project = projectBySlug(slug);
   if (!project) notFound();
 
-  // JSON-LD: each project page describes a VisualArtwork created by the artist.
-  const jsonLd = {
-    "@context": "https://schema.org",
-    "@type": "VisualArtwork",
-    name: project.title,
-    creator: { "@type": "Person", name: SITE.artist },
-    artform: "Linocut and watercolor",
-    artMedium: project.medium ?? "Linocut, watercolor",
-    image: new URL(project.image, SITE.url).toString(),
-    url: new URL(`/work/${project.slug}`, SITE.url).toString(),
-    ...(project.body ? { description: project.body } : {}),
-  };
-
   return (
     <>
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(artworkSchema(project)) }}
       />
 
       <section className="max-w-[1600px] px-6 pt-6 pb-24 md:px-10 md:pt-10 md:pb-40">

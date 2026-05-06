@@ -12,8 +12,8 @@ type Filter = { kind: "all" } | { kind: "category"; value: Category };
 const ALL: Filter = { kind: "all" };
 
 function eq(a: Filter, b: Filter): boolean {
-  if (a.kind !== b.kind) return false;
-  return a.kind === "all" ? true : a.value === (b as { value: Category }).value;
+  if (a.kind === "all") return b.kind === "all";
+  return b.kind === "category" && a.value === b.value;
 }
 
 export function WorkGallery({ projects }: { projects: Project[] }) {
@@ -61,7 +61,7 @@ export function WorkGallery({ projects }: { projects: Project[] }) {
                       src={project.image}
                       alt={`${project.title} — work by ${SITE.artist}`}
                       fill
-                      priority={i < 3}
+                      priority={i < 3 || project.lcp === true}
                       sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
                       className={`object-contain transition-transform duration-700 ease-out ${
                         isLandscape

@@ -1,13 +1,30 @@
 export type Category =
   | "gel-plate-monoprint"
   | "linocut-collage"
-  | "ink-work";
+  | "ink-work"
+  | "textile-print-making";
 
 export const CATEGORIES: ReadonlyArray<{ value: Category; label: string }> = [
-  { value: "gel-plate-monoprint", label: "Gel Plate Monoprints" },
-  { value: "linocut-collage",     label: "Linocut Collages" },
-  { value: "ink-work",            label: "Ink Works" },
+  { value: "gel-plate-monoprint",  label: "Gel Plate Monoprints" },
+  { value: "linocut-collage",      label: "Linocut Collages" },
+  { value: "ink-work",             label: "Ink Works" },
+  { value: "textile-print-making", label: "Textile Print-making" },
 ];
+
+// Exhaustive over Category — adding a new variant forces an answer here,
+// so the medium label can never silently fall back to a wrong default.
+export const DEFAULT_MEDIUM_BY_CATEGORY: Record<Category, string> = {
+  "gel-plate-monoprint":  "Gel plate monoprint",
+  "linocut-collage":      "Linocut + watercolor",
+  "ink-work":             "Ink",
+  "textile-print-making": "Textile print",
+};
+
+export function mediumOf(project: Pick<Project, "medium" | "category">): string {
+  if (project.medium) return project.medium;
+  if (project.category) return DEFAULT_MEDIUM_BY_CATEGORY[project.category];
+  return "Mixed media";
+}
 
 export type ExtraImage = {
   src: string;
@@ -36,6 +53,12 @@ export type Project = {
   height: number;
   /** Optional gallery of additional images of the same work, rendered on the detail page. */
   extraImages?: ExtraImage[];
+  /**
+   * LCP hint. If this image tends to be the Largest Contentful Paint when
+   * shown in a list (gallery / carousel), set true so consumers can pass
+   * `priority` to next/image regardless of position-based heuristics.
+   */
+  lcp?: boolean;
 };
 
 export const SITE = {
@@ -65,6 +88,12 @@ export const SITE = {
      *  site's accent color (eyebrow labels, hover states). */
     color: "#A0A876",
   },
+  /**
+   * Canonical site origin. **No trailing slash** — consumers concatenate paths
+   * like `${SITE.url}/work` directly and feed it to `new URL(...)` callers.
+   * Keeping this invariant at the source means sitemap/robots/JSON-LD don't
+   * need defensive trim logic.
+   */
   url: "https://moiraemoss.com",
 } as const;
 
@@ -76,7 +105,7 @@ export const PROJECTS: Project[] = [
     body: null,
     year: null,
     medium: null,
-    category: null, // TODO: assign — gel-plate-monoprint | linocut-collage | ink-work
+    category: "textile-print-making",
     image: "/art/home/88857e5b2d52.png",
     width: 1440,
     height: 1390,
@@ -88,7 +117,7 @@ export const PROJECTS: Project[] = [
     body: null,
     year: null,
     medium: null,
-    category: null, // TODO: assign — gel-plate-monoprint | linocut-collage | ink-work
+    category: "linocut-collage",
     image: "/art/home/42f49d304a72.png",
     width: 1440,
     height: 1746,
@@ -100,7 +129,7 @@ export const PROJECTS: Project[] = [
     body: null,
     year: null,
     medium: null,
-    category: null, // TODO: assign — gel-plate-monoprint | linocut-collage | ink-work
+    category: "ink-work",
     image: "/art/home/0963d97a6379.png",
     width: 1440,
     height: 1800,
@@ -112,7 +141,7 @@ export const PROJECTS: Project[] = [
     body: null,
     year: null,
     medium: null,
-    category: null, // TODO: assign — gel-plate-monoprint | linocut-collage | ink-work
+    category: "ink-work",
     image: "/art/home/cyclical-dissonance.webp",
     width: 1800,
     height: 1028,
@@ -124,10 +153,11 @@ export const PROJECTS: Project[] = [
     body: null,
     year: null,
     medium: null,
-    category: null, // TODO: assign — gel-plate-monoprint | linocut-collage | ink-work
+    category: "gel-plate-monoprint",
     image: "/art/home/violet-strata.webp",
     width: 1600,
     height: 2000,
+    lcp: true,
   },
 ];
 

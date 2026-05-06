@@ -3,6 +3,7 @@ import Image from "next/image";
 
 import { Eyebrow } from "@/components/Eyebrow";
 import { SITE } from "@/content/site";
+import { personSchema } from "@/lib/structured-data";
 
 export const metadata: Metadata = {
   title: "About",
@@ -17,31 +18,11 @@ export const metadata: Metadata = {
 };
 
 export default function AboutPage() {
-  // JSON-LD: artist profile.
-  const jsonLd = {
-    "@context": "https://schema.org",
-    "@type": "Person",
-    name: SITE.artist,
-    alternateName: SITE.name,
-    description: SITE.bio,
-    url: SITE.url,
-    image: new URL(SITE.portrait.src, SITE.url).toString(),
-    alumniOf: {
-      "@type": "CollegeOrUniversity",
-      name: "Sofia University \"St. Kliment Ohridski\"",
-    },
-    knowsAbout: ["Linocut", "Watercolor", "Printmaking", "Visual narrative"],
-    jobTitle: "Visual artist",
-    ...(SITE.social.instagram
-      ? { sameAs: [`https://www.instagram.com/${SITE.social.instagram}`] }
-      : {}),
-  };
-
   return (
     <>
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(personSchema()) }}
       />
 
       {/* ── Title slab ───────────────────────────────────────────────── */}

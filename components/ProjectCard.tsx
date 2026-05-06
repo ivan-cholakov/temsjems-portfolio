@@ -1,7 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { Eyebrow } from "./Eyebrow";
-import type { Project } from "@/content/site";
+import { mediumOf, SITE, type Project } from "@/content/site";
 
 /**
  * Brutalist project row: numbered index, large title, oversized image.
@@ -31,7 +31,7 @@ export function ProjectCard({
             <span className="underline-link">{project.title}</span>
           </h3>
           <Eyebrow as="span" className="col-span-12 text-mute md:col-span-2 md:text-right">
-            {project.medium ?? "Linocut + Watercolor"}
+            {mediumOf(project)}
           </Eyebrow>
         </header>
 
@@ -44,10 +44,10 @@ export function ProjectCard({
         >
           <Image
             src={project.image}
-            alt={`${project.title} — work by Teomira Smilenova`}
+            alt={`${project.title} — work by ${SITE.artist}`}
             width={project.width}
             height={project.height}
-            priority={priority}
+            priority={priority || project.lcp === true}
             sizes="(min-width: 1024px) 80vw, 100vw"
             className="block h-auto w-full transition-transform duration-700 ease-out group-hover:scale-[1.015]"
           />
