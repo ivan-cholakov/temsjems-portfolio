@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Image from "next/image";
 
+import { DetailGallery } from "@/components/DetailGallery";
 import { Eyebrow } from "@/components/Eyebrow";
 import { PROJECTS, projectBySlug, SITE } from "@/content/site";
 import { artworkSchema } from "@/lib/structured-data";
@@ -76,6 +77,12 @@ export default async function ProjectPage(
               sizes="(min-width: 768px) 58vw, 100vw"
               className="block h-auto w-full"
             />
+            {project.extraImages && project.extraImages.length > 0 && (
+              <DetailGallery
+                images={project.extraImages}
+                projectTitle={project.title}
+              />
+            )}
           </div>
 
           <div className="md:col-span-5">
@@ -93,21 +100,6 @@ export default async function ProjectPage(
           </div>
         </div>
 
-        {project.extraImages && project.extraImages.length > 0 && (
-          <div className="mt-16 grid grid-cols-1 gap-6 sm:grid-cols-2 md:mt-24 md:gap-10 lg:grid-cols-3">
-            {project.extraImages.map((img, i) => (
-              <Image
-                key={`${img.src}-${i}`}
-                src={img.src}
-                alt={img.alt ?? `${project.title} — detail ${i + 1}`}
-                width={img.width}
-                height={img.height}
-                sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
-                className="block h-auto w-full"
-              />
-            ))}
-          </div>
-        )}
       </section>
     </>
   );

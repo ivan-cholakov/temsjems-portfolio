@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import type { Metadata } from "next";
 
 import { WorkGallery } from "@/components/WorkGallery";
@@ -18,7 +19,9 @@ export const metadata: Metadata = {
 export default function WorkIndex() {
   return (
     <section className="mx-auto max-w-[1600px] px-6 pt-12 pb-24 md:px-10 md:pt-16 md:pb-40">
-      <WorkGallery projects={PROJECTS} />
+      <Suspense fallback={null}>
+        <WorkGallery projects={PROJECTS} />
+      </Suspense>
     </section>
   );
 }

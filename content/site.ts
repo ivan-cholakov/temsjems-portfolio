@@ -30,7 +30,12 @@ export type ExtraImage = {
   src: string;
   width: number;
   height: number;
+  /** Screen-reader description. Distinct from `label`/`note`, which are visible catalog text. */
   alt?: string | null;
+  /** Short visible mono caption — e.g. "STITCH" or "REVERSE". Rendered uppercase, tracked-out. */
+  label?: string | null;
+  /** Optional sub-caption — sentence-case prose, e.g. "Detail of the cross-stitch lattice." */
+  note?: string | null;
 };
 
 export type Project = {
@@ -109,6 +114,16 @@ export const PROJECTS: Project[] = [
     image: "/art/home/88857e5b2d52.png",
     width: 1440,
     height: 1390,
+    extraImages: [
+      {
+        src: "/art/work/thread-form/detail-01.webp",
+        width: 1500,
+        height: 2000,
+        alt: "Corner detail of Thread & Form: black-and-white linocut printed on muslin, stitched into a raw fabric border, mounted on a hand-lashed twig frame with jute cord binding at the corners.",
+        label: "CORNER STUDY",
+        note: "Hand-lashed twig frame, jute cord binding at the corners.",
+      },
+    ],
   },
   {
     slug: "land-meets-the-sea",

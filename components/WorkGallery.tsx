@@ -1,8 +1,9 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useMemo } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { usePathname, useSearchParams } from "next/navigation";
 
 import { CATEGORIES, type Category, type Project } from "@/content/site";
 import { SITE } from "@/content/site";
@@ -11,18 +12,32 @@ type Filter = { kind: "all" } | { kind: "category"; value: Category };
 
 const ALL: Filter = { kind: "all" };
 
+const VALID_CATEGORIES = new Set<string>(CATEGORIES.map((c) => c.value));
+
+function parseFilter(param: string | null): Filter {
+  if (param && VALID_CATEGORIES.has(param)) {
+    return { kind: "category", value: param as Category };
+  }
+  return ALL;
+}
+
 function eq(a: Filter, b: Filter): boolean {
   if (a.kind === "all") return b.kind === "all";
   return b.kind === "category" && a.value === b.value;
 }
 
 export function WorkGallery({ projects }: { projects: Project[] }) {
-  const [filter, setFilter] = useState<Filter>(ALL);
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+  const filter = parseFilter(searchParams.get("category"));
 
   const visible = useMemo(() => {
     if (filter.kind === "all") return projects;
     return projects.filter((p) => p.category === filter.value);
   }, [projects, filter]);
+
+  const hrefFor = (f: Filter) =>
+    f.kind === "all" ? pathname : `${pathname}?category=${f.value}`;
 
   return (
     <>
@@ -30,19 +45,22 @@ export function WorkGallery({ projects }: { projects: Project[] }) {
         aria-label="Filter works by category"
         className="mb-10 flex flex-wrap items-center gap-x-6 gap-y-3 md:mb-14"
       >
-        <FilterButton
+        <FilterLink
           label="All Works"
+          href={hrefFor(ALL)}
           active={eq(filter, ALL)}
-          onClick={() => setFilter(ALL)}
         />
-        {CATEGORIES.map((c) => (
-          <FilterButton
-            key={c.value}
-            label={c.label}
-            active={eq(filter, { kind: "category", value: c.value })}
-            onClick={() => setFilter({ kind: "category", value: c.value })}
-          />
-        ))}
+        {CATEGORIES.map((c) => {
+          const f: Filter = { kind: "category", value: c.value };
+          return (
+            <FilterLink
+              key={c.value}
+              label={c.label}
+              href={hrefFor(f)}
+              active={eq(filter, f)}
+            />
+          );
+        })}
       </nav>
 
       {visible.length === 0 ? (
@@ -85,25 +103,26 @@ export function WorkGallery({ projects }: { projects: Project[] }) {
   );
 }
 
-function FilterButton({
+function FilterLink({
   label,
+  href,
   active,
-  onClick,
 }: {
   label: string;
+  href: string;
   active: boolean;
-  onClick: () => void;
 }) {
   return (
-    <button
-      type="button"
-      onClick={onClick}
-      aria-pressed={active}
+    <Link
+      href={href}
+      replace
+      scroll={false}
+      aria-current={active ? "page" : undefined}
       className={`text-h3 tracking-tight underline-link transition-colors ${
         active ? "font-bold text-ink" : "font-medium text-mute"
       }`}
     >
       {label}
-    </button>
+    </Link>
   );
 }
