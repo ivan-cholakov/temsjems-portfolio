@@ -104,6 +104,18 @@ export const SITE = {
 
 export const PROJECTS: Project[] = [
   {
+    slug: "indigo-lake",
+    title: "Indigo Lake",
+    tagline: "65 × 42 cm | 2026 | Linocut on a sisal sack with natural wood",
+    body: null,
+    year: "2026",
+    medium: "Linocut on a sisal sack with natural wood",
+    category: "textile-print-making",
+    image: "/art/home/indigo-lake.webp",
+    width: 1600,
+    height: 2000,
+  },
+  {
     slug: "thread-form",
     title: "Thread & Form",
     tagline: null,

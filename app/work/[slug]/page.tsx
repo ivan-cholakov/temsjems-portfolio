@@ -3,7 +3,6 @@ import { notFound } from "next/navigation";
 import Image from "next/image";
 
 import { DetailGallery } from "@/components/DetailGallery";
-import { Eyebrow } from "@/components/Eyebrow";
 import { PROJECTS, projectBySlug, SITE } from "@/content/site";
 import { artworkSchema } from "@/lib/structured-data";
 
@@ -59,14 +58,8 @@ export default async function ProjectPage(
       />
 
       <section className="max-w-[1600px] px-6 pt-6 pb-24 md:px-10 md:pt-10 md:pb-40">
-        {/* Title slab — full width above the two-column body */}
-        <Eyebrow as="p" className="text-mute">── Selected Work</Eyebrow>
-        <h2 className="mt-6 text-h1 font-bold tracking-tight">
-          {project.title}
-        </h2>
-
-        {/* Two-column body: art piece left, description right */}
-        <div className="mt-12 grid grid-cols-1 gap-x-10 gap-y-12 md:mt-16 md:grid-cols-12 md:gap-x-12 lg:gap-x-20">
+        {/* Two-column body: art piece left, title + description right */}
+        <div className="grid grid-cols-1 gap-x-10 gap-y-8 md:grid-cols-12 md:gap-x-12 lg:gap-x-20">
           <div className="md:col-span-7">
             <Image
               src={project.image}
@@ -86,14 +79,18 @@ export default async function ProjectPage(
           </div>
 
           <div className="md:col-span-5">
+            <h2 className="text-h1 font-bold tracking-tight">
+              {project.title}
+            </h2>
+
             {project.tagline && (
-              <p className="text-balance text-lead leading-tight">
+              <p className="mt-8 text-balance text-lead leading-tight">
                 {project.tagline}
               </p>
             )}
 
             {project.body && (
-              <p className={`max-w-[60ch] leading-relaxed ${project.tagline ? "mt-8" : ""}`}>
+              <p className={`max-w-[60ch] leading-relaxed ${project.tagline ? "mt-6" : "mt-8"}`}>
                 {project.body}
               </p>
             )}
