@@ -78,7 +78,10 @@ export function HomeCanvas() {
       cancelAnimationFrame(animRef.current);
       animRef.current = null;
     }
-    el.setPointerCapture(e.pointerId);
+    // NB: pointer capture is intentionally NOT set here. Capturing on
+    // pointerdown makes the browser suppress the synthesized `click`, which
+    // kills native anchor navigation on a plain click. We capture lazily in
+    // onPointerMove once a real drag starts (see below).
     dragState.current = { x: e.clientX, left: el.scrollLeft };
     dragMoved.current = false;
     samplesRef.current = [{ x: e.clientX, t: performance.now() }];
@@ -90,7 +93,13 @@ export function HomeCanvas() {
     const el = scroller.current;
     if (!s || !el) return;
     const dx = e.clientX - s.x;
-    if (Math.abs(dx) > 4) dragMoved.current = true;
+    if (Math.abs(dx) > 4 && !dragMoved.current) {
+      dragMoved.current = true;
+      // A real drag has started: now capture the pointer so movement and
+      // release are still tracked if the cursor leaves the scroller. Doing it
+      // here (not on pointerdown) preserves native `click` for plain taps.
+      el.setPointerCapture(e.pointerId);
+    }
     samplesRef.current.push({ x: e.clientX, t: performance.now() });
     if (samplesRef.current.length > 8) samplesRef.current.shift();
     el.scrollLeft = s.left - dx;
