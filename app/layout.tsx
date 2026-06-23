@@ -72,8 +72,12 @@ export default function RootLayout({
       <body className="min-h-full bg-paper text-ink">
         <Sidebar />
         <main>
+          {/* Hero is a full-bleed banner at the top; it never reaches the
+              bottom-left menu, so it stays full width. */}
           <Hero />
-          {children}
+          {/* Inset page content by the rail width on desktop so the fixed
+              left menu never overlaps it. */}
+          <div className="md:pl-rail">{children}</div>
         </main>
         {ANALYTICS_ENABLED && PLAUSIBLE_SRC && (
           <>

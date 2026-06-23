@@ -49,7 +49,7 @@ export function Sidebar() {
       {/* ─────────────── Desktop left rail ─────────────── */}
       <aside
         aria-label="Primary"
-        className="pointer-events-none hidden md:fixed md:inset-y-0 md:left-0 md:z-50 md:flex md:w-[260px] md:flex-col md:justify-end md:px-7 md:pb-10"
+        className="pointer-events-none hidden md:fixed md:inset-y-0 md:left-0 md:z-50 md:flex md:w-rail md:flex-col md:justify-end md:px-7 md:pb-10"
       >
         <nav className="pointer-events-auto">
           <ul className="space-y-2">

@@ -14,6 +14,11 @@
   --color-accent: #a0a876;   /* alias for hover / decorative use */
   --color-rule:   #1f2017;
 
+  /* Width of the fixed desktop left rail (Sidebar). Single source of truth:
+     the Sidebar reserves this width and <main> insets content by it so the
+     menu never overlaps page content. */
+  --spacing-rail: 16.25rem;   /* 260px */
+
   --font-sans:    var(--font-cormorant), ui-serif, "EB Garamond", "Times New Roman", serif;
   --font-display: var(--font-playfair),  ui-serif, "Didot", "Bodoni Moda", serif;
   --font-mono:    var(--font-jetbrains), ui-monospace, monospace;
