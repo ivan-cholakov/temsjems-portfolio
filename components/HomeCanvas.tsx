@@ -188,7 +188,9 @@ export function HomeCanvas() {
               draggable={false}
               className="shrink-0 group flex flex-col items-center"
             >
-              <div className="relative h-[44vh] md:h-[58vh]">
+              {/* Uniform 4:5 box so every piece shares the same footprint;
+                  landscape works letterbox instead of growing wider. */}
+              <div className="relative aspect-[4/5] h-[44vh] md:h-[58vh]">
                 <Image
                   src={p.image}
                   alt={p.title}
@@ -196,7 +198,7 @@ export function HomeCanvas() {
                   height={p.height}
                   priority={i < 2 || p.lcp === true}
                   draggable={false}
-                  className="block h-full w-auto select-none object-contain"
+                  className="block h-full w-full select-none object-contain"
                   sizes="(max-width: 768px) 70vw, 32vw"
                 />
               </div>
