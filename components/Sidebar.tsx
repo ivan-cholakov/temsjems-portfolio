@@ -60,7 +60,7 @@ export function Sidebar() {
                   <Link
                     href={item.href}
                     aria-current={active ? "page" : undefined}
-                    className={`text-h3 tracking-tight underline-link transition-colors ${
+                    className={`text-[clamp(1.5rem,2.4vw,1.875rem)] tracking-tight underline-link transition-colors ${
                       active
                         ? "font-bold text-ink"
                         : "font-medium text-mute"
