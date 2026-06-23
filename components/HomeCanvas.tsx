@@ -181,16 +181,26 @@ export function HomeCanvas() {
           {/* Leading spacer so the first slide can snap to the centre */}
           <div aria-hidden className="shrink-0 w-[6vw] md:w-[12vw]" />
 
-          {PROJECTS.map((p, i) => (
+          {PROJECTS.map((p, i) => {
+            // Items are sized by height, so a landscape piece would render far
+            // wider than the portraits and dominate the row. Give landscape
+            // works a reduced height so their overall footprint (area) matches
+            // the portraits and every piece reads at the same visual size.
+            const isLandscape = p.width / p.height > 1.3;
+            return (
             <a
               key={p.slug}
               href={`/work/${p.slug}/`}
               draggable={false}
               className="shrink-0 group flex flex-col items-center"
             >
-              {/* Uniform 4:5 box so every piece shares the same footprint;
-                  landscape works letterbox instead of growing wider. */}
-              <div className="relative aspect-[4/5] h-[44vh] md:h-[58vh]">
+              <div
+                className={
+                  isLandscape
+                    ? "relative h-[30vh] md:h-[40vh]"
+                    : "relative h-[44vh] md:h-[58vh]"
+                }
+              >
                 <Image
                   src={p.image}
                   alt={p.title}
@@ -198,7 +208,7 @@ export function HomeCanvas() {
                   height={p.height}
                   priority={i < 2 || p.lcp === true}
                   draggable={false}
-                  className="block h-full w-full select-none object-contain"
+                  className="block h-full w-auto select-none object-contain"
                   sizes="(max-width: 768px) 70vw, 32vw"
                 />
               </div>
@@ -206,7 +216,8 @@ export function HomeCanvas() {
                 {p.title}
               </span>
             </a>
-          ))}
+            );
+          })}
 
           <div aria-hidden className="shrink-0 w-[6vw] md:w-[12vw]" />
         </div>
