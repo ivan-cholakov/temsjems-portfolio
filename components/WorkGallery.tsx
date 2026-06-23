@@ -68,9 +68,6 @@ export function WorkGallery({ projects }: { projects: Project[] }) {
       ) : (
         <ul className="grid grid-cols-1 gap-x-5 gap-y-16 sm:grid-cols-2 md:gap-x-7 md:gap-y-20 lg:grid-cols-3">
           {visible.map((project, i) => {
-            // Landscape pieces letterbox heavily inside the portrait 4:5 cell
-            // when contained — scale them up so they fill more of the cell.
-            const isLandscape = project.width / project.height > 1.3;
             return (
               <li key={project.slug}>
                 <Link href={`/work/${project.slug}`} className="group block">
@@ -81,11 +78,10 @@ export function WorkGallery({ projects }: { projects: Project[] }) {
                       fill
                       priority={i < 3 || project.lcp === true}
                       sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
-                      className={`object-contain transition-transform duration-700 ease-out ${
-                        isLandscape
-                          ? "scale-[1.4] group-hover:scale-[1.43]"
-                          : "group-hover:scale-[1.02]"
-                      }`}
+                      // object-contain keeps every piece uncropped inside the
+                      // uniform 4:5 cell; landscape works letterbox against
+                      // bg-paper rather than having their frame edges clipped.
+                      className="object-contain transition-transform duration-700 ease-out group-hover:scale-[1.02]"
                     />
                   </div>
                   <div className="mt-4">
