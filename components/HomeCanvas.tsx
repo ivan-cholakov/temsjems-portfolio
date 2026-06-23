@@ -186,7 +186,7 @@ export function HomeCanvas() {
               key={p.slug}
               href={`/work/${p.slug}/`}
               draggable={false}
-              className="shrink-0 group flex flex-col items-start"
+              className="shrink-0 group flex flex-col items-center"
             >
               <div className="relative h-[44vh] md:h-[58vh]">
                 <Image
@@ -200,7 +200,7 @@ export function HomeCanvas() {
                   sizes="(max-width: 768px) 70vw, 32vw"
                 />
               </div>
-              <span className="mt-3 font-display text-h3 text-ink">
+              <span className="mt-2 text-center font-display text-h3 text-ink">
                 {p.title}
               </span>
             </a>

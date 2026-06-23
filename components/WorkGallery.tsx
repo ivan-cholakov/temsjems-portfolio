@@ -84,7 +84,7 @@ export function WorkGallery({ projects }: { projects: Project[] }) {
                       className="object-contain transition-transform duration-700 ease-out group-hover:scale-[1.02]"
                     />
                   </div>
-                  <div className="mt-4">
+                  <div className="mt-2 text-center">
                     <h2 className="text-h3 font-bold tracking-tight">
                       <span className="underline-link">{project.title}</span>
                     </h2>
