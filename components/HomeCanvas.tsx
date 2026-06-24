@@ -182,10 +182,11 @@ export function HomeCanvas() {
           <div aria-hidden className="shrink-0 w-[6vw] md:w-[12vw]" />
 
           {PROJECTS.map((p, i) => {
-            // Items are sized by height, so a landscape piece would render far
-            // wider than the portraits and dominate the row. Give landscape
-            // works a reduced height so their overall footprint (area) matches
-            // the portraits and every piece reads at the same visual size.
+            // Every item shares one container height, so titles sit on a common
+            // baseline. A landscape piece would render far wider at full height
+            // and dominate the row, so it gets a reduced image height (matching
+            // the portraits' footprint area) and is centred vertically in the
+            // container — keeping its centre aligned with the other works.
             const isLandscape = p.width / p.height > 1.3;
             return (
             <a
@@ -194,13 +195,7 @@ export function HomeCanvas() {
               draggable={false}
               className="shrink-0 group flex flex-col items-center"
             >
-              <div
-                className={
-                  isLandscape
-                    ? "relative h-[30vh] md:h-[40vh]"
-                    : "relative h-[44vh] md:h-[58vh]"
-                }
-              >
+              <div className="relative flex h-[44vh] items-center justify-center md:h-[58vh]">
                 <Image
                   src={p.image}
                   alt={p.title}
@@ -208,7 +203,11 @@ export function HomeCanvas() {
                   height={p.height}
                   priority={i < 2 || p.lcp === true}
                   draggable={false}
-                  className="block h-full w-auto select-none object-contain"
+                  className={
+                    isLandscape
+                      ? "block h-[30vh] w-auto select-none object-contain md:h-[40vh]"
+                      : "block h-full w-auto select-none object-contain"
+                  }
                   sizes="(max-width: 768px) 70vw, 32vw"
                 />
               </div>
