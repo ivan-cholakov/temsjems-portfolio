@@ -1,23 +1,17 @@
 export type Category =
-  | "gel-plate-monoprint"
-  | "linocut-collage"
-  | "ink-work"
-  | "textile-print-making";
+  | "monoprint-ink"
+  | "printmaking-collage";
 
 export const CATEGORIES: ReadonlyArray<{ value: Category; label: string }> = [
-  { value: "gel-plate-monoprint",  label: "Gel Plate Monoprints" },
-  { value: "linocut-collage",      label: "Linocut Collages" },
-  { value: "ink-work",             label: "Ink Works" },
-  { value: "textile-print-making", label: "Textile Print-making" },
+  { value: "monoprint-ink",       label: "Monoprint & Ink" },
+  { value: "printmaking-collage", label: "Printmaking & Collage" },
 ];
 
 // Exhaustive over Category — adding a new variant forces an answer here,
 // so the medium label can never silently fall back to a wrong default.
 export const DEFAULT_MEDIUM_BY_CATEGORY: Record<Category, string> = {
-  "gel-plate-monoprint":  "Gel plate monoprint",
-  "linocut-collage":      "Linocut + watercolor",
-  "ink-work":             "Ink",
-  "textile-print-making": "Textile print",
+  "monoprint-ink":       "Monoprint",
+  "printmaking-collage": "Linocut collage",
 };
 
 export function mediumOf(project: Pick<Project, "medium" | "category">): string {
@@ -103,17 +97,43 @@ export const SITE = {
 } as const;
 
 export const PROJECTS: Project[] = [
+  // ── Monoprint & Ink ──
   {
-    slug: "indigo-lake",
-    title: "Indigo Lake",
-    tagline: "65 × 42 cm | 2026 | Linocut on a sisal sack with natural wood",
-    body: null,
+    slug: "cyclical-dissonance",
+    title: "Cyclical Dissonance",
+    tagline: "30 × 42 cm | 2026 | Ink, pen and brush on paper",
+    body: "Selected for presentation in Dissonances, a national contemporary visual arts exhibition-competition held at the Art Gallery – Ruse (14 March – 12 April 2026), bringing together 147 artists from across Bulgaria.",
     year: "2026",
-    medium: "Linocut on a sisal sack with natural wood",
-    category: "textile-print-making",
-    image: "/art/home/indigo-lake.webp",
+    medium: "Ink, pen and brush on paper",
+    category: "monoprint-ink",
+    image: "/art/home/cyclical-dissonance.webp",
+    width: 1800,
+    height: 1028,
+  },
+  {
+    slug: "stardust",
+    title: "Stardust",
+    tagline: "12 × 28 cm | 2020 | Siligraphy, toner-lavis",
+    body: null,
+    year: "2020",
+    medium: "Siligraphy, toner-lavis",
+    category: "monoprint-ink",
+    image: "/art/home/stardust.webp",
     width: 1600,
     height: 2000,
+  },
+  {
+    slug: "midnight-bloom",
+    title: "Midnight Bloom",
+    tagline: "31 × 41 cm | 2026 | Gel plate & natural materials",
+    body: null,
+    year: "2026",
+    medium: "Gel plate & natural materials",
+    category: "monoprint-ink",
+    image: "/art/home/midnight-bloom.webp",
+    width: 1600,
+    height: 2000,
+    lcp: true,
   },
   {
     slug: "echoes-of-a-rose",
@@ -122,8 +142,33 @@ export const PROJECTS: Project[] = [
     body: null,
     year: "2026",
     medium: "Mixed-media Gelli plate monoprint",
-    category: "gel-plate-monoprint",
+    category: "monoprint-ink",
     image: "/art/home/echoes-of-a-rose.webp",
+    width: 1600,
+    height: 2000,
+  },
+  // ── Printmaking & Collage ──
+  {
+    slug: "saturn",
+    title: "Saturn",
+    tagline: "50 × 80 cm | 2023 | Deconstructed linocut collage on raw burlap",
+    body: null,
+    year: "2023",
+    medium: "Deconstructed linocut collage on raw burlap",
+    category: "printmaking-collage",
+    image: "/art/home/saturn.png",
+    width: 1440,
+    height: 1746,
+  },
+  {
+    slug: "indigo-lake",
+    title: "Indigo Lake",
+    tagline: "65 × 42 cm | 2026 | Linocut on a sisal sack with natural wood",
+    body: null,
+    year: "2026",
+    medium: "Linocut on a sisal sack with natural wood",
+    category: "printmaking-collage",
+    image: "/art/home/indigo-lake.webp",
     width: 1600,
     height: 2000,
   },
@@ -134,7 +179,7 @@ export const PROJECTS: Project[] = [
     body: null,
     year: null,
     medium: null,
-    category: "textile-print-making",
+    category: "printmaking-collage",
     image: "/art/home/88857e5b2d52.png",
     width: 1440,
     height: 1390,
@@ -148,55 +193,6 @@ export const PROJECTS: Project[] = [
         note: "Hand-lashed twig frame, jute cord binding at the corners.",
       },
     ],
-  },
-  {
-    slug: "land-meets-the-sea",
-    title: "Land Meets the Sea",
-    tagline: null,
-    body: null,
-    year: null,
-    medium: null,
-    category: "linocut-collage",
-    image: "/art/home/42f49d304a72.png",
-    width: 1440,
-    height: 1746,
-  },
-  {
-    slug: "stardust",
-    title: "Stardust",
-    tagline: "12 × 28 cm | 2020 | Siligraphy, toner-lavis",
-    body: null,
-    year: "2020",
-    medium: "Siligraphy, toner-lavis",
-    category: "ink-work",
-    image: "/art/home/stardust.webp",
-    width: 1600,
-    height: 2000,
-  },
-  {
-    slug: "cyclical-dissonance",
-    title: "Cyclical Dissonance",
-    tagline: "30 × 42 cm | 2026 | Ink, pen and brush on paper",
-    body: "Selected for presentation in Dissonances, a national contemporary visual arts exhibition-competition held at the Art Gallery – Ruse (14 March – 12 April 2026), bringing together 147 artists from across Bulgaria.",
-    year: "2026",
-    medium: "Ink, pen and brush on paper",
-    category: "ink-work",
-    image: "/art/home/cyclical-dissonance.webp",
-    width: 1800,
-    height: 1028,
-  },
-  {
-    slug: "midnight-bloom",
-    title: "Midnight Bloom",
-    tagline: "31 × 41 cm | 2026 | Gel plate & natural materials",
-    body: null,
-    year: "2026",
-    medium: "Gel plate & natural materials",
-    category: "gel-plate-monoprint",
-    image: "/art/home/midnight-bloom.webp",
-    width: 1600,
-    height: 2000,
-    lcp: true,
   },
 ];
 
