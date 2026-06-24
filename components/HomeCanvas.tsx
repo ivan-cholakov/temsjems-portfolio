@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
-import { PROJECTS, SITE } from "@/content/site";
+import { HOME_CAROUSEL, SITE } from "@/content/site";
 
 export function HomeCanvas() {
   const scroller = useRef<HTMLDivElement>(null);
@@ -181,7 +181,7 @@ export function HomeCanvas() {
           {/* Leading spacer so the first slide can snap to the centre */}
           <div aria-hidden className="shrink-0 w-[6vw] md:w-[12vw]" />
 
-          {PROJECTS.map((p, i) => {
+          {HOME_CAROUSEL.map((p, i) => {
             // Every item shares one container height, so titles sit on a common
             // baseline. A landscape piece would render far wider at full height
             // and dominate the row, so it gets a reduced image height (matching

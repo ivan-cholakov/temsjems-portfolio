@@ -200,3 +200,25 @@ export const PROJECTS: Project[] = [
 
 export const projectBySlug = (slug: string): Project | undefined =>
   PROJECTS.find((p) => p.slug === slug);
+
+// The home-page carousel runs in its own order, independent of the Work grid
+// (which follows PROJECTS). Listed slugs come first in this order; any project
+// not listed is appended in PROJECTS order, so a newly added piece can never
+// silently vanish from the carousel.
+const HOME_CAROUSEL_ORDER: ReadonlyArray<string> = [
+  "the-fabric-of-touch",
+  "verde",
+  "saturn",
+  "cyclical-dissonance",
+  "echoes-of-a-rose",
+  "stardust",
+  "midnight-bloom",
+  "indigo-lake",
+];
+
+export const HOME_CAROUSEL: Project[] = [
+  ...HOME_CAROUSEL_ORDER
+    .map(projectBySlug)
+    .filter((p): p is Project => p !== undefined),
+  ...PROJECTS.filter((p) => !HOME_CAROUSEL_ORDER.includes(p.slug)),
+];
