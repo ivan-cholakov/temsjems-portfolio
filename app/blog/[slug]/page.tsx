@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import Image from "next/image";
 
 import { Eyebrow } from "@/components/Eyebrow";
 import { PostBody } from "@/components/PostBody";
@@ -66,18 +65,6 @@ export default async function BlogPostPage(
           </h1>
           <p className="mt-8 text-lead leading-tight">{post.excerpt}</p>
         </header>
-
-        <figure className="mt-8 md:mt-10">
-          <Image
-            src={post.cover.src}
-            alt={post.cover.alt}
-            width={post.cover.width}
-            height={post.cover.height}
-            priority
-            sizes="(min-width: 768px) 72vw, 100vw"
-            className="block h-auto w-full"
-          />
-        </figure>
 
         <PostBody blocks={post.body} />
       </article>
