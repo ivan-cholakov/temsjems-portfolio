@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 
+import { PostCard } from "@/components/PostCard";
+import { POSTS_BY_DATE } from "@/content/blog";
 import { SITE } from "@/content/site";
 
 export const metadata: Metadata = {
@@ -15,14 +17,27 @@ export const metadata: Metadata = {
 };
 
 export default function BlogIndex() {
+  const posts = POSTS_BY_DATE;
+
   return (
-    <section className="max-w-[1600px] px-6 pt-6 pb-24 md:px-10 md:pt-10 md:pb-40">
+    <section className="mx-auto max-w-[64rem] px-6 pt-6 pb-24 md:pt-10 md:pb-40">
       <h2 className="text-h1 font-bold tracking-tight">Blog.</h2>
 
       <p className="mt-12 max-w-[60ch] text-lead leading-tight">
-        Writing on the practice — linocut, watercolor, the studio.
-        New posts will appear here.
+        Writing on the practice - linocut, watercolor, the studio.
       </p>
+
+      {posts.length === 0 ? (
+        <p className="mt-12 text-mute italic">New posts will appear here.</p>
+      ) : (
+        <ul className="mt-16 grid grid-cols-1 gap-y-20 md:mt-24 md:gap-y-28">
+          {posts.map((post, i) => (
+            <li key={post.slug}>
+              <PostCard post={post} index={i + 1} priority={i === 0} />
+            </li>
+          ))}
+        </ul>
+      )}
     </section>
   );
 }

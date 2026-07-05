@@ -40,3 +40,6 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# Raw source PNGs for blog images (converted to alpha WebP in public/blog/); kept locally, not deployed
+/public/new-resources/

@@ -1,4 +1,5 @@
 import { mediumOf, SITE, type Project } from "@/content/site";
+import type { Post } from "@/content/blog";
 
 const SCHEMA_CONTEXT = "https://schema.org";
 
@@ -65,4 +66,19 @@ export function artworkSchema(project: Project) {
     url: new URL(`/work/${project.slug}`, SITE.url).toString(),
   };
   return project.body ? { ...base, description: project.body } : base;
+}
+
+export function blogPostingSchema(post: Post) {
+  const url = new URL(`/blog/${post.slug}`, SITE.url).toString();
+  return withSameAs({
+    "@context": SCHEMA_CONTEXT,
+    "@type": "BlogPosting",
+    headline: post.title,
+    description: post.excerpt,
+    image: new URL(post.cover.src, SITE.url).toString(),
+    datePublished: post.date,
+    author: { "@type": "Person", name: post.author },
+    url,
+    mainEntityOfPage: { "@type": "WebPage", "@id": url },
+  });
 }
