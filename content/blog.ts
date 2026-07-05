@@ -104,15 +104,6 @@ export const POSTS: Post[] = [
         text: "The magic of this technique is that you never know exactly what the final result will be. And when you bring real elements of nature into the mix, things become truly magical. Using natural botanical materials allows us to capture the delicate textures of leaves, veins, and flower silhouettes in an inimitable way.",
       },
       {
-        kind: "image",
-        image: {
-          src: `${GEL_PLATE_DIR}/01-botanical-textures.webp`,
-          width: 1692,
-          height: 909,
-          alt: "Three framed gel plate monoprints in green, violet and red laid on a studio table beside fresh flowers, clear gel plates and inked brayers.",
-        },
-      },
-      {
         kind: "paragraph",
         text: "As an art teacher with years of experience teaching and running workshops, today I will share my observations both from my personal experience and from my practice with my students. In my workshops, I often see the challenges and experiments people go through until they truly understand the unique character of different plants.",
       },

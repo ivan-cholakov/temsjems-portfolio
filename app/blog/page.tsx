@@ -23,10 +23,6 @@ export default function BlogIndex() {
     <section className="mx-auto max-w-[64rem] px-6 pt-6 pb-24 md:pt-10 md:pb-40">
       <h2 className="text-h1 font-bold tracking-tight">Blog.</h2>
 
-      <p className="mt-12 max-w-[60ch] text-lead leading-tight">
-        Writing on the practice - linocut, watercolor, the studio.
-      </p>
-
       {posts.length === 0 ? (
         <p className="mt-12 text-mute italic">New posts will appear here.</p>
       ) : (
