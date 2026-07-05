@@ -110,7 +110,6 @@ export const POSTS: Post[] = [
           width: 1692,
           height: 909,
           alt: "Three framed gel plate monoprints in green, violet and red laid on a studio table beside fresh flowers, clear gel plates and inked brayers.",
-          caption: "Framed workshop prints - the same botanicals read differently in each colourway.",
         },
       },
       {
@@ -147,7 +146,6 @@ export const POSTS: Post[] = [
           width: 1412,
           height: 909,
           alt: "Left: a hand holding a deep red rose above a pink monoprint in progress. Right: a crisp red gel plate print of a rose-leaf spray over lace texture.",
-          caption: "Rose leaves give some of the crispest prints - clean the thorns off the stem first, then press boldly.",
         },
       },
       { kind: "heading", level: 3, text: "Texture and Paint Quantity" },
@@ -172,7 +170,6 @@ export const POSTS: Post[] = [
           width: 1461,
           height: 953,
           alt: "Left: a stack of botanical monoprints in many colours on a work table. Right: a magenta print showing the pale silhouettes of leaves and seed pods.",
-          caption: "A palette of park-leaf prints, and the pale ghost silhouettes they leave behind.",
         },
       },
       { kind: "heading", level: 3, text: "Wild Grasses and Delicate Flowers" },
@@ -196,7 +193,6 @@ export const POSTS: Post[] = [
           width: 1504,
           height: 911,
           alt: "Left: an open journal spread printed in teal with pressed ferns and flowers. Right: a purple monoprint arrangement of chrysanthemum heads and fern fronds.",
-          caption: "Bulky flower heads won't press flat - but they leave rich, painterly texture behind.",
         },
       },
       {

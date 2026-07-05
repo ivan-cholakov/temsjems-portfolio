@@ -67,7 +67,7 @@ export default async function BlogPostPage(
           <p className="mt-8 text-lead leading-tight">{post.excerpt}</p>
         </header>
 
-        <figure className="mt-12 md:mt-16">
+        <figure className="mt-8 md:mt-10">
           <Image
             src={post.cover.src}
             alt={post.cover.alt}

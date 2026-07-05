@@ -10,7 +10,7 @@ import type { PostBlock } from "@/content/blog";
  */
 export function PostBody({ blocks }: { blocks: PostBlock[] }) {
   return (
-    <div className="mt-12 md:mt-16">
+    <div className="mt-6 md:mt-8">
       {blocks.map((block, i) => (
         <Block key={i} block={block} />
       ))}
@@ -22,11 +22,11 @@ function Block({ block }: { block: PostBlock }) {
   switch (block.kind) {
     case "heading":
       return block.level === 2 ? (
-        <h2 className="mt-14 mb-4 text-h2 font-bold tracking-tight md:mt-20">
+        <h2 className="mt-10 mb-2 text-h2 font-bold tracking-tight md:mt-12">
           {block.text}
         </h2>
       ) : (
-        <h3 className="mt-10 mb-3 text-h3 font-bold tracking-tight md:mt-12">
+        <h3 className="mt-8 mb-2 text-h3 font-bold tracking-tight md:mt-9">
           {block.text}
         </h3>
       );
@@ -48,7 +48,7 @@ function Block({ block }: { block: PostBlock }) {
 
     case "image":
       return (
-        <figure className="mt-12 md:mt-16">
+        <figure className="mt-6 md:mt-8">
           <Image
             src={block.image.src}
             alt={block.image.alt}
