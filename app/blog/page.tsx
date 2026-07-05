@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 
 import { PostCard } from "@/components/PostCard";
 import { POSTS_BY_DATE } from "@/content/blog";
-import { SITE } from "@/content/site";
+import { SITE, OG_IMAGE } from "@/content/site";
 
 export const metadata: Metadata = {
   title: "Blog",
@@ -13,6 +13,7 @@ export const metadata: Metadata = {
     description: `Writing from ${SITE.artist} on the practice.`,
     url: "/blog",
     type: "website",
+    images: [OG_IMAGE],
   },
 };
 

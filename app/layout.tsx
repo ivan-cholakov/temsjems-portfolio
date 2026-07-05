@@ -5,7 +5,7 @@ import "./globals.css";
 
 import { Sidebar } from "@/components/Sidebar";
 import { Hero } from "@/components/Hero";
-import { SITE } from "@/content/site";
+import { SITE, OG_IMAGE } from "@/content/site";
 
 const PLAUSIBLE_SRC = process.env.NEXT_PUBLIC_PLAUSIBLE_SRC;
 const PLAUSIBLE_INIT = `window.plausible=window.plausible||function(){(plausible.q=plausible.q||[]).push(arguments)},plausible.init=plausible.init||function(i){plausible.o=i||{}};plausible.init()`;
@@ -55,11 +55,13 @@ export const metadata: Metadata = {
     siteName: SITE.name,
     title: `${SITE.name} — ${SITE.artist}`,
     description: SITE.tagline,
+    images: [OG_IMAGE],
   },
   twitter: {
     card: "summary_large_image",
     title: `${SITE.name} — ${SITE.artist}`,
     description: SITE.tagline,
+    images: [OG_IMAGE.url],
   },
   robots: { index: true, follow: true },
 };

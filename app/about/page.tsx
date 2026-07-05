@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Image from "next/image";
 
 import { Eyebrow } from "@/components/Eyebrow";
-import { SITE } from "@/content/site";
+import { SITE, OG_IMAGE } from "@/content/site";
 import { personSchema } from "@/lib/structured-data";
 
 export const metadata: Metadata = {
@@ -14,6 +14,7 @@ export const metadata: Metadata = {
     description: SITE.bio.slice(0, 200),
     url: "/about",
     type: "profile",
+    images: [OG_IMAGE],
   },
 };
 

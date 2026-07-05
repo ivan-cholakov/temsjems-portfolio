@@ -222,3 +222,16 @@ export const HOME_CAROUSEL: Project[] = [
     .filter((p): p is Project => p !== undefined),
   ...PROJECTS.filter((p) => !HOME_CAROUSEL_ORDER.includes(p.slug)),
 ];
+
+/**
+ * Default social share card (1200x630 JPEG), used as the Open Graph / Twitter
+ * image for any page that doesn't supply its own. Next.js replaces (rather than
+ * deep-merges) a child route's `openGraph`, so every page with a custom
+ * openGraph block must spread this in explicitly or it ships with no preview.
+ */
+export const OG_IMAGE = {
+  url: "/og-default.jpg",
+  width: 1200,
+  height: 630,
+  alt: `${SITE.name} - ${SITE.artist}`,
+} as const;

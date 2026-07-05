@@ -3,7 +3,7 @@ import type { Metadata } from "next";
 import { ContactForm } from "@/components/ContactForm";
 import { Eyebrow } from "@/components/Eyebrow";
 import { TrackedLink } from "@/components/TrackedLink";
-import { SITE } from "@/content/site";
+import { SITE, OG_IMAGE } from "@/content/site";
 
 export const metadata: Metadata = {
   title: "Contact",
@@ -13,6 +13,7 @@ export const metadata: Metadata = {
     title: `Contact — ${SITE.name}`,
     description: `Get in touch with ${SITE.artist}.`,
     url: "/contact",
+    images: [OG_IMAGE],
   },
 };
 

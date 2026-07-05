@@ -2,7 +2,7 @@ import { Suspense } from "react";
 import type { Metadata } from "next";
 
 import { WorkGallery } from "@/components/WorkGallery";
-import { PROJECTS, SITE } from "@/content/site";
+import { PROJECTS, SITE, OG_IMAGE } from "@/content/site";
 
 export const metadata: Metadata = {
   title: "Work",
@@ -13,6 +13,7 @@ export const metadata: Metadata = {
     description: `Selected works by ${SITE.artist}.`,
     type: "website",
     url: "/work",
+    images: [OG_IMAGE],
   },
 };
 

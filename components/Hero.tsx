@@ -10,10 +10,10 @@ export function Hero() {
     <section className="sticky top-0 z-40 max-w-[1600px] px-6 pt-6 pb-12 md:px-10 md:pt-10 md:pb-16">
       <h1 className="mt-4 font-display text-display font-bold uppercase leading-[0.95] text-mute">
         <Image
-          src="/m-monogram-v3.png"
+          src="/m-monogram.webp"
           alt="M"
-          width={2514}
-          height={2029}
+          width={496}
+          height={400}
           priority
           className="inline-block h-[1cap] w-auto align-baseline"
         />{SITE.name.slice(1)}
