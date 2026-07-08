@@ -12,20 +12,20 @@ const PLAUSIBLE_SRC = process.env.NEXT_PUBLIC_PLAUSIBLE_SRC;
 const PLAUSIBLE_INIT = `window.plausible=window.plausible||function(){(plausible.q=plausible.q||[]).push(arguments)},plausible.init=plausible.init||function(i){plausible.o=i||{}};plausible.init()`;
 const ANALYTICS_ENABLED = process.env.NODE_ENV === "production" && Boolean(PLAUSIBLE_SRC);
 
-// Playfair Display — high-contrast Didone with romantic curves; mirrors the
+// Playfair Display - high-contrast Didone with romantic curves; mirrors the
 // flowing serifed "M" of the logo better than Cinzel's monumental Roman caps.
 const display = Playfair_Display({
   variable: "--font-playfair",
   subsets: ["latin"],
   weight: ["400", "500", "600", "700", "800", "900"],
 });
-// Cormorant Garamond — refined serif for body text, harmonises with Cinzel.
+// Cormorant Garamond - refined serif for body text, harmonises with Cinzel.
 const body = Cormorant_Garamond({
   variable: "--font-cormorant",
   subsets: ["latin"],
   weight: ["400", "500", "600", "700"],
 });
-// JetBrains Mono — industrial counterweight for eyebrow / caption labels.
+// JetBrains Mono - industrial counterweight for eyebrow / caption labels.
 const mono = JetBrains_Mono({
   variable: "--font-jetbrains",
   subsets: ["latin"],
@@ -34,7 +34,7 @@ const mono = JetBrains_Mono({
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE.url),
-  title: { default: `${SITE.name} — ${SITE.artist}`, template: `%s — ${SITE.name}` },
+  title: { default: `${SITE.name}`, template: `%s - ${SITE.name}` },
   description: SITE.bio.slice(0, 200),
   applicationName: SITE.name,
   authors: [{ name: SITE.artist }],
@@ -54,13 +54,13 @@ export const metadata: Metadata = {
     locale: "en_US",
     url: SITE.url,
     siteName: SITE.name,
-    title: `${SITE.name} — ${SITE.artist}`,
+    title: `${SITE.name}`,
     description: SITE.tagline,
     images: [OG_IMAGE],
   },
   twitter: {
     card: "summary_large_image",
-    title: `${SITE.name} — ${SITE.artist}`,
+    title: `${SITE.name}`,
     description: SITE.tagline,
     images: [OG_IMAGE.url],
   },

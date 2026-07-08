@@ -29,7 +29,6 @@ export function Footer() {
 
         <div className="mt-16 flex flex-col gap-2 border-t border-ink/10 pt-8 sm:flex-row sm:items-center sm:justify-between">
           <p className="eyebrow text-mute">© {SITE.name}</p>
-          <p className="eyebrow text-mute">{SITE.artist}</p>
         </div>
       </div>
     </footer>
