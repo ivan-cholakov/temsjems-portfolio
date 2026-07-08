@@ -5,6 +5,7 @@ import "./globals.css";
 
 import { Sidebar } from "@/components/Sidebar";
 import { Hero } from "@/components/Hero";
+import { Footer } from "@/components/Footer";
 import { SITE, OG_IMAGE } from "@/content/site";
 
 const PLAUSIBLE_SRC = process.env.NEXT_PUBLIC_PLAUSIBLE_SRC;
@@ -81,6 +82,7 @@ export default function RootLayout({
               left menu never overlaps it. */}
           <div className="md:pl-rail">{children}</div>
         </main>
+        <Footer />
         {ANALYTICS_ENABLED && PLAUSIBLE_SRC && (
           <>
             <Script src={PLAUSIBLE_SRC} strategy="afterInteractive" />

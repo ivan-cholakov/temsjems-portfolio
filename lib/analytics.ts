@@ -3,7 +3,8 @@ export type AnalyticsEvent =
   | "Outbound: Instagram"
   | "Outbound: TikTok"
   | "Outbound: Pinterest"
-  | "Contact Form Submit";
+  | "Contact Form Submit"
+  | "Newsletter Signup";
 
 type Plausible = (
   event: string,

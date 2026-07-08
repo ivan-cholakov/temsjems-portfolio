@@ -96,6 +96,16 @@ export const SITE = {
   url: "https://moiraemoss.com",
 } as const;
 
+/**
+ * Mailchimp embedded-form action URL (the `action` from Audience → Signup forms
+ * → Embedded form). It is public, not secret — the same `u`/`id` ship inside any
+ * embedded Mailchimp form. Kept here as the single source of truth: the JSONP
+ * endpoint and the anti-bot honeypot field name are both derived from it in
+ * `lib/mailchimp.ts`, so swapping audiences means editing only this line.
+ */
+export const MAILCHIMP_URL =
+  "https://moiraemoss.us7.list-manage.com/subscribe/post?u=88840ac2714ae8bb3f41c47be&id=130f874e34&f_id=009db2e4f0";
+
 export const PROJECTS: Project[] = [
   // ── Monoprint & Ink ──
   {
