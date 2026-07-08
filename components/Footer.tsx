@@ -17,7 +17,7 @@ export function Footer() {
             <h2 className="mt-6 text-h2 font-bold tracking-tight">
               Join the list.
             </h2>
-            <p className="mt-6 max-w-[46ch] text-lead leading-snug text-mute">
+            <p className="mt-6 max-w-[46ch] text-lead leading-snug text-ink">
               New work, exhibitions, and the occasional note from me.
               No noise, unsubscribe anytime.
             </p>
