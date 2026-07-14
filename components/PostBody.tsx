@@ -1,4 +1,5 @@
 import Image from "next/image";
+import Link from "next/link";
 
 import { Eyebrow } from "./Eyebrow";
 import type { PostBlock } from "@/content/blog";
@@ -77,6 +78,20 @@ function Block({ block }: { block: PostBlock }) {
           >
             {block.linkLabel}
           </a>
+          {block.after}
+        </p>
+      );
+
+    case "crosslink":
+      return (
+        <p className="mt-5 text-lead leading-relaxed">
+          {block.before}{" "}
+          <Link
+            href={`/blog/${block.slug}`}
+            className="underline-link font-medium text-mute"
+          >
+            {block.linkLabel}
+          </Link>
           {block.after}
         </p>
       );

@@ -27,7 +27,9 @@ export type PostBlock =
   | { kind: "tip"; text: string }
   | { kind: "image"; image: PostImage }
   /** Closing call-to-action with one outbound link (label sits inside text via {link}). */
-  | { kind: "outbound"; before: string; linkLabel: string; href: string; after: string };
+  | { kind: "outbound"; before: string; linkLabel: string; href: string; after: string }
+  /** In-site link to another post — crawlable, same-tab, good for internal SEO. */
+  | { kind: "crosslink"; before: string; slug: string; linkLabel: string; after: string };
 
 export type Post = {
   slug: string;
@@ -54,6 +56,7 @@ function postText(post: Post): string {
         case "tip":
           return b.text;
         case "outbound":
+        case "crosslink":
           return `${b.before} ${b.linkLabel} ${b.after}`;
         case "image":
           return b.image.caption ?? "";
@@ -79,8 +82,144 @@ export function formatPostDate(iso: string): string {
 }
 
 const GEL_PLATE_DIR = "/blog/best-plants-for-gel-plate-printing";
+const TEXTURES_DIR = "/blog/unexpected-textures-for-gel-plate-printing";
 
 export const POSTS: Post[] = [
+  {
+    slug: "unexpected-textures-for-gel-plate-printing",
+    title: "10 Unexpected Textures for Gel Plate Printing",
+    excerpt:
+      "Beyond leaves and flowers - ten everyday materials I reach for to bring depth, grunge and abstract character to a gel plate print, from vintage lace and corrugated cardboard to mesh fruit bags and crinkled rice paper.",
+    date: "2026-07-14",
+    author: SITE.artist,
+    cover: {
+      src: `${TEXTURES_DIR}/cover.webp`,
+      width: 1100,
+      height: 1350,
+      alt: "Four gel plate monoprints in purple, teal, deep red and navy laid on a wooden table, framed by vintage lace, corrugated cardboard, mesh netting and a painted peacock feather.",
+    },
+    body: [
+      {
+        kind: "paragraph",
+        text: "The gel plate is like a blank canvas just waiting to be filled with texture. While botanical elements are a classic choice, experimenting with unexpected everyday items can lead to beautiful, spontaneous, and abstract results.",
+      },
+      {
+        kind: "paragraph",
+        text: "Today, I want to share 10 of my absolute favorite alternative materials that I love using to bring depth, texture, and character to my prints.",
+      },
+      {
+        kind: "image",
+        image: {
+          src: `${TEXTURES_DIR}/01-lace-and-fabric.webp`,
+          width: 1600,
+          height: 900,
+          alt: "Four gel plate prints - purple with stripes and lace, navy with white floral bursts, teal with damask lace, and deep red with lace and leaf silhouettes - surrounded by scraps of lace, corrugated cardboard, mesh and a painted peacock feather.",
+        },
+      },
+      { kind: "heading", level: 2, text: "1. Lace and Textured Fabrics" },
+      {
+        kind: "paragraph",
+        text: "This is easily one of my favorite and most frequently used materials in my creative practice. A piece of vintage lace can instantly transform a simple color background into a complex, romantic piece filled with rich ornamentation.",
+      },
+      { kind: "heading", level: 2, text: "2. Corrugated Cardboard" },
+      {
+        kind: "paragraph",
+        text: "One of my absolute favorite techniques is using pieces of cardboard - specifically the exposed, ribbed inner layer of shipping boxes. You can use it like a stamp, pressing it vertically, horizontally, or even cross-hatching the lines to create a complex, geometric, and highly abstract effect.",
+      },
+      {
+        kind: "image",
+        image: {
+          src: `${TEXTURES_DIR}/02-corrugated-cardboard.webp`,
+          width: 1600,
+          height: 900,
+          alt: "A purple monoprint layering bold horizontal stripes pressed from corrugated cardboard over delicate white lace, shown beside two inked gel plates carrying a swirling rose-petal texture.",
+        },
+      },
+      { kind: "heading", level: 2, text: "3. Bubble Wrap" },
+      {
+        kind: "paragraph",
+        text: "I adore using bubble wrap in my work! It comes in various bubble sizes and is an incredibly versatile material that instantly breaks up flat areas of color, adding a perfect geometric contrast to more organic shapes.",
+      },
+      { kind: "heading", level: 2, text: "4. Medical Gauze" },
+      {
+        kind: "paragraph",
+        text: "Gauze is an extremely adaptable and forgiving material. I highly recommend distorting it before placing it down - stretch it out, pull some holes into it, and let the loose threads fray. Embracing this chaotic, deconstructed look adds a wonderful grunge and abstract feel to the print.",
+      },
+      {
+        kind: "image",
+        image: {
+          src: `${TEXTURES_DIR}/03-gauze-and-mesh.webp`,
+          width: 1600,
+          height: 900,
+          alt: "Rust and orange prints showing the honeycomb grid of a mesh fruit bag and open lace netting, next to a gel plate, crinkled paper scraps and a figurative print of a woman over botanical texture.",
+        },
+      },
+      { kind: "heading", level: 2, text: "5. Mesh Fruit Bags" },
+      {
+        kind: "paragraph",
+        text: "Don't throw away the mesh bags from lemons or garlic! They are fantastic for creating a honeycomb or grid-like effect on the gel plate. They stretch easily and make an amazing, subtle background texture.",
+      },
+      { kind: "heading", level: 2, text: "6. Crinkled Rice Paper" },
+      {
+        kind: "paragraph",
+        text: "While any type of paper can yield interesting results, crinkled rice paper is pure magic. When you fold, crumple, and press it onto the plate, it creates beautiful, organic creases that mimic cracked earth or delicate marble veins.",
+      },
+      { kind: "heading", level: 2, text: "7. Feathers and Pampas Grass" },
+      {
+        kind: "paragraph",
+        text: "Unlike hard objects, feathers and fluffy pampas grass are incredibly light and ethereal. They don't leave sharp, harsh lines, but rather soft, ghostly silhouettes that introduce a beautiful tenderness to the composition.",
+      },
+      {
+        kind: "image",
+        image: {
+          src: `${TEXTURES_DIR}/04-feathers-and-thread.webp`,
+          width: 1600,
+          height: 900,
+          alt: "Two blue and teal gel plates arranged with real feathers - one showing dark feathers laid around pale leaf-shaped masks, the other a soft ghost print where the feathers have lifted away.",
+        },
+      },
+      { kind: "heading", level: 2, text: "8. Embroidery Floss and Twine" },
+      {
+        kind: "paragraph",
+        text: "Much like gauze, threads are a wonderful tool. You can use thicker embroidery floss or coarse twine, and they can be utilized in two brilliant ways.",
+      },
+      {
+        kind: "paragraph",
+        text: "For texture, press them into the wet paint to leave behind their fine, subtle tracks.",
+      },
+      {
+        kind: "paragraph",
+        text: "As a mask for negative space, arrange them on the plate, lay your paper down, and pull the print. When you lift the threads, they leave clean silhouettes perfectly prepared for your next layer.",
+      },
+      { kind: "heading", level: 2, text: "9. Textured Paper" },
+      {
+        kind: "paragraph",
+        text: "The more textured the paper, the better it transfers its unique structure. The secret here is to use a minimal amount of paint on the gel plate. If your layer is too thick, the paint will flood the grooves of the paper, and you will lose those fine, subtle details.",
+      },
+      { kind: "heading", level: 2, text: "10. Flowers and Plants" },
+      {
+        kind: "paragraph",
+        text: "Of course, despite all these wonderful alternative materials, I will never stop talking about my love for real flowers and leaves on the gel plate. Botanical prints hold a very special place in my creative process. The delicate veins of a leaf or the intricate silhouette of a petal offer a timeless, organic contrast that beautifully complements the abstract, everyday textures mentioned above.",
+      },
+      {
+        kind: "image",
+        image: {
+          src: `${TEXTURES_DIR}/05-botanical-prints.webp`,
+          width: 1600,
+          height: 900,
+          alt: "An open art journal spread printed in teal and green - one page holding a ghostly female figure, the other soft fern prints - laid on a black cloth among fresh flowers, a sunflower, dried grasses, a stencil and tubes of acrylic paint.",
+        },
+      },
+      {
+        kind: "crosslink",
+        before:
+          "If you want to dive deeper into botanical printing and see how I use nature to create my favorite pieces, check out my dedicated post",
+        slug: "best-plants-for-gel-plate-printing",
+        linkLabel: "here",
+        after: ".",
+      },
+    ],
+  },
   {
     slug: "best-plants-for-gel-plate-printing",
     title: "The Best Plants, Leaves and Flowers for Gel Plate Printing",
