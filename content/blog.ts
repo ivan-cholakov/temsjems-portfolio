@@ -112,7 +112,7 @@ export const POSTS: Post[] = [
         image: {
           src: `${TEXTURES_DIR}/01-lace-and-fabric.webp`,
           width: 1600,
-          height: 900,
+          height: 1031,
           alt: "Four gel plate prints - purple with stripes and lace, navy with white floral bursts, teal with damask lace, and deep red with lace and leaf silhouettes - surrounded by scraps of lace, corrugated cardboard, mesh and a painted peacock feather.",
         },
       },
@@ -131,7 +131,7 @@ export const POSTS: Post[] = [
         image: {
           src: `${TEXTURES_DIR}/02-corrugated-cardboard.webp`,
           width: 1600,
-          height: 900,
+          height: 1071,
           alt: "A purple monoprint layering bold horizontal stripes pressed from corrugated cardboard over delicate white lace, shown beside two inked gel plates carrying a swirling rose-petal texture.",
         },
       },
@@ -150,7 +150,7 @@ export const POSTS: Post[] = [
         image: {
           src: `${TEXTURES_DIR}/03-gauze-and-mesh.webp`,
           width: 1600,
-          height: 900,
+          height: 838,
           alt: "Rust and orange prints showing the honeycomb grid of a mesh fruit bag and open lace netting, next to a gel plate, crinkled paper scraps and a figurative print of a woman over botanical texture.",
         },
       },
@@ -174,7 +174,7 @@ export const POSTS: Post[] = [
         image: {
           src: `${TEXTURES_DIR}/04-feathers-and-thread.webp`,
           width: 1600,
-          height: 900,
+          height: 1074,
           alt: "Two blue and teal gel plates arranged with real feathers - one showing dark feathers laid around pale leaf-shaped masks, the other a soft ghost print where the feathers have lifted away.",
         },
       },
@@ -206,7 +206,7 @@ export const POSTS: Post[] = [
         image: {
           src: `${TEXTURES_DIR}/05-botanical-prints.webp`,
           width: 1600,
-          height: 900,
+          height: 1102,
           alt: "An open art journal spread printed in teal and green - one page holding a ghostly female figure, the other soft fern prints - laid on a black cloth among fresh flowers, a sunflower, dried grasses, a stencil and tubes of acrylic paint.",
         },
       },
