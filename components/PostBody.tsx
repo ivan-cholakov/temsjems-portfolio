@@ -59,7 +59,7 @@ function Block({ block }: { block: PostBlock }) {
             className="block h-auto w-full"
           />
           {block.image.caption && (
-            <Eyebrow as="figcaption" className="mt-3 block text-mute normal-case tracking-normal">
+            <Eyebrow as="figcaption" className="mt-3 block text-sm leading-snug text-mute normal-case tracking-normal">
               {block.image.caption}
             </Eyebrow>
           )}
