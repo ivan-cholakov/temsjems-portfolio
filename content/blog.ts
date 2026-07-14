@@ -101,19 +101,15 @@ export const POSTS: Post[] = [
     body: [
       {
         kind: "paragraph",
-        text: "The gel plate is like a blank canvas just waiting to be filled with texture. While botanical elements are a classic choice, experimenting with unexpected everyday items can lead to beautiful, spontaneous, and abstract results.",
-      },
-      {
-        kind: "paragraph",
-        text: "Today, I want to share 10 of my absolute favorite alternative materials that I love using to bring depth, texture, and character to my prints.",
+        text: "The gel plate is an incredible tool for capturing the hidden textures of the world around us. When it comes to building rich, grungy, and abstract layers, the best tools are rarely found in an art supply store. From the delicate threads of vintage lace to the harsh lines of corrugated cardboard and mesh fruit bags, ordinary materials can completely transform a piece. Today, I'm sharing 10 of my absolute favorite unconventional items to build striking depth, spontaneous patterns, and unique character in my gel prints.",
       },
       {
         kind: "image",
         image: {
-          src: `${TEXTURES_DIR}/01-lace-and-fabric.webp`,
+          src: `${TEXTURES_DIR}/06-textures-overview.webp`,
           width: 1600,
-          height: 1031,
-          alt: "Four gel plate prints - purple with stripes and lace, navy with white floral bursts, teal with damask lace, and deep red with lace and leaf silhouettes - surrounded by scraps of lace, corrugated cardboard, mesh and a painted peacock feather.",
+          height: 1303,
+          alt: "A flat-lay of four gel plate monoprints - purple with stripes and lace, navy with white flower bursts, teal with a raised damask pattern and deep red with a seed pod and lace - surrounded by vintage lace, medical gauze, corrugated cardboard, bubble wrap and a hand-painted peacock feather.",
         },
       },
       { kind: "heading", level: 2, text: "1. Lace and Textured Fabrics" },
@@ -129,10 +125,11 @@ export const POSTS: Post[] = [
       {
         kind: "image",
         image: {
-          src: `${TEXTURES_DIR}/02-corrugated-cardboard.webp`,
+          src: `${TEXTURES_DIR}/01-cardboard-lace-gauze.webp`,
           width: 1600,
-          height: 1071,
-          alt: "A purple monoprint layering bold horizontal stripes pressed from corrugated cardboard over delicate white lace, shown beside two inked gel plates carrying a swirling rose-petal texture.",
+          height: 1031,
+          alt: "A purple gel print stacking three textures - bold cardboard stripes across the top, delicate floral lace through the middle and crumpled medical gauze below - beside inked plates carrying a swirling rose pattern.",
+          caption: "Cardboard, lace, medical gauze",
         },
       },
       { kind: "heading", level: 2, text: "3. Bubble Wrap" },
@@ -148,10 +145,11 @@ export const POSTS: Post[] = [
       {
         kind: "image",
         image: {
-          src: `${TEXTURES_DIR}/03-gauze-and-mesh.webp`,
+          src: `${TEXTURES_DIR}/02-lace-gauze-bubble-wrap.webp`,
           width: 1600,
-          height: 838,
-          alt: "Rust and orange prints showing the honeycomb grid of a mesh fruit bag and open lace netting, next to a gel plate, crinkled paper scraps and a figurative print of a woman over botanical texture.",
+          height: 1071,
+          alt: "A teal gel print combining lace, dotted bubble-wrap texture and a raised damask motif, next to a magenta print half-covered by a length of loose medical gauze.",
+          caption: "Lace, medical gauze, bubble wrap",
         },
       },
       { kind: "heading", level: 2, text: "5. Mesh Fruit Bags" },
@@ -164,6 +162,16 @@ export const POSTS: Post[] = [
         kind: "paragraph",
         text: "While any type of paper can yield interesting results, crinkled rice paper is pure magic. When you fold, crumple, and press it onto the plate, it creates beautiful, organic creases that mimic cracked earth or delicate marble veins.",
       },
+      {
+        kind: "image",
+        image: {
+          src: `${TEXTURES_DIR}/03-rice-paper.webp`,
+          width: 1600,
+          height: 838,
+          alt: "Warm rust and orange gel prints capturing the crinkled, marble-like veining of pressed rice paper, shown with lace netting, crumpled paper scraps, a gel plate and a linocut portrait over the same crackled ground.",
+          caption: "Rice paper",
+        },
+      },
       { kind: "heading", level: 2, text: "7. Feathers and Pampas Grass" },
       {
         kind: "paragraph",
@@ -172,10 +180,11 @@ export const POSTS: Post[] = [
       {
         kind: "image",
         image: {
-          src: `${TEXTURES_DIR}/04-feathers-and-thread.webp`,
+          src: `${TEXTURES_DIR}/04-feathers-linocut.webp`,
           width: 1600,
           height: 1074,
-          alt: "Two blue and teal gel plates arranged with real feathers - one showing dark feathers laid around pale leaf-shaped masks, the other a soft ghost print where the feathers have lifted away.",
+          alt: "Two teal gel plates arranged with real feathers - one with dark feathers laid around pale carved linocut shapes, the other a soft ghost print left after the feathers lifted away.",
+          caption: "Feathers and linocut",
         },
       },
       { kind: "heading", level: 2, text: "8. Embroidery Floss and Twine" },
