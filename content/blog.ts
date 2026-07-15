@@ -36,6 +36,8 @@ export type Post = {
   title: string;
   /** Standfirst / meta description — one sentence, no trailing period needed. */
   excerpt: string;
+  /** Hide the excerpt as visible standfirst text (post header + listing card). Still used for SEO meta. */
+  hideExcerpt?: boolean;
   /** ISO date (YYYY-MM-DD) the post was published. */
   date: string;
   /** Author name — defaults to the site artist but kept explicit per post. */
@@ -90,6 +92,7 @@ export const POSTS: Post[] = [
     title: "10 Unexpected Textures for Gel Plate Printing",
     excerpt:
       "Beyond leaves and flowers - ten everyday materials I reach for to bring depth, grunge and abstract character to a gel plate print, from vintage lace and corrugated cardboard to mesh fruit bags and crinkled rice paper.",
+    hideExcerpt: true,
     date: "2026-07-14",
     author: SITE.artist,
     cover: {

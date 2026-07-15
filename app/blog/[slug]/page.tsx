@@ -63,7 +63,9 @@ export default async function BlogPostPage(
           <h1 className="mt-6 text-h1 font-bold tracking-tight text-balance">
             {post.title}
           </h1>
-          <p className="mt-8 text-lead leading-tight">{post.excerpt}</p>
+          {!post.hideExcerpt && (
+            <p className="mt-8 text-lead leading-tight">{post.excerpt}</p>
+          )}
         </header>
 
         <PostBody blocks={post.body} />

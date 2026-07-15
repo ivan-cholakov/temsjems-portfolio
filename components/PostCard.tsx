@@ -45,9 +45,11 @@ export function PostCard({
           <h3 className="mt-3 text-h2 font-bold tracking-tight">
             <span className="underline-link text-balance">{post.title}</span>
           </h3>
-          <p className="mt-4 max-w-[52ch] text-lead leading-tight">
-            {post.excerpt}
-          </p>
+          {!post.hideExcerpt && (
+            <p className="mt-4 max-w-[52ch] text-lead leading-tight">
+              {post.excerpt}
+            </p>
+          )}
           <Eyebrow as="p" className="mt-5 text-mute">
             {formatPostDate(post.date)}, {readingMinutes(post)} min read
           </Eyebrow>
