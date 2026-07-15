@@ -2,7 +2,7 @@ import Link from "next/link";
 import Image from "next/image";
 
 import { Eyebrow } from "./Eyebrow";
-import { formatPostDate, readingMinutes, type Post } from "@/content/blog";
+import { cardPreviewText, formatPostDate, readingMinutes, type Post } from "@/content/blog";
 
 /**
  * Brutalist blog row: a compact cover on the left, title + standfirst on the
@@ -45,11 +45,9 @@ export function PostCard({
           <h3 className="mt-3 text-h2 font-bold tracking-tight">
             <span className="underline-link text-balance">{post.title}</span>
           </h3>
-          {!post.hideExcerpt && (
-            <p className="mt-4 max-w-[52ch] text-lead leading-tight">
-              {post.excerpt}
-            </p>
-          )}
+          <p className="mt-4 max-w-[52ch] text-lead leading-tight">
+            {cardPreviewText(post)}
+          </p>
           <Eyebrow as="p" className="mt-5 text-mute">
             {formatPostDate(post.date)}, {readingMinutes(post)} min read
           </Eyebrow>
