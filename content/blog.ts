@@ -38,8 +38,8 @@ export type Post = {
   excerpt: string;
   /** Hide the excerpt as the lead paragraph in the post header. Still used for SEO meta. */
   hideLead?: boolean;
-  /** Which text the listing card shows as its standfirst. Defaults to the excerpt. */
-  cardPreview?: "excerpt" | "first-paragraph";
+  /** Standfirst text for the listing card. Defaults to the excerpt. */
+  cardPreview?: string;
   /** ISO date (YYYY-MM-DD) the post was published. */
   date: string;
   /** Author name — defaults to the site artist but kept explicit per post. */
@@ -75,13 +75,9 @@ export function readingMinutes(post: Post): number {
   return Math.max(1, Math.round(words / AVG_WORDS_PER_MINUTE));
 }
 
-/** Standfirst text for the listing card — excerpt by default, or the first body paragraph. */
+/** Standfirst text for the listing card — the per-post override, or the excerpt. */
 export function cardPreviewText(post: Post): string {
-  if (post.cardPreview === "first-paragraph") {
-    const para = post.body.find((b) => b.kind === "paragraph");
-    if (para?.kind === "paragraph") return para.text;
-  }
-  return post.excerpt;
+  return post.cardPreview ?? post.excerpt;
 }
 
 /** Long-form date, e.g. "5 July 2026", for display. */
@@ -104,7 +100,8 @@ export const POSTS: Post[] = [
     excerpt:
       "Beyond leaves and flowers - ten everyday materials I reach for to bring depth, grunge and abstract character to a gel plate print, from vintage lace and corrugated cardboard to mesh fruit bags and crinkled rice paper.",
     hideLead: true,
-    cardPreview: "first-paragraph",
+    cardPreview:
+      "The gel plate is an incredible tool for capturing the hidden textures of the world around us. When it comes to building rich, grungy, and abstract layers, the best tools are rarely found in an art supply store.",
     date: "2026-07-14",
     author: SITE.artist,
     cover: {
