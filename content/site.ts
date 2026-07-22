@@ -303,6 +303,19 @@ function assertContent(condition: boolean, message: string): asserts condition {
     );
     seen.add(p.slug);
   }
+  const carouselSeen = new Set<string>();
+  for (const slug of HOME_CAROUSEL_ORDER) {
+    assertContent(
+      projectBySlug(slug) !== undefined,
+      `HOME_CAROUSEL_ORDER slug "${slug}" does not match any project - ` +
+        `the piece would silently vanish from the carousel`,
+    );
+    assertContent(
+      !carouselSeen.has(slug),
+      `duplicate HOME_CAROUSEL_ORDER slug "${slug}" - the piece would render twice in the carousel`,
+    );
+    carouselSeen.add(slug);
+  }
   assertContent(
     SITE.name.startsWith(SITE.monogram.letter),
     `SITE.name "${SITE.name}" must start with the monogram letter ` +
