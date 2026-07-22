@@ -7,6 +7,8 @@ import { SITE } from "@/content/site";
  * The monogram image stands in for the leading letter of the name; a
  * build-time check in content/site.ts keeps the two aligned.
  */
+const MONOGRAM_DISPLAY_WIDTH = 192;
+
 export function Hero() {
   return (
     <section className="sticky top-0 z-40 max-w-[1600px] px-6 pt-6 pb-12 md:px-10 md:pt-10 md:pb-16">
@@ -19,8 +21,11 @@ export function Hero() {
           // srcset at the small variant tiers. Deliberately NOT fetchpriority
           // high: the LCP on text pages is the wordmark text waiting on its
           // font, and boosting the monogram would starve that font request.
-          width={192}
-          height={155}
+          width={MONOGRAM_DISPLAY_WIDTH}
+          height={Math.round(
+            (MONOGRAM_DISPLAY_WIDTH * SITE.monogram.height) /
+              SITE.monogram.width,
+          )}
           priority
           className="inline-block h-[1cap] w-auto align-baseline"
         />{SITE.name.slice(SITE.monogram.letter.length)}

@@ -6,9 +6,18 @@
  *
  * For each source image and each width tier: downscale if the source is
  * wider, otherwise copy the original so the variant path always exists.
- * Re-runs are incremental - up-to-date variants are skipped by mtime.
+ * Re-runs are incremental - up-to-date variants are skipped by mtime, unless
+ * the encoding settings fingerprint stored in the output dir has changed, in
+ * which case everything is regenerated.
  */
-import { copyFile, mkdir, readdir, stat } from "node:fs/promises";
+import {
+  copyFile,
+  mkdir,
+  readdir,
+  readFile,
+  stat,
+  writeFile,
+} from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import sharp from "sharp";
@@ -30,6 +39,24 @@ function qualityFor(tier) {
   return tier <= 828 ? 78 : 82;
 }
 
+const PNG_COMPRESSION_LEVEL = 9;
+
+// Bump when the resize/encoding logic changes in a way the fields below
+// don't capture, so existing variants are regenerated.
+const SCRIPT_VERSION = 1;
+
+// Everything that affects variant file contents besides the source image.
+// A change here invalidates the whole cache: the mtime check alone would
+// keep serving variants encoded with the old settings.
+const SETTINGS_FINGERPRINT = JSON.stringify({
+  version: SCRIPT_VERSION,
+  widths: VARIANT_WIDTHS,
+  quality: VARIANT_WIDTHS.map(qualityFor),
+  pngCompressionLevel: PNG_COMPRESSION_LEVEL,
+});
+
+const FINGERPRINT_PATH = path.join(OUT_DIR, ".settings-fingerprint.json");
+
 async function* walk(abs) {
   const s = await stat(abs);
   if (s.isFile()) {
@@ -50,6 +77,11 @@ async function isUpToDate(src, dest) {
   }
 }
 
+const storedFingerprint = await readFile(FINGERPRINT_PATH, "utf8").catch(
+  () => null,
+);
+const settingsChanged = storedFingerprint !== SETTINGS_FINGERPRINT;
+
 let generated = 0;
 let skipped = 0;
 
@@ -59,7 +91,7 @@ for (const source of SOURCES) {
     const { width: intrinsicWidth } = await sharp(srcPath).metadata();
     for (const tier of VARIANT_WIDTHS) {
       const destPath = path.join(OUT_DIR, `w${tier}`, rel);
-      if (await isUpToDate(srcPath, destPath)) {
+      if (!settingsChanged && (await isUpToDate(srcPath, destPath))) {
         skipped += 1;
         continue;
       }
@@ -70,7 +102,8 @@ for (const source of SOURCES) {
         const ext = path.extname(srcPath).toLowerCase();
         const resized = sharp(srcPath).resize({ width: tier });
         if (ext === ".webp") resized.webp({ quality: qualityFor(tier) });
-        else if (ext === ".png") resized.png({ compressionLevel: 9 });
+        else if (ext === ".png")
+          resized.png({ compressionLevel: PNG_COMPRESSION_LEVEL });
         else resized.jpeg({ quality: qualityFor(tier), mozjpeg: true });
         await resized.toFile(destPath);
       }
@@ -78,5 +111,8 @@ for (const source of SOURCES) {
     }
   }
 }
+
+await mkdir(OUT_DIR, { recursive: true });
+await writeFile(FINGERPRINT_PATH, SETTINGS_FINGERPRINT);
 
 console.log(`image variants: ${generated} generated, ${skipped} up to date`);

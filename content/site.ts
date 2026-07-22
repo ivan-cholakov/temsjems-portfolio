@@ -316,6 +316,13 @@ function assertContent(condition: boolean, message: string): asserts condition {
     );
     carouselSeen.add(slug);
   }
+  for (const { platform, handle } of SOCIAL_PROFILES) {
+    assertContent(
+      handle.length > 0,
+      `SITE.social.${platform} is empty - the contact page and JSON-LD ` +
+        `sameAs would link to the platform's bare profile root`,
+    );
+  }
   assertContent(
     SITE.name.startsWith(SITE.monogram.letter),
     `SITE.name "${SITE.name}" must start with the monogram letter ` +
