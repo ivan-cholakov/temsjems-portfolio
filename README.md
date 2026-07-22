@@ -1,36 +1,24 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# moirae-moss-site
 
-## Getting Started
+Portfolio and blog for the artist Moirae Moss.
+Built with Next.js as a fully static export (`output: "export"`, `trailingSlash: true`) and deployed to GitHub Pages by `.github/workflows/deploy.yml` on every push to `main`.
 
-First, run the development server:
+## Development
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+pnpm install
+pnpm dev    # generate image variants, then next dev
+pnpm build  # generate image variants, then next build (static output in out/)
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Both `dev` and `build` first run `scripts/generate-image-variants.mjs`, which pre-renders every content image at a fixed set of widths into `public/_optimized/` (gitignored build output; `sharp` is a devDependency).
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Images
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load the site's typefaces (Playfair Display, Cormorant Garamond and JetBrains Mono); see `app/layout.tsx` for the loading strategy.
+There is no image optimizer at request time, so responsive images are pre-generated.
+The width tiers are single-sourced in `lib/image-variants.mjs` and imported by the generator, by the custom `next/image` loader (`lib/image-loader.ts`), and by `next.config.ts` for `images.imageSizes` / `images.deviceSizes` - the three cannot drift.
 
-## Learn More
+## Editing content
 
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Site content lives in `content/site.ts` (site metadata, projects, home carousel) and `content/blog.ts` (posts).
+Both files end with invariant blocks that throw at module init, so a bad content edit (broken slug, missing image, duplicate entry) fails the static build instead of shipping a broken page.
