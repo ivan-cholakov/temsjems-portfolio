@@ -5,6 +5,7 @@ import { Eyebrow } from "@/components/Eyebrow";
 import { PostBody } from "@/components/PostBody";
 import { POSTS, postBySlug, formatPostDate, readingMinutes } from "@/content/blog";
 import { SITE } from "@/content/site";
+import { pageMetadata } from "@/lib/metadata";
 import { blogPostingSchema } from "@/lib/structured-data";
 
 export const dynamicParams = false;
@@ -20,22 +21,21 @@ export async function generateMetadata(
   const post = postBySlug(slug);
   if (!post) return {};
   return {
-    title: post.title,
-    description: post.excerpt,
-    alternates: { canonical: `/blog/${post.slug}` },
-    openGraph: {
-      title: `${post.title} — ${SITE.name}`,
-      description: post.excerpt,
-      url: `/blog/${post.slug}`,
-      type: "article",
-      publishedTime: post.date,
-      authors: [post.author],
-      images: [{ url: post.cover.src, width: post.cover.width, height: post.cover.height, alt: post.cover.alt }],
-    },
+    ...pageMetadata({
+      title: post.title,
+      description: post.seoDescription,
+      path: `/blog/${post.slug}`,
+      og: {
+        type: "article",
+        publishedTime: post.date,
+        authors: [post.author],
+        images: [{ url: post.cover.src, width: post.cover.width, height: post.cover.height, alt: post.cover.alt }],
+      },
+    }),
     twitter: {
       card: "summary_large_image",
       title: `${post.title} — ${SITE.name}`,
-      description: post.excerpt,
+      description: post.seoDescription,
       images: [post.cover.src],
     },
   };
@@ -63,8 +63,8 @@ export default async function BlogPostPage(
           <h1 className="mt-6 text-h1 font-bold tracking-tight text-balance">
             {post.title}
           </h1>
-          {!post.hideLead && (
-            <p className="mt-8 text-lead leading-tight">{post.excerpt}</p>
+          {post.lead && (
+            <p className="mt-8 text-lead leading-tight">{post.lead}</p>
           )}
         </header>
 

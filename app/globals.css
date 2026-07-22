@@ -10,14 +10,23 @@
 @theme {
   --color-paper:  #faf7ed;   /* soft warm cream, harmonises with sage */
   --color-ink:    #1f2017;   /* deep warm charcoal with olive cast */
-  --color-mute:   #a0a876;   /* sage olive — the M monogram itself */
-  --color-accent: #a0a876;   /* alias for hover / decorative use */
+  /* Deepened sage olive for TEXT on paper - same hue as the monogram,
+     darkened until it clears WCAG AA (4.67:1 vs --color-paper) for the
+     11px eyebrow labels. Decorative uses keep the true monogram tone
+     via --color-accent. */
+  --color-mute:   #6d7349;
+  --color-accent: #a0a876;   /* sage olive — the M monogram itself; hover / decorative use */
   --color-rule:   #1f2017;
 
   /* Width of the fixed desktop left rail (Sidebar). Single source of truth:
      the Sidebar reserves this width and <main> insets content by it so the
      menu never overlaps page content. */
   --spacing-rail: 16.25rem;   /* 260px */
+
+  /* Inset that clears the rail plus a gutter (260px + 40px). Use
+     `pl-rail-clear` wherever content must sit past the fixed nav, instead
+     of restating the sum as a pixel literal that must track the rail. */
+  --spacing-rail-clear: calc(var(--spacing-rail) + 2.5rem);
 
   --font-sans:    var(--font-cormorant), ui-serif, "EB Garamond", "Times New Roman", serif;
   --font-display: var(--font-playfair),  ui-serif, "Didot", "Bodoni Moda", serif;

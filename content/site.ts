@@ -20,23 +20,34 @@ export function mediumOf(project: Pick<Project, "medium" | "category">): string 
   return "Mixed media";
 }
 
+/**
+ * Card/detail subtitle, derived as "size | year | medium" from the fields it
+ * would otherwise repeat verbatim - never stored, so it cannot drift.
+ */
+export function taglineOf(
+  project: Pick<Project, "size" | "year" | "medium" | "category">,
+): string | null {
+  const parts = [project.size, project.year, mediumOf(project)].filter(Boolean);
+  return parts.length > 0 ? parts.join(" | ") : null;
+}
+
 export type ExtraImage = {
   src: string;
   width: number;
   height: number;
   /** Screen-reader description. Distinct from `label`/`note`, which are visible catalog text. */
-  alt?: string | null;
+  alt?: string;
   /** Short visible mono caption — e.g. "STITCH" or "REVERSE". Rendered uppercase, tracked-out. */
-  label?: string | null;
+  label?: string;
   /** Optional sub-caption — sentence-case prose, e.g. "Detail of the cross-stitch lattice." */
-  note?: string | null;
+  note?: string;
 };
 
 export type Project = {
   slug: string;
   title: string;
-  /** One-line subtitle used on cards and detail hero. */
-  tagline: string | null;
+  /** Physical dimensions, e.g. "31 × 41 cm" - surfaces in the derived tagline (see `taglineOf`). */
+  size: string | null;
   /** Long-form description for the detail page. Null until written. */
   body: string | null;
   /** Year(s) the work was made — exposed as brutalist metadata stamp. */
@@ -52,12 +63,6 @@ export type Project = {
   height: number;
   /** Optional gallery of additional images of the same work, rendered on the detail page. */
   extraImages?: ExtraImage[];
-  /**
-   * LCP hint. If this image tends to be the Largest Contentful Paint when
-   * shown in a list (gallery / carousel), set true so consumers can pass
-   * `priority` to next/image regardless of position-based heuristics.
-   */
-  lcp?: boolean;
 };
 
 export const SITE = {
@@ -83,18 +88,54 @@ export const SITE = {
     src: "/logo.jpg",
     width: 254,
     height: 222,
-    /** Sage/olive — the dominant tone in the M monogram, used as the
-     *  site's accent color (eyebrow labels, hover states). */
-    color: "#A0A876",
+    // The logo's sage/olive tone lives as the `--color-mute` / `--color-accent`
+    // tokens in app/globals.css - the single source of truth for the accent.
   },
   /**
-   * Canonical site origin. **No trailing slash** — consumers concatenate paths
-   * like `${SITE.url}/work` directly and feed it to `new URL(...)` callers.
-   * Keeping this invariant at the source means sitemap/robots/JSON-LD don't
-   * need defensive trim logic.
+   * The M monogram image that stands in for the leading letter of `name` in
+   * the hero wordmark (components/Hero.tsx). `letter` records which letter it
+   * replaces; a build-time check below keeps it aligned with `name`.
+   */
+  monogram: {
+    src: "/m-monogram.webp",
+    width: 496,
+    height: 400,
+    letter: "M",
+  },
+  /**
+   * Canonical site origin. **No trailing slash** - it feeds `new URL(...)`.
+   * Absolute page URLs (sitemap, canonicals, JSON-LD) are built via
+   * `lib/urls.ts#pageUrl`, which owns the trailing-slash convention that
+   * `trailingSlash: true` in next.config.ts imposes; only file URLs
+   * (e.g. robots' sitemap.xml) concatenate on this directly.
    */
   url: "https://moiraemoss.com",
 } as const;
+
+export type SocialPlatform = keyof typeof SITE.social;
+
+// Exhaustive over SocialPlatform - adding a handle to `SITE.social` forces a
+// profile-URL rule here, so it reaches every consumer of SOCIAL_PROFILES.
+const SOCIAL_PROFILE_URL: Record<SocialPlatform, string> = {
+  instagram: `https://www.instagram.com/${SITE.social.instagram}`,
+  tiktok:    `https://www.tiktok.com/@${SITE.social.tiktok}`,
+  pinterest: `https://www.pinterest.com/${SITE.social.pinterest}/`,
+};
+
+/**
+ * Public profile per social handle, in display order. The single source for
+ * the contact-page links and the JSON-LD `sameAs` array - a handle added to
+ * `SITE.social` reaches both without further wiring.
+ */
+export const SOCIAL_PROFILES: ReadonlyArray<{
+  platform: SocialPlatform;
+  handle: string;
+  url: string;
+}> = (Object.keys(SITE.social) as SocialPlatform[]).map((platform) => ({
+  platform,
+  handle: SITE.social[platform],
+  url: SOCIAL_PROFILE_URL[platform],
+}));
 
 /**
  * Mailchimp embedded-form action URL (the `action` from Audience → Signup forms
@@ -111,7 +152,7 @@ export const PROJECTS: Project[] = [
   {
     slug: "midnight-bloom",
     title: "Midnight Bloom",
-    tagline: "31 × 41 cm | 2026 | Gel plate & natural materials",
+    size: "31 × 41 cm",
     body: null,
     year: "2026",
     medium: "Gel plate & natural materials",
@@ -119,12 +160,11 @@ export const PROJECTS: Project[] = [
     image: "/art/home/midnight-bloom.webp",
     width: 1600,
     height: 2000,
-    lcp: true,
   },
   {
     slug: "echoes-of-a-rose",
     title: "Echoes of a Rose",
-    tagline: "22 × 35 cm | 2026 | Mixed-media Gelli plate monoprint",
+    size: "22 × 35 cm",
     body: null,
     year: "2026",
     medium: "Mixed-media Gelli plate monoprint",
@@ -136,7 +176,7 @@ export const PROJECTS: Project[] = [
   {
     slug: "verde",
     title: "Verde",
-    tagline: "22 × 35 cm | 2026 | Mixed-media Gelli plate monoprint",
+    size: "22 × 35 cm",
     body: null,
     year: "2026",
     medium: "Mixed-media Gelli plate monoprint",
@@ -148,7 +188,7 @@ export const PROJECTS: Project[] = [
   {
     slug: "cyclical-dissonance",
     title: "Cyclical Dissonance",
-    tagline: "30 × 42 cm | 2026 | Ink, pen and brush on paper",
+    size: "30 × 42 cm",
     body: "Selected for presentation in Dissonances, a national contemporary visual arts exhibition-competition held at the Art Gallery – Ruse (14 March – 12 April 2026), bringing together 147 artists from across Bulgaria.",
     year: "2026",
     medium: "Ink, pen and brush on paper",
@@ -160,7 +200,7 @@ export const PROJECTS: Project[] = [
   {
     slug: "stardust",
     title: "Stardust",
-    tagline: "12 × 28 cm | 2020 | Siligraphy, toner-lavis",
+    size: "12 × 28 cm",
     body: null,
     year: "2020",
     medium: "Siligraphy, toner-lavis",
@@ -173,19 +213,19 @@ export const PROJECTS: Project[] = [
   {
     slug: "the-fabric-of-touch",
     title: "The Fabric of Touch",
-    tagline: "54 × 58 cm | 2026 | Linocut on reclaimed woven polypropylene, framed with raw branches",
+    size: "54 × 58 cm",
     body: null,
     year: "2026",
     medium: "Linocut on reclaimed woven polypropylene, framed with raw branches",
     category: "printmaking-collage",
-    image: "/art/home/88857e5b2d52.png",
+    image: "/art/home/the-fabric-of-touch.webp",
     width: 1440,
     height: 1390,
   },
   {
     slug: "indigo-lake",
     title: "Indigo Lake",
-    tagline: "65 × 42 cm | 2026 | Linocut on a sisal sack with natural wood",
+    size: "65 × 42 cm",
     body: null,
     year: "2026",
     medium: "Linocut on a sisal sack with natural wood",
@@ -197,12 +237,12 @@ export const PROJECTS: Project[] = [
   {
     slug: "saturn",
     title: "Saturn",
-    tagline: "50 × 80 cm | 2023 | Deconstructed linocut collage on raw burlap",
+    size: "50 × 80 cm",
     body: null,
     year: "2023",
     medium: "Deconstructed linocut collage on raw burlap",
     category: "printmaking-collage",
-    image: "/art/home/saturn.png",
+    image: "/art/home/saturn-collage.webp",
     width: 1440,
     height: 1746,
   },
@@ -245,3 +285,27 @@ export const OG_IMAGE = {
   height: 630,
   alt: `${SITE.name} - ${SITE.artist}`,
 } as const;
+
+// ── Build-time content invariants ────────────────────────────────────────────
+// Content modules are evaluated during `next build` (static export), so a
+// throw here fails the build instead of shipping a broken page.
+
+function assertContent(condition: boolean, message: string): asserts condition {
+  if (!condition) throw new Error(`content/site.ts: ${message}`);
+}
+
+{
+  const seen = new Set<string>();
+  for (const p of PROJECTS) {
+    assertContent(
+      !seen.has(p.slug),
+      `duplicate project slug "${p.slug}" - projectBySlug resolves by slug`,
+    );
+    seen.add(p.slug);
+  }
+  assertContent(
+    SITE.name.startsWith(SITE.monogram.letter),
+    `SITE.name "${SITE.name}" must start with the monogram letter ` +
+      `"${SITE.monogram.letter}" - the hero renders the monogram image in place of that letter`,
+  );
+}
