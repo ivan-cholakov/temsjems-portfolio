@@ -1,29 +1,39 @@
 import type { Metadata } from "next";
+import type { ComponentType } from "react";
 
 import { ContactForm } from "@/components/ContactForm";
 import { Eyebrow } from "@/components/Eyebrow";
 import { TrackedLink } from "@/components/TrackedLink";
-import { SITE, OG_IMAGE } from "@/content/site";
+import { SITE, SOCIAL_PROFILES, type SocialPlatform } from "@/content/site";
+import type { AnalyticsEvent } from "@/lib/analytics";
+import { pageMetadata } from "@/lib/metadata";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMetadata({
   title: "Contact",
   description: `Get in touch with ${SITE.artist} — collaborations, commissions, available work.`,
-  alternates: { canonical: "/contact" },
-  openGraph: {
-    title: `Contact — ${SITE.name}`,
-    description: `Get in touch with ${SITE.artist}.`,
-    url: "/contact",
-    images: [OG_IMAGE],
-  },
+  path: "/contact",
+  og: { description: `Get in touch with ${SITE.artist}.` },
+});
+
+// Exhaustive over SocialPlatform - a handle added to SITE.social forces a
+// display name, analytics event, and icon here before the page compiles.
+const CHANNEL_PRESENTATION: Record<
+  SocialPlatform,
+  { name: string; event: AnalyticsEvent; Icon: ComponentType<{ className?: string }> }
+> = {
+  instagram: { name: "Instagram", event: "Outbound: Instagram", Icon: InstagramIcon },
+  tiktok:    { name: "TikTok",    event: "Outbound: TikTok",    Icon: TikTokIcon },
+  pinterest: { name: "Pinterest", event: "Outbound: Pinterest", Icon: PinterestIcon },
 };
 
 export default function ContactPage() {
   return (
     <>
       {/* ── Title slab ─────────────────────────────────────────────────
-           Left padding is bumped past the desktop rail (260px) so the
-           form and copy never sit beneath the nav. */}
-      <section className="max-w-[1600px] px-6 pt-6 pb-16 md:pt-10 md:pb-24 md:pl-[300px] md:pr-10">
+           NB: these sections already sit inside the layout's `md:pl-rail`
+           inset; the extra `pl-rail-clear` indents contact content a full
+           rail-width deeper than other pages (560px total from the left). */}
+      <section className="max-w-[1600px] px-6 pt-6 pb-16 md:pt-10 md:pb-24 md:pl-rail-clear md:pr-10">
         <div className="grid grid-cols-12 gap-x-6 gap-y-10">
           <div className="col-span-12 md:col-span-9">
             <Eyebrow as="p" className="text-mute">── Get in touch</Eyebrow>
@@ -39,14 +49,14 @@ export default function ContactPage() {
       </section>
 
       {/* ── Form ─────────────────────────────────────────────────────── */}
-      <section className="max-w-[1600px] px-6 py-16 md:py-24 md:pl-[300px] md:pr-10">
+      <section className="max-w-[1600px] px-6 py-16 md:py-24 md:pl-rail-clear md:pr-10">
         <div className="max-w-[640px]">
           <ContactForm />
         </div>
       </section>
 
       {/* ── Channels ─────────────────────────────────────────────────── */}
-      <section className="max-w-[1600px] px-6 py-16 md:py-24 md:pl-[300px] md:pr-10">
+      <section className="max-w-[1600px] px-6 py-16 md:py-24 md:pl-rail-clear md:pr-10">
         <dl className="grid grid-cols-1 gap-x-6 gap-y-12 md:grid-cols-3">
           <div>
             <dd className="mt-4 text-h3 font-bold tracking-tight">
@@ -60,65 +70,26 @@ export default function ContactPage() {
             </dd>
           </div>
 
-          <div>
-            <dd className="mt-4 text-h3 font-bold tracking-tight">
-              {SITE.social.instagram ? (
-                <TrackedLink
-                  event="Outbound: Instagram"
-                  href={`https://instagram.com/${SITE.social.instagram}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  aria-label={`${SITE.artist} on Instagram (@${SITE.social.instagram})`}
-                  className="inline-flex items-center gap-3 underline-link"
-                >
-                  <InstagramIcon className="h-6 w-6" />
-                  <span>@{SITE.social.instagram}</span>
-                </TrackedLink>
-              ) : (
-                <span className="text-mute">— Coming soon</span>
-              )}
-            </dd>
-          </div>
-
-          <div>
-            <dd className="mt-4 text-h3 font-bold tracking-tight">
-              {SITE.social.tiktok ? (
-                <TrackedLink
-                  event="Outbound: TikTok"
-                  href={`https://www.tiktok.com/@${SITE.social.tiktok}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  aria-label={`${SITE.artist} on TikTok (@${SITE.social.tiktok})`}
-                  className="inline-flex items-center gap-3 underline-link"
-                >
-                  <TikTokIcon className="h-6 w-6" />
-                  <span>@{SITE.social.tiktok}</span>
-                </TrackedLink>
-              ) : (
-                <span className="text-mute">— Coming soon</span>
-              )}
-            </dd>
-          </div>
-
-          <div>
-            <dd className="mt-4 text-h3 font-bold tracking-tight">
-              {SITE.social.pinterest ? (
-                <TrackedLink
-                  event="Outbound: Pinterest"
-                  href={`https://www.pinterest.com/${SITE.social.pinterest}/`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  aria-label={`${SITE.artist} on Pinterest (@${SITE.social.pinterest})`}
-                  className="inline-flex items-center gap-3 underline-link"
-                >
-                  <PinterestIcon className="h-6 w-6" />
-                  <span>@{SITE.social.pinterest}</span>
-                </TrackedLink>
-              ) : (
-                <span className="text-mute">— Coming soon</span>
-              )}
-            </dd>
-          </div>
+          {SOCIAL_PROFILES.map((profile) => {
+            const { name, event, Icon } = CHANNEL_PRESENTATION[profile.platform];
+            return (
+              <div key={profile.platform}>
+                <dd className="mt-4 text-h3 font-bold tracking-tight">
+                  <TrackedLink
+                    event={event}
+                    href={profile.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label={`${SITE.artist} on ${name} (@${profile.handle})`}
+                    className="inline-flex items-center gap-3 underline-link"
+                  >
+                    <Icon className="h-6 w-6" />
+                    <span>@{profile.handle}</span>
+                  </TrackedLink>
+                </dd>
+              </div>
+            );
+          })}
         </dl>
       </section>
     </>

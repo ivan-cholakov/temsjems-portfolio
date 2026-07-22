@@ -34,13 +34,13 @@ export type PostBlock =
 export type Post = {
   slug: string;
   title: string;
-  /** Standfirst / meta description — one sentence, no trailing period needed. */
-  excerpt: string;
-  /** Hide the excerpt as the lead paragraph in the post header. Still used for SEO meta. */
-  hideLead?: boolean;
-  /** Standfirst text for the listing card. Defaults to the excerpt. */
+  /** One-sentence summary for the meta description and JSON-LD. Never rendered on the page. */
+  seoDescription: string;
+  /** Visible standfirst under the post title. Omit to publish without one. */
+  lead?: string;
+  /** Standfirst text for the listing card. Defaults to the SEO description. */
   cardPreview?: string;
-  /** ISO date (YYYY-MM-DD) the post was published. */
+  /** Date published, validated below as YYYY-MM-DD - display, sorting and the sitemap parse it. */
   date: string;
   /** Author name — defaults to the site artist but kept explicit per post. */
   author: string;
@@ -75,9 +75,9 @@ export function readingMinutes(post: Post): number {
   return Math.max(1, Math.round(words / AVG_WORDS_PER_MINUTE));
 }
 
-/** Standfirst text for the listing card — the per-post override, or the excerpt. */
+/** Standfirst text for the listing card — the per-post override, or the SEO description. */
 export function cardPreviewText(post: Post): string {
-  return post.cardPreview ?? post.excerpt;
+  return post.cardPreview ?? post.seoDescription;
 }
 
 /** Long-form date, e.g. "5 July 2026", for display. */
@@ -93,13 +93,18 @@ export function formatPostDate(iso: string): string {
 const GEL_PLATE_DIR = "/blog/best-plants-for-gel-plate-printing";
 const TEXTURES_DIR = "/blog/unexpected-textures-for-gel-plate-printing";
 
+// The plants post shows its summary as the visible standfirst too. SEO copy
+// and display copy are allowed to diverge (different specifications); sharing
+// the constant just records that today they happen to coincide.
+const PLANTS_STANDFIRST =
+  "Which botanicals give the crispest, most detailed gel plate prints - the rules of flatness and texture, and the leaves and flowers I reach for again and again in my workshops.";
+
 export const POSTS: Post[] = [
   {
     slug: "unexpected-textures-for-gel-plate-printing",
     title: "10 Unexpected Textures for Gel Plate Printing",
-    excerpt:
+    seoDescription:
       "Beyond leaves and flowers - ten everyday materials I reach for to bring depth, grunge and abstract character to a gel plate print, from vintage lace and corrugated cardboard to mesh fruit bags and crinkled rice paper.",
-    hideLead: true,
     cardPreview:
       "The gel plate is an incredible tool for capturing the hidden textures of the world around us. When it comes to building rich, grungy, and abstract layers, the best tools are rarely found in an art supply store.",
     date: "2026-07-14",
@@ -234,9 +239,9 @@ export const POSTS: Post[] = [
       {
         kind: "crosslink",
         before:
-          "If you want to dive deeper into botanical printing and see how I use nature to create my favorite pieces, check out my dedicated post",
+          "If you want to dive deeper into botanical printing and see how I use nature to create my favorite pieces, check out my dedicated post on",
         slug: "best-plants-for-gel-plate-printing",
-        linkLabel: "here",
+        linkLabel: "the best plants, leaves and flowers for gel plate printing",
         after: ".",
       },
     ],
@@ -244,8 +249,8 @@ export const POSTS: Post[] = [
   {
     slug: "best-plants-for-gel-plate-printing",
     title: "The Best Plants, Leaves and Flowers for Gel Plate Printing",
-    excerpt:
-      "Which botanicals give the crispest, most detailed gel plate prints - the rules of flatness and texture, and the leaves and flowers I reach for again and again in my workshops.",
+    seoDescription: PLANTS_STANDFIRST,
+    lead: PLANTS_STANDFIRST,
     date: "2026-07-05",
     author: SITE.artist,
     cover: {
@@ -371,7 +376,7 @@ export const POSTS: Post[] = [
         kind: "outbound",
         before:
           "If you prefer to see this exciting process firsthand, you can watch the step-by-step videos of how some of these paintings were created",
-        linkLabel: "here",
+        linkLabel: "on my gel plate printing process board",
         href: `https://uk.pinterest.com/${SITE.social.pinterest}/gelli-plate-printing-process/`,
         after: ".",
       },
@@ -382,7 +387,44 @@ export const POSTS: Post[] = [
 export const postBySlug = (slug: string): Post | undefined =>
   POSTS.find((p) => p.slug === slug);
 
-/** Newest first — the order the index and any feeds should present posts in. */
+/**
+ * Newest first — the order the index and any feeds should present posts in.
+ * Lexicographic comparison is chronological because dates are validated
+ * YYYY-MM-DD (see the invariants below).
+ */
 export const POSTS_BY_DATE: Post[] = [...POSTS].sort((a, b) =>
   b.date.localeCompare(a.date),
 );
+
+// ── Build-time content invariants ────────────────────────────────────────────
+// Content modules are evaluated during `next build` (static export), so a
+// throw here fails the build instead of shipping a broken page.
+
+function assertContent(condition: boolean, message: string): asserts condition {
+  if (!condition) throw new Error(`content/blog.ts: ${message}`);
+}
+
+{
+  const slugs = new Set<string>();
+  for (const post of POSTS) {
+    assertContent(
+      !slugs.has(post.slug),
+      `duplicate post slug "${post.slug}" - postBySlug resolves by slug`,
+    );
+    slugs.add(post.slug);
+    assertContent(
+      /^\d{4}-\d{2}-\d{2}$/.test(post.date),
+      `post "${post.slug}" has date "${post.date}" - expected YYYY-MM-DD`,
+    );
+  }
+  for (const post of POSTS) {
+    for (const block of post.body) {
+      if (block.kind === "crosslink") {
+        assertContent(
+          slugs.has(block.slug),
+          `post "${post.slug}" crosslinks to unknown post slug "${block.slug}"`,
+        );
+      }
+    }
+  }
+}

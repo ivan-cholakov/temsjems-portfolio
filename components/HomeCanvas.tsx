@@ -1,12 +1,35 @@
 "use client";
 
 import Image from "next/image";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useSyncExternalStore } from "react";
 import { HOME_CAROUSEL, SITE } from "@/content/site";
+
+const emptySubscribe = () => () => {};
+
+/** False for the server render and hydration, true immediately after. */
+function useHydrated(): boolean {
+  return useSyncExternalStore(
+    emptySubscribe,
+    () => true,
+    () => false,
+  );
+}
+
+// Slides prerendered into the static HTML. Native lazy loading prefetches
+// images within a large viewport margin, so every offscreen slide would
+// otherwise download alongside (and compete with) the first slide - the
+// page's LCP element. Only the slides that can be visible at load are
+// prerendered; the rest mount right after hydration, long before anyone
+// can scroll to them.
+const PRERENDERED_SLIDES = 3;
 
 export function HomeCanvas() {
   const scroller = useRef<HTMLDivElement>(null);
   const [edge, setEdge] = useState<"start" | "middle" | "end">("start");
+
+  const slides = useHydrated()
+    ? HOME_CAROUSEL
+    : HOME_CAROUSEL.slice(0, PRERENDERED_SLIDES);
 
   useEffect(() => {
     const el = scroller.current;
@@ -181,7 +204,7 @@ export function HomeCanvas() {
           {/* Leading spacer so the first slide can snap to the centre */}
           <div aria-hidden className="shrink-0 w-[6vw] md:w-[12vw]" />
 
-          {HOME_CAROUSEL.map((p, i) => {
+          {slides.map((p, i) => {
             // Every item shares one container height, so titles sit on a common
             // baseline. A landscape piece would render far wider at full height
             // and dominate the row, so it gets a reduced image height (matching
@@ -201,7 +224,12 @@ export function HomeCanvas() {
                   alt={p.title}
                   width={p.width}
                   height={p.height}
-                  priority={i < 2 || p.lcp === true}
+                  // The first slide is the page's LCP element; boost it and it
+                  // alone - each extra preload competes for the same bandwidth.
+                  // Later slides lazy-load; the partially visible second slide
+                  // intersects immediately, so it still loads right away.
+                  priority={i === 0}
+                  fetchPriority={i === 0 ? "high" : undefined}
                   draggable={false}
                   className={
                     isLandscape

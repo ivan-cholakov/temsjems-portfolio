@@ -3,7 +3,8 @@ import { notFound } from "next/navigation";
 import Image from "next/image";
 
 import { DetailGallery } from "@/components/DetailGallery";
-import { PROJECTS, projectBySlug, SITE } from "@/content/site";
+import { PROJECTS, projectBySlug, taglineOf, SITE } from "@/content/site";
+import { pageMetadata } from "@/lib/metadata";
 import { artworkSchema } from "@/lib/structured-data";
 
 export const dynamicParams = false;
@@ -20,20 +21,19 @@ export async function generateMetadata(
   if (!project) return {};
   const title = project.title;
   const description =
-    project.tagline ??
+    taglineOf(project) ??
     project.body?.slice(0, 200) ??
     `${project.title} — work by ${SITE.artist}.`;
   return {
-    title,
-    description,
-    alternates: { canonical: `/work/${project.slug}` },
-    openGraph: {
-      title: `${title} — ${SITE.name}`,
+    ...pageMetadata({
+      title,
       description,
-      url: `/work/${project.slug}`,
-      images: [{ url: project.image, width: project.width, height: project.height, alt: title }],
-      type: "article",
-    },
+      path: `/work/${project.slug}`,
+      og: {
+        type: "article",
+        images: [{ url: project.image, width: project.width, height: project.height, alt: title }],
+      },
+    }),
     twitter: {
       card: "summary_large_image",
       title: `${title} — ${SITE.name}`,
@@ -49,6 +49,7 @@ export default async function ProjectPage(
   const { slug } = await params;
   const project = projectBySlug(slug);
   if (!project) notFound();
+  const tagline = taglineOf(project);
 
   return (
     <>
@@ -67,6 +68,7 @@ export default async function ProjectPage(
               width={project.width}
               height={project.height}
               priority
+              fetchPriority="high"
               sizes="(min-width: 768px) 58vw, 100vw"
               className="block h-auto w-full"
             />
@@ -83,14 +85,14 @@ export default async function ProjectPage(
               {project.title}
             </h2>
 
-            {project.tagline && (
+            {tagline && (
               <p className="mt-8 text-balance text-lead leading-tight">
-                {project.tagline}
+                {tagline}
               </p>
             )}
 
             {project.body && (
-              <p className={`max-w-[60ch] leading-relaxed ${project.tagline ? "mt-6" : "mt-8"}`}>
+              <p className={`max-w-[60ch] leading-relaxed ${tagline ? "mt-6" : "mt-8"}`}>
                 {project.body}
               </p>
             )}
