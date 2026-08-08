@@ -9,15 +9,13 @@ export type PostImage = {
   height: number;
   /** Screen-reader description. */
   alt: string;
-  /** Optional visible caption rendered under the figure. */
-  caption?: string;
 };
 
 /**
  * A post body is an ordered list of blocks rather than a Markdown blob.
  * Modelling the body as a discriminated union keeps every representable
  * body valid (no half-parsed Markdown), lets the renderer emit correct
- * semantic HTML (h2/h3, figure/figcaption) for SEO, and makes invalid
+ * semantic HTML (h2/h3, figure) for SEO, and makes invalid
  * combinations — e.g. an image with no source — unrepresentable.
  */
 export type PostBlock =
@@ -63,7 +61,7 @@ function postText(post: Post): string {
         case "crosslink":
           return `${b.before} ${b.linkLabel} ${b.after}`;
         case "image":
-          return b.image.caption ?? "";
+          return "";
       }
     })
     .join(" ");
@@ -92,8 +90,168 @@ export function formatPostDate(iso: string): string {
 
 const GEL_PLATE_DIR = "/blog/best-plants-for-gel-plate-printing";
 const TEXTURES_DIR = "/blog/unexpected-textures-for-gel-plate-printing";
+const DENMARK_DIR = "/blog/must-see-art-spaces-in-denmark";
 
 export const POSTS: Post[] = [
+  {
+    slug: "must-see-art-spaces-in-denmark",
+    title: "An Artist's Pick: 4 Must-See Art Spaces in Denmark",
+    excerpt:
+      "The four Copenhagen art spaces that left the deepest mark on me - SMK, the Ny Carlsberg Glyptotek, the Louisiana Museum of Modern Art and the MACA Museum - and what each one does with light, architecture and nature.",
+    hideLead: true,
+    cardPreview:
+      "Even on vacation, an artist's mind is always searching for inspiration and a fresh creative perspective. After my stay in Copenhagen, these are the spaces that left the deepest mark on me and truly inspired me.",
+    date: "2026-08-09",
+    author: SITE.artist,
+    cover: {
+      src: `${DENMARK_DIR}/cover.webp`,
+      width: 1100,
+      height: 1421,
+      alt: "The artist standing in a gallery at the Louisiana Museum of Modern Art, in front of a large landscape painting of huts on dark water.",
+    },
+    body: [
+      {
+        kind: "paragraph",
+        text: "Even on vacation, an artist's mind is always searching for inspiration and a fresh creative perspective. After my stay in Copenhagen, these are the spaces that left the deepest mark on me and truly inspired me.",
+      },
+      { kind: "heading", level: 2, text: "SMK (Statens Museum for Kunst)" },
+      {
+        kind: "image",
+        image: {
+          src: `${DENMARK_DIR}/01-smk-glass-hall.webp`,
+          width: 1600,
+          height: 1042,
+          alt: "Left: a pale standing sculpture in SMK's light-filled atrium, where the red brick of the historic wing meets a glazed roof and tall windows. Right: a mixed-media assemblage suspended inside a slim glass vitrine along a bright white gallery wall.",
+        },
+      },
+      {
+        kind: "paragraph",
+        text: "If I had to describe SMK (the National Gallery of Denmark) in a single word, it would be \"breathing\". The museum brilliantly combines its historical architecture with a massive modern extension, huge glass ceilings, and tall windows that reveal a serene view of the park outside. This architectural contrast between the classic, the raw concrete, and the flooding light creates the perfect frame in which contemporary installations and classical canvases speak directly to every creative eye.",
+      },
+      {
+        kind: "paragraph",
+        text: "Wandering through the halls, my gaze was captivated by the expressive abstraction of Robert Jacobsen - the impressive sculpture Reality A (1949-50), as well as Triple Pull, created in collaboration with Jean Dewasne. A true conceptual delight came from the clean yet highly impactful work 3 x HVID 1:1:1 by Danish artist Kirsten Justesen, which completely resonates with the feeling of freedom within the gallery.",
+      },
+      {
+        kind: "paragraph",
+        text: "The institution has long surpassed museum conservatism. With an exceptionally dynamic program and initiatives like SMK Fridays - where, after hours, art intersects with music, art talks, and performances - the space firmly establishes itself as a center of gravity for the contemporary and progressive art scene.",
+      },
+      {
+        kind: "image",
+        image: {
+          src: `${DENMARK_DIR}/02-smk-sculpture.webp`,
+          width: 1600,
+          height: 1039,
+          alt: "Left: a curved black and deep red steel sculpture on a wooden plinth in a densely hung gallery. Right: three white seated figures with cardboard boxes for heads, lined up on plinths opposite a row of small screens.",
+        },
+      },
+      { kind: "heading", level: 2, text: "Ny Carlsberg Glyptotek" },
+      {
+        kind: "image",
+        image: {
+          src: `${DENMARK_DIR}/03-glyptotek-winter-garden.webp`,
+          width: 1600,
+          height: 676,
+          alt: "Three views of the Ny Carlsberg Glyptotek: the Winter Garden fountain beneath its glass dome, a corridor of classical statues above a black and white chequerboard floor, and a dark bronze figure framed by an arched doorway opening into the palms.",
+        },
+      },
+      {
+        kind: "paragraph",
+        text: "If you are looking for a place where time and eras intersect, it is the Ny Carlsberg Glyptotek. Right upon crossing the threshold, you find yourself in the heart of the gallery - the famous Winter Garden. The fusion of sculptural forms with nature, although conceptually constructed, highlights the scale of the space beneath the large glass domes. This symbiosis between art, greenery, and natural light firmly establishes itself as a hallmark of Danish galleries.",
+      },
+      {
+        kind: "paragraph",
+        text: "Right at the entrance lies an exquisite fountain, which serves as a natural starting point to the different wings of the museum. You can see the massive collection of Roman and Egyptian art, but my heart remained with the canvases of my beloved Monet - Shadows on the Sea. The Cliffs at Pourville - and with Picasso's Spanish Lady in Crinoline.",
+      },
+      {
+        kind: "paragraph",
+        text: "The true culmination for me, however, was the exhibition Degas' Obsession (8 May 2025 - 29 November 2026). Its absolute centerpiece is the painting Dancers Practising in the Foyer, a masterpiece taken out of its frame and displayed in the middle of the hall so it can be viewed from all angles. Visitors are introduced to the mysteries of the canvas, which Degas worked on for nearly 30 years. Nearby, you can also see his famous sculpture Little Dancer of Fourteen Years, as well as many other equally inspiring works.",
+      },
+      {
+        kind: "paragraph",
+        text: "As a finale to the walk through the upper-floor halls, I highly recommend stepping out onto the roof, where a divine panoramic view of Copenhagen will unfold before you.",
+      },
+      {
+        kind: "image",
+        image: {
+          src: `${DENMARK_DIR}/04-glyptotek-degas.webp`,
+          width: 1600,
+          height: 663,
+          alt: "Left: a banner for the exhibition Degas' Obsession standing in a pale stone stairwell. Middle: Degas' Little Dancer of Fourteen Years in her glass case, wearing a tutu of real fabric. Right: Picasso's Spanish Lady in Crinoline in an ornate gilt frame.",
+        },
+      },
+      { kind: "heading", level: 2, text: "Louisiana Museum of Modern Art" },
+      {
+        kind: "image",
+        image: {
+          src: `${DENMARK_DIR}/05-louisiana-sculpture-park.webp`,
+          width: 1600,
+          height: 665,
+          alt: "Left: a visitor at Louisiana's floor-to-ceiling window looking out to a slender Giacometti figure among the trees. Middle: a large blue-black Alexander Calder sculpture standing on the lawn above the Øresund. Right: a framed photograph, a framed text piece and a panel of grass hung on a whitewashed brick wall.",
+        },
+      },
+      {
+        kind: "paragraph",
+        text: "While I discovered some places by chance, the Louisiana Museum of Modern Art was a strictly planned birthday getaway. Located a 40-minute train ride from Copenhagen, my advice is to dedicate a full weekday to it, starting early in the morning to avoid the crowds.",
+      },
+      {
+        kind: "paragraph",
+        text: "Situated on the coast of the Øresund Strait, the museum offers a perfect symbiosis between art and nature. Inside, I was deeply impressed by the projects The Blind and Something Missing by French conceptual artist Sophie Calle - her subtle approach to the invisible and the missing is a true revelation. This conceptual charge flows naturally into the following halls: from Giacometti's fragile figures against the backdrop of weeping willows to Yayoi Kusama's cult mirror room, where the boundaries of space completely vanish.",
+      },
+      {
+        kind: "paragraph",
+        text: "However, the true heart of the museum beats outside, in the sculpture park. I was most captivated by the massive metal forms of Alexander Calder. Their raw, geometric silhouettes rise directly from the green lawns, creating a breathtaking dialogue with the open space.",
+      },
+      {
+        kind: "image",
+        image: {
+          src: `${DENMARK_DIR}/06-louisiana-interior.webp`,
+          width: 1600,
+          height: 700,
+          alt: "Left: two children sitting on a bench in front of a video work in a quiet gallery. Middle: the artist standing before a large landscape painting of huts on dark water. Right: a glass dome enclosing a garden of potted plants, moss and dried grasses.",
+        },
+      },
+      { kind: "heading", level: 2, text: "MACA Museum" },
+      {
+        kind: "image",
+        image: {
+          src: `${DENMARK_DIR}/07-maca-banksy.webp`,
+          width: 1600,
+          height: 669,
+          alt: "Left: a hand holding the MACA Museum's Banksy exhibition flyer in front of two stencilled portraits. Middle: two heavily worked street-art portraits on a white gallery wall under exposed beams. Right: a black and white spray-painted figure holding an empty frame with a yellow banana inside it.",
+        },
+      },
+      {
+        kind: "paragraph",
+        text: "Strolling through the streets of Copenhagen, I found myself in front of the MACA Museum - a space that many rightfully describe as the absolute hidden gem of the city's contemporary art scene. Behind its historical facade, you are hit by an unexpected explosion of pop art, provocation, and street culture, a space filled with the rebellious spirit and original works of legends like Banksy, Andy Warhol, and Richard Hambleton. The exhibition Banksy & Street Art: The Early Years (1 May 2024 - 30 April 2027) is a definite must-see.",
+      },
+      {
+        kind: "paragraph",
+        text: "Continuing up the museum's winding stairs, I was mesmerized by the exhibition American Weird. A Celebration of Genius (6 October 2025 - 30 September 2026). It explores the complex cultural dynamic between the US and Europe, using the \"weird\" as a mirror to our fears and imagination.",
+      },
+      {
+        kind: "paragraph",
+        text: "The core of the exhibition is the gothic universe of Edgar Allan Poe. It was his iconic Raven that left such a vivid mark on my mind, masterfully recreated through the whimsical pop-surrealism of artist Mark Ryden.",
+      },
+      {
+        kind: "paragraph",
+        text: "Amidst all this visual abundance, I immersed myself with the greatest interest in the works of two other creators - the flawless pop-surrealist paintings of Marion Peck and the incredible abstractions of Adrian Ghenie.",
+      },
+      {
+        kind: "image",
+        image: {
+          src: `${DENMARK_DIR}/08-maca-american-weird.webp`,
+          width: 1600,
+          height: 812,
+          alt: "Top left: a small pop-surrealist collage in a wide white mount. Bottom left: two portraits in ornate oval gilt frames. Middle: a large black raven silhouette painted on a yellow ground. Right: a pop-art canvas layering Mickey and Minnie Mouse, a blonde portrait and the words Je t'aime.",
+        },
+      },
+      {
+        kind: "paragraph",
+        text: "Each of these four spaces left a distinct imprint on my mind - from the breathing freedom of SMK and the centuries-old classicism bathed in light at the Glyptotek, through the natural magic of Louisiana, to the rebellious and surrealist world of MACA. Denmark doesn't just exhibit art; it merges it with nature and architecture in a way that inspires long after you leave its halls.",
+      },
+    ],
+  },
   {
     slug: "unexpected-textures-for-gel-plate-printing",
     title: "10 Unexpected Textures for Gel Plate Printing",
@@ -141,7 +299,6 @@ export const POSTS: Post[] = [
           width: 1600,
           height: 1031,
           alt: "A purple gel print stacking three textures - bold cardboard stripes across the top, delicate floral lace through the middle and crumpled medical gauze below - beside inked plates carrying a swirling rose pattern.",
-          caption: "Cardboard, lace, medical gauze",
         },
       },
       { kind: "heading", level: 2, text: "3. Bubble Wrap" },
@@ -161,7 +318,6 @@ export const POSTS: Post[] = [
           width: 1600,
           height: 1071,
           alt: "A teal gel print combining lace, dotted bubble-wrap texture and a raised damask motif, next to a magenta print half-covered by a length of loose medical gauze.",
-          caption: "Lace, medical gauze, bubble wrap",
         },
       },
       { kind: "heading", level: 2, text: "5. Mesh Fruit Bags" },
@@ -181,7 +337,6 @@ export const POSTS: Post[] = [
           width: 1600,
           height: 838,
           alt: "Warm rust and orange gel prints capturing the crinkled, marble-like veining of pressed rice paper, shown with lace netting, crumpled paper scraps, a gel plate and a linocut portrait over the same crackled ground.",
-          caption: "Rice paper",
         },
       },
       { kind: "heading", level: 2, text: "7. Feathers and Pampas Grass" },
@@ -196,7 +351,6 @@ export const POSTS: Post[] = [
           width: 1600,
           height: 1074,
           alt: "Two teal gel plates arranged with real feathers - one with dark feathers laid around pale carved linocut shapes, the other a soft ghost print left after the feathers lifted away.",
-          caption: "Feathers and linocut",
         },
       },
       { kind: "heading", level: 2, text: "8. Embroidery Floss and Twine" },

@@ -58,11 +58,6 @@ function Block({ block }: { block: PostBlock }) {
             sizes="(min-width: 768px) 72vw, 100vw"
             className="block h-auto w-full"
           />
-          {block.image.caption && (
-            <Eyebrow as="figcaption" className="mt-3 block text-sm leading-snug text-mute normal-case tracking-normal">
-              {block.image.caption}
-            </Eyebrow>
-          )}
         </figure>
       );
 
