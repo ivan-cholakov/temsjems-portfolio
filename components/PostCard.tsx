@@ -33,7 +33,8 @@ export function PostCard({
             width={post.cover.width}
             height={post.cover.height}
             priority={priority}
-            sizes="(min-width: 768px) 40vw, 100vw"
+            fetchPriority={priority ? "high" : undefined}
+            sizes="(min-width: 768px) 40vw, calc(100vw - 3rem)"
             className="block h-auto w-full transition-transform duration-700 ease-out group-hover:scale-[1.015]"
           />
         </div>

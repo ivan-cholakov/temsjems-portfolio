@@ -11,14 +11,16 @@ const ITEMS = [
   { href: "/contact", label: "Contact" },
 ] as const;
 
-function isActive(pathname: string | null, href: string): boolean {
-  if (!pathname) return false;
-  if (href === "/") return pathname === "/";
-  return pathname === href || pathname.startsWith(`${href}/`);
-}
-
 export function Sidebar() {
   const pathname = usePathname();
+
+  // Closes over the current pathname so call sites pass only the href -
+  // no pair of same-typed string params to transpose.
+  const isActive = (href: string): boolean => {
+    if (!pathname) return false;
+    if (href === "/") return pathname === "/";
+    return pathname === href || pathname.startsWith(`${href}/`);
+  };
 
   return (
     <>
@@ -29,7 +31,7 @@ export function Sidebar() {
           className="flex items-center justify-end gap-5 px-6 py-4"
         >
           {ITEMS.map((item) => {
-            const active = isActive(pathname, item.href);
+            const active = isActive(item.href);
             return (
               <Link
                 key={item.href}
@@ -54,7 +56,7 @@ export function Sidebar() {
         <nav className="pointer-events-auto">
           <ul className="space-y-2">
             {ITEMS.map((item) => {
-              const active = isActive(pathname, item.href);
+              const active = isActive(item.href);
               return (
                 <li key={item.href}>
                   <Link

@@ -1,15 +1,11 @@
-import { mediumOf, SITE, type Project } from "@/content/site";
+import { mediumOf, SITE, SOCIAL_PROFILES, type Project } from "@/content/site";
 import type { Post } from "@/content/blog";
+import { pageUrl } from "@/lib/urls";
 
 const SCHEMA_CONTEXT = "https://schema.org";
 
-const sameAs: string[] | undefined = SITE.social.instagram
-  ? [`https://www.instagram.com/${SITE.social.instagram}`]
-  : undefined;
-
-function withSameAs<T extends object>(obj: T): T & { sameAs?: string[] } {
-  return sameAs ? { ...obj, sameAs } : obj;
-}
+/** Derived from SOCIAL_PROFILES so a new handle reaches JSON-LD automatically. */
+const sameAs: string[] = SOCIAL_PROFILES.map((p) => p.url);
 
 const portraitUrl = new URL(SITE.portrait.src, SITE.url).toString();
 
@@ -18,32 +14,19 @@ export function websiteSchema() {
     "@context": SCHEMA_CONTEXT,
     "@type": "WebSite",
     name: SITE.name,
-    url: SITE.url,
+    url: pageUrl("/"),
     author: { "@type": "Person", name: SITE.artist },
   } as const;
 }
 
-export function visualArtistSchema() {
-  return withSameAs({
-    "@context": SCHEMA_CONTEXT,
-    "@type": "VisualArtist",
-    name: SITE.artist,
-    alternateName: SITE.name,
-    description: SITE.bio,
-    url: SITE.url,
-    image: portraitUrl,
-    knowsAbout: ["Linocut", "Watercolor", "Printmaking"],
-  });
-}
-
 export function personSchema() {
-  return withSameAs({
+  return {
     "@context": SCHEMA_CONTEXT,
     "@type": "Person",
     name: SITE.artist,
     alternateName: SITE.name,
     description: SITE.bio,
-    url: SITE.url,
+    url: pageUrl("/"),
     image: portraitUrl,
     alumniOf: {
       "@type": "CollegeOrUniversity",
@@ -51,7 +34,8 @@ export function personSchema() {
     },
     knowsAbout: ["Linocut", "Watercolor", "Printmaking", "Visual narrative"],
     jobTitle: "Visual artist",
-  });
+    sameAs,
+  } as const;
 }
 
 export function artworkSchema(project: Project) {
@@ -63,22 +47,25 @@ export function artworkSchema(project: Project) {
     artform: "Printmaking",
     artMedium: mediumOf(project),
     image: new URL(project.image, SITE.url).toString(),
-    url: new URL(`/work/${project.slug}`, SITE.url).toString(),
+    url: pageUrl(`/work/${project.slug}`),
   };
   return project.body ? { ...base, description: project.body } : base;
 }
 
 export function blogPostingSchema(post: Post) {
-  const url = new URL(`/blog/${post.slug}`, SITE.url).toString();
-  return withSameAs({
+  const url = pageUrl(`/blog/${post.slug}`);
+  return {
     "@context": SCHEMA_CONTEXT,
     "@type": "BlogPosting",
     headline: post.title,
-    description: post.excerpt,
+    description: post.seoDescription,
     image: new URL(post.cover.src, SITE.url).toString(),
     datePublished: post.date,
-    author: { "@type": "Person", name: post.author },
+    dateModified: post.date,
+    // sameAs identifies the author's other profiles, so it belongs on the
+    // author entity, not on the posting itself.
+    author: { "@type": "Person", name: post.author, sameAs },
     url,
     mainEntityOfPage: { "@type": "WebPage", "@id": url },
-  });
+  } as const;
 }

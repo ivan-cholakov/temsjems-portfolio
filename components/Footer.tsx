@@ -3,14 +3,14 @@ import { Eyebrow } from "@/components/Eyebrow";
 import { SITE } from "@/content/site";
 
 /**
- * Site-wide footer. Rendered once from the root layout, so it appears on every
- * page. Left padding clears the fixed 260px desktop rail (mirrors the Contact
- * page's `md:pl-[300px]`) so the content never sits under the nav.
+ * Site-wide footer. Rendered once from the root layout (outside the
+ * rail-inset <main> wrapper), so it clears the fixed desktop rail itself
+ * with `pl-rail-clear`.
  */
 export function Footer() {
   return (
     <footer className="mt-24 border-t border-ink/15 md:mt-32">
-      <div className="max-w-[1600px] px-6 py-16 md:py-20 md:pl-[300px] md:pr-10">
+      <div className="max-w-[1600px] px-6 py-16 md:py-20 md:pl-rail-clear md:pr-10">
         <div className="grid grid-cols-12 gap-x-6 gap-y-10">
           <div className="col-span-12 md:col-span-7">
             <Eyebrow as="p" className="text-mute">── Newsletter</Eyebrow>

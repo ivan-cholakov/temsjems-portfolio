@@ -2,21 +2,16 @@ import type { Metadata } from "next";
 import Image from "next/image";
 
 import { Eyebrow } from "@/components/Eyebrow";
-import { SITE, OG_IMAGE } from "@/content/site";
+import { SITE } from "@/content/site";
+import { pageMetadata } from "@/lib/metadata";
 import { personSchema } from "@/lib/structured-data";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMetadata({
   title: "About",
   description: SITE.bio.slice(0, 200),
-  alternates: { canonical: "/about" },
-  openGraph: {
-    title: `About — ${SITE.name}`,
-    description: SITE.bio.slice(0, 200),
-    url: "/about",
-    type: "profile",
-    images: [OG_IMAGE],
-  },
-};
+  path: "/about",
+  og: { type: "profile" },
+});
 
 export default function AboutPage() {
   return (
