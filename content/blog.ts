@@ -1,4 +1,4 @@
-import { SITE } from "@/content/site";
+import { SITE, socialChannel } from "@/content/site";
 
 /** An image inside a post — hero cover or an inline figure. */
 export type PostImage = {
@@ -526,7 +526,7 @@ export const POSTS: Post[] = [
         before:
           "If you prefer to see this exciting process firsthand, you can watch the step-by-step videos of how some of these paintings were created",
         linkLabel: "here",
-        href: `https://uk.pinterest.com/${SITE.social.pinterest}/gelli-plate-printing-process/`,
+        href: `https://uk.pinterest.com/${socialChannel("pinterest").handle}/gelli-plate-printing-process/`,
         after: ".",
       },
     ],

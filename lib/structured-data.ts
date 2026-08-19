@@ -1,14 +1,12 @@
-import { mediumOf, SITE, type Project } from "@/content/site";
+import { mediumOf, SITE, SOCIAL_CHANNELS, type Project } from "@/content/site";
 import type { Post } from "@/content/blog";
 
 const SCHEMA_CONTEXT = "https://schema.org";
 
-const sameAs: string[] | undefined = SITE.social.instagram
-  ? [`https://www.instagram.com/${SITE.social.instagram}`]
-  : undefined;
+const sameAs: string[] = SOCIAL_CHANNELS.map((channel) => channel.url);
 
 function withSameAs<T extends object>(obj: T): T & { sameAs?: string[] } {
-  return sameAs ? { ...obj, sameAs } : obj;
+  return sameAs.length > 0 ? { ...obj, sameAs } : obj;
 }
 
 const portraitUrl = new URL(SITE.portrait.src, SITE.url).toString();
