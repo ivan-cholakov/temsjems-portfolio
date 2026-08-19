@@ -52,13 +52,13 @@ export default function AboutPage() {
              portrait, CV) that the source order alone would lose. */}
         <section className="shell mx-auto py-16 md:py-24">
           <div className="grid grid-cols-1 gap-y-12 xl:flow-root">
-            <div className="row-start-2 max-w-[560px] xl:float-right xl:mb-10 xl:ml-12 xl:w-[38%]">
+            <div className="row-start-2 max-w-[720px] xl:float-right xl:mb-10 xl:ml-12 xl:w-[44%]">
               <Image
                 src={SITE.portrait.src}
                 alt={`Portrait of ${SITE.artist}`}
                 width={SITE.portrait.width}
                 height={SITE.portrait.height}
-                sizes="(min-width: 1280px) 30vw, (min-width: 768px) 560px, 100vw"
+                sizes="(min-width: 1280px) 34vw, (min-width: 768px) 720px, 100vw"
                 className="block h-auto w-full"
               />
             </div>
