@@ -66,18 +66,21 @@ export default function AboutPage() {
           <div className="col-span-12 md:col-span-7 md:col-start-1 md:row-start-2">
             <Eyebrow as="h2" className="text-mute">── Curriculum vitae</Eyebrow>
 
-            {/* Wider measure than the statement above: CV lines are a list, not
-                prose, and read best when an entry survives on one line. */}
-            <div className="mt-6 max-w-[82ch] leading-relaxed">
-              <p className="text-lead">{SITE.artist}</p>
+            {/* Set at the statement's size, not body size: the CV is primary
+                page copy, and a list of proper nouns is unforgiving to read
+                small. No measure cap, unlike the statement — these are list
+                entries, which read best unwrapped, and the 7-column track
+                already bounds them at ~880px. */}
+            <div className="mt-6 text-lead leading-relaxed">
+              <p>{SITE.artist}</p>
               <p className="mt-2">{CV.born}</p>
               <p>{CV.based}</p>
             </div>
 
             {CV.sections.map((section) => (
-              <div key={section.heading} className="mt-12 max-w-[82ch]">
+              <div key={section.heading} className="mt-12">
                 <Eyebrow as="h3" className="text-mute">{section.heading}</Eyebrow>
-                <ul className="mt-5 space-y-3 leading-relaxed">
+                <ul className="mt-5 space-y-3 text-lead leading-relaxed">
                   {section.entries.map((entry) => (
                     <li key={`${entry.year} ${entry.work?.title ?? entry.venue}`}>
                       {entry.year}
