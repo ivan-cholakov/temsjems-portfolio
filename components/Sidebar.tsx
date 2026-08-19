@@ -35,7 +35,7 @@ export function Sidebar() {
                 key={item.href}
                 href={item.href}
                 aria-current={active ? "page" : undefined}
-                className={`eyebrow underline-link transition-colors ${
+                className={`eyebrow text-eyebrow underline-link transition-colors ${
                   active ? "font-bold text-ink" : "text-mute"
                 }`}
               >

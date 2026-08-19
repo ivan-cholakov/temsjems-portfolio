@@ -1,6 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { Eyebrow } from "./Eyebrow";
+import { indexLabel } from "@/lib/format";
 import { mediumOf, SITE, type Project } from "@/content/site";
 
 /**
@@ -18,19 +19,17 @@ export function ProjectCard({
   variant?: "default" | "compact";
   priority?: boolean;
 }) {
-  const numLabel = String(index).padStart(2, "0");
-
   return (
     <article className="group">
       <Link href={`/work/${project.slug}`} className="block">
         <header className="grid grid-cols-12 items-baseline gap-4 pb-6 md:gap-6">
-          <Eyebrow as="span" className="col-span-2 text-mute md:col-span-1">
-            {numLabel}
+          <Eyebrow as="span" className="col-span-2 md:col-span-1">
+            {indexLabel(index)}
           </Eyebrow>
           <h3 className="col-span-10 text-h2 font-bold tracking-tight md:col-span-9">
             <span className="underline-link">{project.title}</span>
           </h3>
-          <Eyebrow as="span" className="col-span-12 text-mute md:col-span-2 md:text-right">
+          <Eyebrow as="span" className="col-span-12 md:col-span-2 md:text-right">
             {mediumOf(project)}
           </Eyebrow>
         </header>

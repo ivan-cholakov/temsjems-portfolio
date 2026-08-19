@@ -57,7 +57,7 @@ export default async function ProjectPage(
         dangerouslySetInnerHTML={{ __html: JSON.stringify(artworkSchema(project)) }}
       />
 
-      <section className="max-w-[1600px] px-6 pt-6 pb-24 md:px-10 md:pt-10 md:pb-40">
+      <section className="shell pt-6 pb-24 md:pt-10 md:pb-40">
         {/* Two-column body: art piece left, title + description right */}
         <div className="grid grid-cols-1 gap-x-10 gap-y-8 md:grid-cols-12 md:gap-x-12 lg:gap-x-20">
           <div className="md:col-span-7">

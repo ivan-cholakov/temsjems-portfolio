@@ -17,6 +17,9 @@ export const metadata: Metadata = {
   },
 };
 
+/** Posts whose cover is above the fold; the list is one column at every width. */
+const EAGER_POSTS = 1;
+
 export default function BlogIndex() {
   const posts = POSTS_BY_DATE;
 
@@ -30,7 +33,7 @@ export default function BlogIndex() {
         <ul className="mt-16 grid grid-cols-1 gap-y-20 md:mt-24 md:gap-y-28">
           {posts.map((post, i) => (
             <li key={post.slug}>
-              <PostCard post={post} index={i + 1} priority={i === 0} />
+              <PostCard post={post} index={i + 1} priority={i < EAGER_POSTS} />
             </li>
           ))}
         </ul>

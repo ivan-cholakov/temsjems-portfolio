@@ -2,6 +2,7 @@ import Link from "next/link";
 import Image from "next/image";
 
 import { Eyebrow } from "./Eyebrow";
+import { indexLabel } from "@/lib/format";
 import { cardPreviewText, formatPostDate, readingMinutes, type Post } from "@/content/blog";
 
 /**
@@ -18,8 +19,6 @@ export function PostCard({
   index: number;
   priority?: boolean;
 }) {
-  const numLabel = String(index).padStart(2, "0");
-
   return (
     <article className="group">
       <Link
@@ -39,8 +38,8 @@ export function PostCard({
         </div>
 
         <div className="md:col-span-7">
-          <Eyebrow as="span" className="text-mute">
-            {numLabel}
+          <Eyebrow as="span">
+            {indexLabel(index)}
           </Eyebrow>
           <h3 className="mt-3 text-h2 font-bold tracking-tight">
             <span className="underline-link text-balance">{post.title}</span>
@@ -48,7 +47,7 @@ export function PostCard({
           <p className="mt-4 max-w-[52ch] text-lead leading-tight">
             {cardPreviewText(post)}
           </p>
-          <Eyebrow as="p" className="mt-5 text-mute">
+          <Eyebrow as="p" className="mt-5">
             {formatPostDate(post.date)}, {readingMinutes(post)} min read
           </Eyebrow>
         </div>

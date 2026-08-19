@@ -74,7 +74,7 @@ export function ContactForm() {
       <div className="sm:col-span-2">
         <button
           type="submit"
-          className="eyebrow underline-link font-bold text-ink"
+          className="eyebrow text-eyebrow underline-link font-bold text-ink"
         >
           Send →
         </button>
@@ -102,7 +102,7 @@ function Field({
 }) {
   return (
     <label className={`block ${className}`}>
-      <span className="eyebrow text-mute">
+      <span className="eyebrow text-eyebrow">
         {label}
         {required ? " *" : ""}
       </span>
@@ -131,7 +131,7 @@ function TextAreaField({
 }) {
   return (
     <label className={`block ${className}`}>
-      <span className="eyebrow text-mute">{label}</span>
+      <span className="eyebrow text-eyebrow">{label}</span>
       <textarea
         rows={5}
         value={value}
