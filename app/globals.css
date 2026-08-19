@@ -20,8 +20,8 @@
   --spacing-rail: 16.25rem;   /* 260px */
 
   /* The page shell: every full-width section is capped at this measure and
-     padded by this gutter. Named once here because eight sections across
-     app/ and components/ have to agree on it. */
+     padded by this gutter. Named once here because sections across app/ and
+     components/ all have to agree on it. */
   --container-shell: 100rem;   /* 1600px */
   --spacing-shell-x: 2.5rem;   /* 40px, the shell gutter at md and up */
 

@@ -110,8 +110,8 @@ export type SocialChannel = {
 /**
  * Every social profile the artist publishes, in the order the contact page
  * lists them. Single source of truth: the contact page renders from this list
- * and the Person / VisualArtist JSON-LD builds `sameAs` from the same URLs, so
- * a new profile is one edit here rather than three that can drift apart.
+ * and every JSON-LD block that carries `sameAs` builds it from the same URLs,
+ * so a new profile is one edit here rather than three that can drift apart.
  */
 export const SOCIAL_CHANNELS: readonly SocialChannel[] = [
   {

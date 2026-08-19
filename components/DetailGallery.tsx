@@ -71,7 +71,7 @@ export function DetailGallery({ images, projectTitle }: Props) {
               alt=""
               width={img.width}
               height={img.height}
-              // Matches the md thumbnail box below; the two have to agree.
+              // Matches the md thumbnail box the button sets; the two have to agree.
               sizes="112px"
               className="block h-full w-full object-cover transition-transform duration-300 ease-out group-hover:scale-[1.04]"
             />
