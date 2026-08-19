@@ -82,8 +82,10 @@ export default function RootLayout({
               bottom-left menu, so it stays full width. */}
           <Hero />
           {/* Inset page content by the rail width on desktop so the fixed
-              left menu never overlaps it. */}
-          <div className="md:pl-rail">{children}</div>
+              left menu never overlaps it. Opaque and stacked above the hero:
+              the sticky logo is covered as the page scrolls over it rather
+              than showing through the copy. */}
+          <div className="relative z-10 bg-paper md:pl-rail">{children}</div>
         </main>
         <Footer />
         {ANALYTICS_ENABLED && PLAUSIBLE_SRC && (
