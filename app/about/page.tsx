@@ -38,17 +38,21 @@ export default function AboutPage() {
         </div>
       </section>
 
-      {/* ── Bio + portrait ───────────────────────────────────────────── */}
+      {/* ── Statement + portrait + CV ────────────────────────────────
+           One grid, not two sections: the portrait spans both text rows so
+           the CV flows directly under the statement beside it. Split across
+           sections, the CV could only begin below the full height of the
+           photo, leaving the left column empty for most of its drop. */}
       <section className="max-w-[1600px] px-6 py-16 md:px-10 md:py-24">
-        <div className="grid grid-cols-12 gap-x-6 gap-y-12">
-          <div className="col-span-12 md:col-span-7">
+        <div className="grid grid-cols-12 gap-x-6 gap-y-12 md:gap-y-16">
+          <div className="col-span-12 md:col-span-7 md:row-start-1">
             <Eyebrow as="h2" className="text-mute">── Artist statement</Eyebrow>
             <p className="mt-6 max-w-[58ch] text-lead leading-relaxed">
               {SITE.bio}
             </p>
           </div>
 
-          <div className="col-span-12 md:col-span-5 md:col-start-8">
+          <div className="col-span-12 md:col-span-5 md:col-start-8 md:row-start-1 md:row-span-2">
             <Image
               src={SITE.portrait.src}
               alt={`Portrait of ${SITE.artist}`}
@@ -58,13 +62,8 @@ export default function AboutPage() {
               className="block h-auto w-full"
             />
           </div>
-        </div>
-      </section>
 
-      {/* ── Curriculum vitae ─────────────────────────────────────────── */}
-      <section className="max-w-[1600px] px-6 py-16 md:px-10 md:py-24">
-        <div className="grid grid-cols-12 gap-x-6 gap-y-12">
-          <div className="col-span-12 md:col-span-7">
+          <div className="col-span-12 md:col-span-7 md:col-start-1 md:row-start-2">
             <Eyebrow as="h2" className="text-mute">── Curriculum vitae</Eyebrow>
 
             {/* Wider measure than the statement above: CV lines are a list, not
