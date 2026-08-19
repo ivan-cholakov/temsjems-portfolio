@@ -72,9 +72,9 @@ export const SITE = {
   location: "Sofia, Bulgaria",
   email: "artteomira@gmail.com",
   portrait: {
-    src: "/art/about/portrait.jpg",
-    width: 1599,
-    height: 1990,
+    src: "/art/about/portrait.webp",
+    width: 1120,
+    height: 1394,
   },
   logo: {
     src: "/logo.jpg",

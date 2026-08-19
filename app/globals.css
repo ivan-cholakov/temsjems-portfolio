@@ -74,7 +74,6 @@
      set at the `lead` step reads a tier smaller than it measures; this holds
      `lead` on phones and opens up to 26px once there is desktop width. */
   --text-prose: clamp(1.375rem, 0.9rem + 1.1vw, 1.625rem);
-  --text-prose--line-height: 1.5;
 
   --text-h3: clamp(1.25rem, 2vw, 1.5rem);
   --text-h3--line-height: 1.15;
