@@ -3,6 +3,8 @@
 import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 
+import { Eyebrow } from "./Eyebrow";
+import { indexLabel } from "@/lib/format";
 import type { ExtraImage } from "@/content/site";
 
 type Props = {
@@ -69,12 +71,16 @@ export function DetailGallery({ images, projectTitle }: Props) {
               alt=""
               width={img.width}
               height={img.height}
+              // Matches the md thumbnail box below; the two have to agree.
               sizes="112px"
               className="block h-full w-full object-cover transition-transform duration-300 ease-out group-hover:scale-[1.04]"
             />
-            <span className="pointer-events-none absolute left-1 top-1 bg-paper/90 px-1 py-[2px] text-[0.6rem] font-mono uppercase tracking-[0.18em] text-ink">
-              {String(i + 1).padStart(2, "0")}
-            </span>
+            <Eyebrow
+              size="badge"
+              className="pointer-events-none absolute left-1 top-1 bg-paper/90 px-1 py-[2px] text-ink"
+            >
+              {indexLabel(i + 1)}
+            </Eyebrow>
           </button>
         ))}
       </div>
@@ -96,7 +102,7 @@ export function DetailGallery({ images, projectTitle }: Props) {
               type="button"
               onClick={close}
               aria-label="Close lightbox"
-              className="absolute right-4 top-4 font-mono text-[0.75rem] uppercase tracking-[0.18em] text-paper/80 transition-colors hover:text-paper md:right-8 md:top-6"
+              className="eyebrow text-eyebrow absolute right-4 top-4 text-paper/80 transition-colors hover:text-paper md:right-8 md:top-6"
             >
               CLOSE ×
             </button>
@@ -112,7 +118,7 @@ export function DetailGallery({ images, projectTitle }: Props) {
             />
 
             {total > 1 && (
-              <div className="mt-4 flex items-center justify-center gap-8 font-mono text-[0.6875rem] uppercase tracking-[0.18em] text-paper/70 md:mt-6">
+              <div className="eyebrow text-eyebrow mt-4 flex items-center justify-center gap-8 text-paper/70 md:mt-6">
                 <button
                   type="button"
                   onClick={() => setBox({ kind: "open", index: box.index - 1 })}

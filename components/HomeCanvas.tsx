@@ -4,6 +4,42 @@ import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import { HOME_CAROUSEL, SITE } from "@/content/site";
 
+/** Within this many pixels of either end, the rail counts as parked there. */
+const EDGE_TOLERANCE_PX = 2;
+/** At or below this much scrollable width, the rail does not overflow at all. */
+const NO_OVERFLOW_PX = 1;
+/** Fraction of the visible rail one arrow press travels. */
+const STEP_VIEWPORT_FRACTION = 0.7;
+/** Arrow-press glide, slower than a native smooth scroll for a cinematic feel. */
+const GLIDE_MS = 900;
+/** Ease-out exponent for that glide; 4 is a quartic, which lands softly. */
+const GLIDE_EASE_EXPONENT = 4;
+/** Pointer travel that separates a click on a work from a drag of the rail. */
+const DRAG_THRESHOLD_PX = 4;
+/** Recent pointer positions kept for the release-velocity estimate. */
+const VELOCITY_SAMPLE_COUNT = 8;
+/** How far back the release velocity is measured. */
+const VELOCITY_WINDOW_MS = 120;
+/** Shortest sample span that still yields a trustworthy velocity. */
+const VELOCITY_MIN_SPAN_MS = 6;
+/** Ceiling on fling speed, so a violent flick still reads as a glide. */
+const MAX_VELOCITY_PX_PER_MS = 6;
+/** Below this the fling has arrived; anything less is not visible motion. */
+const MIN_VELOCITY_PX_PER_MS = 0.05;
+/** Momentum decay per frame, and the frame it is quoted against. */
+const VELOCITY_DECAY_PER_FRAME = 0.96;
+const FRAME_MS = 16;
+/** Longest frame the momentum integrates in one step, so a stall cannot leap. */
+const MAX_FRAME_MS = 32;
+/** Momentum stops here rather than crawling to zero. */
+const MOMENTUM_STOP_PX_PER_MS = 0.015;
+/** Wider than this and a work is landscape: it gets the reduced height below. */
+const LANDSCAPE_RATIO_MIN = 1.3;
+/** Works eagerly loaded: the two that are on screen before any scroll. */
+const CARDS_IN_VIEW = 2;
+/** Air at both ends of the rail, so the first and last work can reach the centre. */
+const EDGE_SPACER_CLASS = "shrink-0 w-[6vw] md:w-[12vw]";
+
 export function HomeCanvas() {
   const scroller = useRef<HTMLDivElement>(null);
   const [edge, setEdge] = useState<"start" | "middle" | "end">("start");
@@ -14,9 +50,9 @@ export function HomeCanvas() {
 
     const update = () => {
       const max = el.scrollWidth - el.clientWidth;
-      if (max <= 1) setEdge("start");
-      else if (el.scrollLeft <= 2) setEdge("start");
-      else if (el.scrollLeft >= max - 2) setEdge("end");
+      if (max <= NO_OVERFLOW_PX) setEdge("start");
+      else if (el.scrollLeft <= EDGE_TOLERANCE_PX) setEdge("start");
+      else if (el.scrollLeft >= max - EDGE_TOLERANCE_PX) setEdge("end");
       else setEdge("middle");
     };
 
@@ -30,9 +66,8 @@ export function HomeCanvas() {
     };
   }, []);
 
-  // Custom smooth-scroll: slower (900ms) and ease-out-expo for a cinematic glide.
   const animRef = useRef<number | null>(null);
-  const animateTo = (target: number, duration = 900) => {
+  const animateTo = (target: number, duration = GLIDE_MS) => {
     const el = scroller.current;
     if (!el) return;
     if (animRef.current != null) cancelAnimationFrame(animRef.current);
@@ -40,7 +75,7 @@ export function HomeCanvas() {
     const distance = target - start;
     if (distance === 0) return;
     const startTime = performance.now();
-    const ease = (t: number) => 1 - Math.pow(1 - t, 4);
+    const ease = (t: number) => 1 - Math.pow(1 - t, GLIDE_EASE_EXPONENT);
     const tick = (now: number) => {
       const t = Math.min(1, (now - startTime) / duration);
       el.scrollLeft = start + distance * ease(t);
@@ -54,7 +89,10 @@ export function HomeCanvas() {
     const el = scroller.current;
     if (!el) return;
     const max = el.scrollWidth - el.clientWidth;
-    const target = Math.max(0, Math.min(max, el.scrollLeft + dir * el.clientWidth * 0.7));
+    const target = Math.max(
+      0,
+      Math.min(max, el.scrollLeft + dir * el.clientWidth * STEP_VIEWPORT_FRACTION),
+    );
     animateTo(target);
   };
 
@@ -93,7 +131,7 @@ export function HomeCanvas() {
     const el = scroller.current;
     if (!s || !el) return;
     const dx = e.clientX - s.x;
-    if (Math.abs(dx) > 4 && !dragMoved.current) {
+    if (Math.abs(dx) > DRAG_THRESHOLD_PX && !dragMoved.current) {
       dragMoved.current = true;
       // A real drag has started: now capture the pointer so movement and
       // release are still tracked if the cursor leaves the scroller. Doing it
@@ -101,7 +139,7 @@ export function HomeCanvas() {
       el.setPointerCapture(e.pointerId);
     }
     samplesRef.current.push({ x: e.clientX, t: performance.now() });
-    if (samplesRef.current.length > 8) samplesRef.current.shift();
+    if (samplesRef.current.length > VELOCITY_SAMPLE_COUNT) samplesRef.current.shift();
     el.scrollLeft = s.left - dx;
   };
 
@@ -114,31 +152,32 @@ export function HomeCanvas() {
 
     if (!dragMoved.current) return;
 
-    // Velocity from the last ~120 ms of motion samples.
+    // Velocity from the last stretch of motion samples.
     const samples = samplesRef.current;
     if (samples.length < 2) return;
     const last = samples[samples.length - 1];
-    const cutoff = last.t - 120;
+    const cutoff = last.t - VELOCITY_WINDOW_MS;
     const earliest = samples.find((p) => p.t >= cutoff) ?? samples[0];
     const dt = last.t - earliest.t;
-    if (dt < 6) return;
+    if (dt < VELOCITY_MIN_SPAN_MS) return;
     const rawV = -(last.x - earliest.x) / dt; // px/ms; finger right ⇒ scroll left
-    const velocity = Math.sign(rawV) * Math.min(Math.abs(rawV), 6);
-    if (Math.abs(velocity) < 0.05) return;
+    const velocity = Math.sign(rawV) * Math.min(Math.abs(rawV), MAX_VELOCITY_PX_PER_MS);
+    if (Math.abs(velocity) < MIN_VELOCITY_PX_PER_MS) return;
 
     if (animRef.current != null) cancelAnimationFrame(animRef.current);
     let v = velocity;
     let lastT = performance.now();
-    // Decay 0.96 per ~16ms ≈ exp(-2.5/sec) → momentum lasts ~1.2-1.6s for a mid-fling.
+    // The per-frame decay works out to about exp(-2.5/sec), so momentum lasts
+    // ~1.2-1.6s for a mid-fling.
     const tick = (now: number) => {
-      const frameDt = Math.min(now - lastT, 32);
+      const frameDt = Math.min(now - lastT, MAX_FRAME_MS);
       lastT = now;
       el.scrollLeft += v * frameDt;
-      v *= Math.pow(0.96, frameDt / 16);
+      v *= Math.pow(VELOCITY_DECAY_PER_FRAME, frameDt / FRAME_MS);
       const max = el.scrollWidth - el.clientWidth;
       if (el.scrollLeft <= 0) { el.scrollLeft = 0; v = 0; }
       else if (el.scrollLeft >= max) { el.scrollLeft = max; v = 0; }
-      if (Math.abs(v) > 0.015) animRef.current = requestAnimationFrame(tick);
+      if (Math.abs(v) > MOMENTUM_STOP_PX_PER_MS) animRef.current = requestAnimationFrame(tick);
       else animRef.current = null;
     };
     animRef.current = requestAnimationFrame(tick);
@@ -152,7 +191,7 @@ export function HomeCanvas() {
   };
 
   return (
-    <section className="relative mx-auto max-w-[1600px] px-6 md:px-10">
+    <section className="shell relative mx-auto">
       <div className="relative">
         <ArrowButton
           direction="prev"
@@ -178,8 +217,7 @@ export function HomeCanvas() {
             md:gap-10
           "
         >
-          {/* Leading spacer so the first slide can snap to the centre */}
-          <div aria-hidden className="shrink-0 w-[6vw] md:w-[12vw]" />
+          <div aria-hidden className={EDGE_SPACER_CLASS} />
 
           {HOME_CAROUSEL.map((p, i) => {
             // Every item shares one container height, so titles sit on a common
@@ -187,7 +225,7 @@ export function HomeCanvas() {
             // and dominate the row, so it gets a reduced image height (matching
             // the portraits' footprint area) and is centred vertically in the
             // container — keeping its centre aligned with the other works.
-            const isLandscape = p.width / p.height > 1.3;
+            const isLandscape = p.width / p.height > LANDSCAPE_RATIO_MIN;
             return (
             <a
               key={p.slug}
@@ -201,7 +239,7 @@ export function HomeCanvas() {
                   alt={p.title}
                   width={p.width}
                   height={p.height}
-                  priority={i < 2 || p.lcp === true}
+                  priority={i < CARDS_IN_VIEW || p.lcp}
                   draggable={false}
                   className={
                     isLandscape
@@ -218,7 +256,7 @@ export function HomeCanvas() {
             );
           })}
 
-          <div aria-hidden className="shrink-0 w-[6vw] md:w-[12vw]" />
+          <div aria-hidden className={EDGE_SPACER_CLASS} />
         </div>
       </div>
 

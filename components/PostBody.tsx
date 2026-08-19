@@ -42,7 +42,7 @@ function Block({ block }: { block: PostBlock }) {
     case "tip":
       return (
         <aside className="mt-8 border-l-2 border-mute pl-5 py-1">
-          <Eyebrow as="p" className="text-mute">Studio tip</Eyebrow>
+          <Eyebrow as="p">Studio tip</Eyebrow>
           <p className="mt-3 text-lead leading-relaxed">{block.text}</p>
         </aside>
       );

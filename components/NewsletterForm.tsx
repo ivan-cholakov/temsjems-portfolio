@@ -60,7 +60,7 @@ export function NewsletterForm() {
         <button
           type="submit"
           disabled={submitting}
-          className="eyebrow underline-link shrink-0 pb-2 font-bold text-ink disabled:opacity-40"
+          className="eyebrow text-eyebrow underline-link shrink-0 pb-2 font-bold text-ink disabled:opacity-40"
         >
           {submitting ? "Sending…" : "Subscribe →"}
         </button>

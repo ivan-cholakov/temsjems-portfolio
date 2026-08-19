@@ -14,6 +14,9 @@ const ALL: Filter = { kind: "all" };
 
 const VALID_CATEGORIES = new Set<string>(CATEGORIES.map((c) => c.value));
 
+/** Widest grid this gallery sets, and so the works above the fold. */
+const GRID_COLUMNS = 3;
+
 function parseFilter(param: string | null): Filter {
   if (param && VALID_CATEGORIES.has(param)) {
     return { kind: "category", value: param as Category };
@@ -76,7 +79,7 @@ export function WorkGallery({ projects }: { projects: Project[] }) {
                       src={project.image}
                       alt={`${project.title} — work by ${SITE.artist}`}
                       fill
-                      priority={i < 3 || project.lcp === true}
+                      priority={i < GRID_COLUMNS || project.lcp === true}
                       sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
                       // object-contain keeps every piece uncropped inside the
                       // uniform 4:5 cell; landscape works letterbox against

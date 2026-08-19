@@ -57,7 +57,7 @@ export default async function BlogPostPage(
 
       <article className="mx-auto max-w-[50rem] px-6 pt-6 pb-24 md:pt-10 md:pb-40">
         <header>
-          <Eyebrow as="p" className="text-mute">
+          <Eyebrow as="p">
             {formatPostDate(post.date)}, {readingMinutes(post)} min read
           </Eyebrow>
           <h1 className="mt-6 text-h1 font-bold tracking-tight text-balance">
