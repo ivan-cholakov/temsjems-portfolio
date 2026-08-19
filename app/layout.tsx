@@ -24,6 +24,9 @@ const body = Cormorant_Garamond({
   variable: "--font-cormorant",
   subsets: ["latin"],
   weight: ["400", "500", "600", "700"],
+  // The real italic cut, not a synthesised slant — the CV sets show titles in
+  // italics, and a faux-oblique Didone-adjacent serif reads as a rendering bug.
+  style: ["normal", "italic"],
 });
 // JetBrains Mono - industrial counterweight for eyebrow / caption labels.
 const mono = JetBrains_Mono({
