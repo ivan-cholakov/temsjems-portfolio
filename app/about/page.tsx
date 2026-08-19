@@ -30,10 +30,8 @@ export default function AboutPage() {
           screen frames this page between two equal margins: the menu on the
           left, the same width of paper on the right. */}
       <div className="md:pr-gutter">
-        {/* ── Title slab ───────────────────────────────────────────────
-             Deep top padding on desktop: the hero logo is sticky and
-             transparent, so the page heading needs clearance under it. */}
-        <section className="shell mx-auto pt-6 pb-16 md:pt-28 md:pb-24">
+        {/* ── Title slab ───────────────────────────────────────────────── */}
+        <section className="shell mx-auto pt-6 pb-16 md:pt-10 md:pb-24">
           <div className="grid grid-cols-12 gap-x-6 gap-y-10">
             <div className="col-span-12 md:col-span-9">
               <Eyebrow as="p" size="section">About</Eyebrow>
