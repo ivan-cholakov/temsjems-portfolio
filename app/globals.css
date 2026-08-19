@@ -19,6 +19,23 @@
      menu never overlaps page content. */
   --spacing-rail: 16.25rem;   /* 260px */
 
+  /* The page shell: every full-width section is capped at this measure and
+     padded by this gutter. Named once here because eight sections across
+     app/ and components/ have to agree on it. */
+  --container-shell: 100rem;   /* 1600px */
+  --spacing-shell-x: 2.5rem;   /* 40px, the shell gutter at md and up */
+
+  /* What a block outside <main> needs on its left to line up with page
+     content, which the layout insets by the rail and the shell then pads. */
+  --spacing-rail-inset: calc(var(--spacing-rail) + var(--spacing-shell-x));
+
+  /* Right-hand gutter that answers the left rail, so wide screens frame the
+     content between two equal margins. It only claims width the page can
+     spare: nothing until ~1100px, then it opens until it matches the rail
+     from ~1620px up. A flat rail-width inset would starve laptops, where the
+     menu already eats 260px of a much smaller viewport. */
+  --spacing-gutter: clamp(0px, (100vw - 1100px) / 2, var(--spacing-rail));
+
   --font-sans:    var(--font-cormorant), ui-serif, "EB Garamond", "Times New Roman", serif;
   --font-display: var(--font-playfair),  ui-serif, "Didot", "Bodoni Moda", serif;
   --font-mono:    var(--font-jetbrains), ui-monospace, monospace;
@@ -27,15 +44,37 @@
      serif for body, mono for industrial captions. Letter-spacing is
      opened up for the display tier (Roman inscriptions are tracked,
      not condensed). */
+  /* The mono label tier, quietest to loudest: `badge` stamps a number on an
+     image, `eyebrow` captions, `label` names a group inside a page's copy,
+     and `section` divides the page itself. Tracking tightens as the size
+     grows, so the letterforms carry the emphasis instead. */
+  --text-badge: 0.6rem;
+  --text-badge--line-height: 1;
+  --text-badge--letter-spacing: 0.18em;
+
   --text-eyebrow: 0.6875rem;
   --text-eyebrow--line-height: 1;
   --text-eyebrow--letter-spacing: 0.18em;
+
+  --text-label: clamp(0.875rem, 0.5rem + 0.6vw, 1.0625rem);
+  --text-label--line-height: 1.1;
+  --text-label--letter-spacing: 0.16em;
+
+  --text-section: clamp(1rem, 0.55rem + 0.95vw, 1.5rem);
+  --text-section--line-height: 1.1;
+  --text-section--letter-spacing: 0.14em;
 
   --text-body: 1.0625rem;
   --text-body--line-height: 1.55;
 
   --text-lead: 1.375rem;
   --text-lead--line-height: 1.45;
+
+  /* Long-form reading size. Cormorant runs small for its point size, so prose
+     set at the `lead` step reads a tier smaller than it measures; this holds
+     `lead` on phones and opens up to 26px once there is desktop width. */
+  --text-prose: clamp(1.375rem, 0.9rem + 1.1vw, 1.625rem);
+  --text-prose--line-height: 1.5;
 
   --text-h3: clamp(1.25rem, 2vw, 1.5rem);
   --text-h3--line-height: 1.15;
@@ -91,13 +130,22 @@
 /* ---------------------------------------------------------------------- */
 
 @layer components {
+  /* The mono label recipe. Size, line-height and tracking come from the tier
+     the caller picks (text-badge / text-eyebrow / text-label / text-section),
+     so no two rules claim the same property. */
   .eyebrow {
     font-family: var(--font-mono);
-    font-size: var(--text-eyebrow);
-    line-height: 1;
-    letter-spacing: 0.18em;
     text-transform: uppercase;
     color: var(--color-mute);
+  }
+  .shell {
+    max-width: var(--container-shell);
+    padding-inline: 1.5rem;
+  }
+  @media (width >= 48rem) {
+    .shell {
+      padding-inline: var(--spacing-shell-x);
+    }
   }
   .underline-link {
     position: relative;

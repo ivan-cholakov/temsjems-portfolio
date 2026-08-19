@@ -1,3 +1,5 @@
+import type { AnalyticsEvent } from "@/lib/analytics";
+
 export type Category =
   | "monoprint-ink"
   | "printmaking-collage";
@@ -69,15 +71,10 @@ export const SITE = {
   /** Where the artist lives and works — stated on the CV. */
   location: "Sofia, Bulgaria",
   email: "artteomira@gmail.com",
-  social: {
-    instagram: "moiraemoss",
-    tiktok: "moiraemoss",
-    pinterest: "moiraemoss",
-  },
   portrait: {
-    src: "/art/about/69f6b7a58fdd.jpg",
-    width: 454,
-    height: 635,
+    src: "/art/about/portrait.jpg",
+    width: 1599,
+    height: 1990,
   },
   logo: {
     src: "/logo.jpg",
@@ -95,6 +92,56 @@ export const SITE = {
    */
   url: "https://moiraemoss.com",
 } as const;
+
+export type SocialPlatform = "instagram" | "tiktok" | "pinterest";
+
+export type SocialChannel = {
+  platform: SocialPlatform;
+  /** Platform name as a reader says it, e.g. "TikTok". */
+  label: string;
+  /** Handle without the leading "@". */
+  handle: string;
+  /** Public profile URL. Stated rather than derived: each platform shapes it differently. */
+  url: string;
+  /** Plausible event fired when a reader follows the link. */
+  event: AnalyticsEvent;
+};
+
+/**
+ * Every social profile the artist publishes, in the order the contact page
+ * lists them. Single source of truth: the contact page renders from this list
+ * and the Person / VisualArtist JSON-LD builds `sameAs` from the same URLs, so
+ * a new profile is one edit here rather than three that can drift apart.
+ */
+export const SOCIAL_CHANNELS: readonly SocialChannel[] = [
+  {
+    platform: "instagram",
+    label: "Instagram",
+    handle: "moiraemoss",
+    url: "https://www.instagram.com/moiraemoss",
+    event: "Outbound: Instagram",
+  },
+  {
+    platform: "tiktok",
+    label: "TikTok",
+    handle: "moiraemoss",
+    url: "https://www.tiktok.com/@moiraemoss",
+    event: "Outbound: TikTok",
+  },
+  {
+    platform: "pinterest",
+    label: "Pinterest",
+    handle: "moiraemoss",
+    url: "https://www.pinterest.com/moiraemoss/",
+    event: "Outbound: Pinterest",
+  },
+];
+
+export function socialChannel(platform: SocialPlatform): SocialChannel {
+  const channel = SOCIAL_CHANNELS.find((c) => c.platform === platform);
+  if (!channel) throw new Error(`No social channel for platform: ${platform}`);
+  return channel;
+}
 
 export type CvWork = {
   /** Plain qualifier ahead of the title, e.g. "National exhibition". Null when the title opens the line. */
