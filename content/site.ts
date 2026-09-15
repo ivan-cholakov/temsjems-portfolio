@@ -262,7 +262,7 @@ export const CV: ReadonlyArray<CvSection> = [
     ],
   },
   {
-    heading: "Group exhibitions",
+    heading: "Exhibitions",
     yearSeparator: ",",
     entries: [
       {
