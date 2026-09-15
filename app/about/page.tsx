@@ -53,13 +53,11 @@ export default function AboutPage() {
              portrait, bio, CV) that the source order alone would lose. */}
         <section className="shell mx-auto py-16 md:py-24">
           <div className="grid grid-cols-1 gap-y-12 xl:flow-root">
-            {/* `sizes` is derived from the widths beside it, not guessed, and has
-                to be re-derived if either changes. At xl the photo is 44% of a
-                column that the rail and gutter have already taken roughly a
-                quarter of the viewport from, so 0.44 x ~0.77vw rounds to 34vw.
-                Between md and xl it is the stacked column capped at 720px, and
-                below md it is the full viewport. Over-declaring here costs a
-                needlessly large download on every phone. */}
+            {/* `sizes` has no effect today: `next.config.ts` sets
+                `images.unoptimized`, under which next/image drops both `srcSet`
+                and `sizes`, so the exported <img> carries neither and every
+                viewport fetches the one full-size WebP. It is kept, like the
+                other call sites, to take effect if the optimizer is turned on. */}
             <div className="row-start-2 max-w-[720px] xl:float-right xl:mb-10 xl:ml-12 xl:w-[44%]">
               <Image
                 src={SITE.portrait.src}

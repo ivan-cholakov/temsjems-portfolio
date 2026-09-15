@@ -40,19 +40,6 @@ export function websiteSchema() {
   } as const;
 }
 
-export function visualArtistSchema() {
-  return withSameAs({
-    "@context": SCHEMA_CONTEXT,
-    "@type": "VisualArtist",
-    name: SITE.artist,
-    alternateName: SITE.name,
-    description: bioText,
-    url: SITE.url,
-    image: portraitUrl,
-    knowsAbout: [...PRACTICE],
-  });
-}
-
 export function personSchema() {
   return withSameAs({
     "@context": SCHEMA_CONTEXT,
