@@ -24,7 +24,7 @@ export async function generateMetadata(
     description: post.excerpt,
     alternates: { canonical: `/blog/${post.slug}` },
     openGraph: {
-      title: `${post.title} — ${SITE.name}`,
+      title: `${post.title} - ${SITE.name}`,
       description: post.excerpt,
       url: `/blog/${post.slug}`,
       type: "article",
@@ -34,7 +34,7 @@ export async function generateMetadata(
     },
     twitter: {
       card: "summary_large_image",
-      title: `${post.title} — ${SITE.name}`,
+      title: `${post.title} - ${SITE.name}`,
       description: post.excerpt,
       images: [post.cover.src],
     },

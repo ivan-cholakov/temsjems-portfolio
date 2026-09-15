@@ -9,7 +9,7 @@ export const metadata: Metadata = {
   description: `Selected works by ${SITE.artist} — gel plate monoprints, linocut collages, and ink works.`,
   alternates: { canonical: "/work" },
   openGraph: {
-    title: `Work — ${SITE.name}`,
+    title: `Work - ${SITE.name}`,
     description: `Selected works by ${SITE.artist}.`,
     type: "website",
     url: "/work",

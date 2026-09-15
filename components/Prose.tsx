@@ -27,6 +27,10 @@ export function Prose({ runs }: { runs: ReadonlyArray<ProseRun> }) {
         return run.text;
       case "title":
         return <WorkTitle key={i}>{run.text}</WorkTitle>;
+      default: {
+        const unhandled: never = run;
+        return unhandled;
+      }
     }
   });
 }

@@ -235,7 +235,7 @@ export type CvSection = {
   heading: string;
   /**
    * Punctuation printed straight after the year. Education reads
-   * "2018-2022: BA Fine Arts", exhibitions read "2026, Dissonances" - the CV as
+   * "2018–2022: BA Fine Arts", exhibitions read "2026, Dissonances" - the CV as
    * written mixes the two, so each section states its own.
    */
   yearSeparator: ":" | ",";

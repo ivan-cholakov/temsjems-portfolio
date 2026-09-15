@@ -11,7 +11,7 @@ export const metadata: Metadata = {
   description: `Get in touch with ${SITE.artist} — collaborations, commissions, available work.`,
   alternates: { canonical: "/contact" },
   openGraph: {
-    title: `Contact — ${SITE.name}`,
+    title: `Contact - ${SITE.name}`,
     description: `Get in touch with ${SITE.artist}.`,
     url: "/contact",
     images: [OG_IMAGE],
