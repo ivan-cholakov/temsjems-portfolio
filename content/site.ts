@@ -62,19 +62,82 @@ export type Project = {
   lcp?: boolean;
 };
 
+/**
+ * One run of About-page prose. The split is two-way rather than a general
+ * rich-text tree because exactly one thing changes typographically mid-
+ * sentence: art-CV convention sets show and work titles in italics and leaves
+ * institution names roman.
+ */
+export type ProseRun =
+  | { kind: "text"; text: string }
+  | { kind: "title"; text: string };
+
+/**
+ * The same prose as one unstyled string, for meta descriptions and JSON-LD -
+ * both take plain text, so the italics are dropped rather than duplicated as a
+ * second hand-written copy that could drift from the rendered one.
+ */
+export function runsText(runs: ReadonlyArray<ProseRun>): string {
+  return runs.map((run) => run.text).join("");
+}
+
 export const SITE = {
   name: "Moirae Moss",
   artist: "Teomira Smilenova",
   tagline: "Exploring the intersection of shadows, human form, and organic textures.",
-  /** Short bio — the only real prose published on moiraemoss.com today. */
-  bio: `Behind the brand Moirae Moss stands visual artist Teomira Smilenova. Her practice is a dynamic intersection of structured graphic form and expressive, vivid color. Moving beyond the constraints of traditional analog printmaking, she merges the precision of linocut with the ethereal fluidity of watercolor to construct intricate visual narratives. Through figurative and symbolic subjects, Teomira explores themes of transformation and identity, utilizing the tension between raw texture, definitive lines, and vibrant hues as her primary visual language.`,
-  /** Where the artist lives and works — stated on the CV. */
-  location: "Sofia, Bulgaria",
+  /**
+   * Artist statement, in the artist's own first person - the long-form prose on
+   * the About page. Held as paragraphs rather than one blob with newlines in it
+   * so the page can space them typographically instead of splitting on "\n".
+   */
+  statement: [
+    "My work begins with a carved block: one form, exact and unmoving, an anchor for the eye. Everything after that is water. Colour spreads, thins, pools and dissolves at the edges, and I let it go where it is already going rather than argue with it.",
+    "Nothing beyond that first form is fixed. Ink finds the cloth on its own terms. The image is not resolved before it exists; it arrives through the printing itself, and the work is to recognise it when it does.",
+    "I print onto sacks made to carry grain and cement, and hang the pieces from branches gathered off the ground. Neither was meant to be looked at. Here the sack becomes the canvas and the branch holds it.",
+    "The same thing happens to the images. A horse's head runs and becomes stardust. Form gives way, edges fail, a shape comes apart into whatever it becomes next. I have stopped treating dissolution as a loss. It is the condition the work is made under, and increasingly the reason for making it.",
+  ] satisfies ReadonlyArray<string>,
+  /**
+   * Third-person biography - the About page prints it under the statement, and
+   * every JSON-LD `description` is derived from it via `runsText`.
+   */
+  bio: [
+    { kind: "text",  text: 'Teomira Smilenova (b. 1999, Pazardzhik) is a printmaker living and working in Sofia. She studied Fine Arts at Sofia University “St. Kliment Ohridski”, graduating in 2022 with her series ' },
+    { kind: "title", text: "Pagan Tarot" },
+    { kind: "text",  text: ". She works primarily in relief printmaking, extending it beyond paper onto alternative supports, most often cloth, and into mixed media. Natural motifs and impressions taken from natural materials, made with a gel plate, run through the work. Recent exhibitions include the national exhibition " },
+    { kind: "title", text: "Dissonances" },
+    { kind: "text",  text: " at Ruse Art Gallery and the international " },
+    { kind: "title", text: "FISAE" },
+    { kind: "text",  text: " forum in Varna. She works under the name Moirae Moss." },
+  ] satisfies ReadonlyArray<ProseRun>,
+  /**
+   * Default meta description - one sentence, short enough to survive a search
+   * result intact. Stated rather than sliced off the bio: a truncated sentence
+   * is what a reader sees in the SERP, and the cut landed mid-clause.
+   */
+  metaDescription:
+    "Teomira Smilenova is a printmaker based in Sofia, working in relief printmaking on cloth and alternative supports.",
+  /**
+   * The search vocabulary the artist wants the site to answer to, in her own
+   * wording. Copy, not configuration, so it belongs beside the rest of the
+   * copy rather than inside the root layout that happens to emit it. Not the
+   * same list as JSON-LD `knowsAbout`, which names practices rather than
+   * search terms - see `lib/structured-data.ts`.
+   */
+  keywords: [
+    "Teomira Smilenova",
+    "Moirae Moss",
+    "linocut",
+    "relief printmaking",
+    "printmaking on cloth",
+    "Bulgarian visual artist",
+    "Sofia",
+    "contemporary art",
+  ],
   email: "artteomira@gmail.com",
   portrait: {
     src: "/art/about/portrait.webp",
     width: 1120,
-    height: 1394,
+    height: 1680,
   },
   logo: {
     src: "/logo.jpg",
@@ -159,7 +222,11 @@ export type CvEntry = {
    * `year`: a lead with nothing to lead into is not a CV line.
    */
   work: CvWork | null;
-  /** Everything after the title: institution, city, country. */
+  /**
+   * Everything after the title: institution then city. No country - the CV as
+   * the artist supplied it names cities alone, and the bio above it already
+   * places her in Sofia.
+   */
   venue: string;
 };
 
@@ -168,73 +235,70 @@ export type CvSection = {
   heading: string;
   /**
    * Punctuation printed straight after the year. Education reads
-   * "2018–2022: BA Fine Arts", exhibitions read "2026, Botanical Impressions" —
-   * the CV as written mixes the two, so each section states its own.
+   * "2018-2022: BA Fine Arts", exhibitions read "2026, Dissonances" - the CV as
+   * written mixes the two, so each section states its own.
    */
   yearSeparator: ":" | ",";
   entries: ReadonlyArray<CvEntry>;
 };
 
-export type Cv = {
-  born: string;
-  based: string;
-  sections: ReadonlyArray<CvSection>;
-};
-
 /**
- * Artist CV. Held as data rather than a prose blob so the About page owns the
- * typography — show titles are italicised per art-CV convention without any
- * markup leaking into content, and the entries stay legible to a future
- * JSON-LD block.
+ * Artist CV, in the order the About page prints it. Held as data rather than a
+ * prose blob so the page owns the typography - show titles are italicised per
+ * art-CV convention without any markup leaking into content, and the entries
+ * stay legible to a future JSON-LD block. Where the artist was born and lives
+ * is not repeated here: `SITE.bio`, printed directly above the CV, says it.
  */
-export const CV: Cv = {
-  born: "Born in 1999 in Pazardzhik, Bulgaria",
-  based: "Resides and works in Sofia, Bulgaria",
-  sections: [
-    {
-      heading: "Education",
-      yearSeparator: ":",
-      entries: [
-        {
-          year: "2018–2022",
-          work: null,
-          venue: 'BA Fine Arts, Sofia University "St. Kliment Ohridski", Sofia, Bulgaria',
-        },
-      ],
-    },
-    {
-      heading: "Group exhibitions",
-      yearSeparator: ",",
-      entries: [
-        {
-          year: "2026",
-          work: { lead: "International forum", title: "FISAE" },
-          venue: "Varna, Bulgaria",
-        },
-        {
-          year: "2026",
-          work: { lead: null, title: "Botanical Impressions" },
-          venue: "Toplocentrala, Sofia, Bulgaria",
-        },
-        {
-          year: "2026",
-          work: { lead: "National exhibition", title: "Dissonances" },
-          venue: "Ruse Art Gallery, Ruse, Bulgaria",
-        },
-        {
-          year: "2022",
-          work: { lead: "Degree Show:", title: "Pagan Tarot" },
-          venue: "Faculty of Educational Studies and the Arts, Sofia, Bulgaria",
-        },
-        {
-          year: "2019",
-          work: { lead: null, title: "Autofocus IV: Graphic Transformations" },
-          venue: "Etud Gallery, Sofia, Bulgaria",
-        },
-      ],
-    },
-  ],
-};
+export const CV: ReadonlyArray<CvSection> = [
+  {
+    heading: "Education",
+    yearSeparator: ":",
+    entries: [
+      {
+        year: "2018–2022",
+        work: null,
+        venue: 'BA Fine Arts, Sofia University “St. Kliment Ohridski”, Sofia',
+      },
+    ],
+  },
+  {
+    heading: "Group exhibitions",
+    yearSeparator: ",",
+    entries: [
+      {
+        year: "2026",
+        work: { lead: "International forum", title: "FISAE" },
+        venue: "Varna",
+      },
+      {
+        year: "2026",
+        work: { lead: "National exhibition", title: "Dissonances" },
+        venue: "Ruse Art Gallery, Ruse",
+      },
+      {
+        year: "2022",
+        work: { lead: "Degree show:", title: "Pagan Tarot" },
+        venue: "Faculty of Educational Studies and the Arts, Sofia",
+      },
+      {
+        year: "2019",
+        work: { lead: null, title: "Autofocus IV: Graphic Transformations" },
+        venue: "Etud Gallery, Sofia",
+      },
+    ],
+  },
+  {
+    heading: "Workshops",
+    yearSeparator: ",",
+    entries: [
+      {
+        year: "2026",
+        work: { lead: null, title: "Botanical Impressions" },
+        venue: "Toplocentrala, Sofia",
+      },
+    ],
+  },
+];
 
 /**
  * Mailchimp embedded-form action URL (the `action` from Audience → Signup forms

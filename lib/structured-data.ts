@@ -1,4 +1,4 @@
-import { mediumOf, SITE, SOCIAL_CHANNELS, type Project } from "@/content/site";
+import { mediumOf, runsText, SITE, SOCIAL_CHANNELS, type Project } from "@/content/site";
 import type { Post } from "@/content/blog";
 
 const SCHEMA_CONTEXT = "https://schema.org";
@@ -10,6 +10,18 @@ function withSameAs<T extends object>(obj: T): T & { sameAs?: string[] } {
 }
 
 const portraitUrl = new URL(SITE.portrait.src, SITE.url).toString();
+
+/** The published bio, flattened: schema.org `description` takes no markup. */
+const bioText = runsText(SITE.bio);
+
+/**
+ * What the artist practises, for schema.org `knowsAbout`. Stated rather than
+ * derived from `SITE.keywords`: that list is search vocabulary in the artist's
+ * own casing and carries terms like her own name and city, which are facts
+ * about the page rather than subjects she works in. Overlap is expected; the
+ * two lists answer different questions and are allowed to diverge.
+ */
+const PRACTICE = ["Linocut", "Relief printmaking", "Printmaking on cloth"] as const;
 
 export function websiteSchema() {
   return {
@@ -27,10 +39,10 @@ export function visualArtistSchema() {
     "@type": "VisualArtist",
     name: SITE.artist,
     alternateName: SITE.name,
-    description: SITE.bio,
+    description: bioText,
     url: SITE.url,
     image: portraitUrl,
-    knowsAbout: ["Linocut", "Watercolor", "Printmaking"],
+    knowsAbout: [...PRACTICE],
   });
 }
 
@@ -40,14 +52,14 @@ export function personSchema() {
     "@type": "Person",
     name: SITE.artist,
     alternateName: SITE.name,
-    description: SITE.bio,
+    description: bioText,
     url: SITE.url,
     image: portraitUrl,
     alumniOf: {
       "@type": "CollegeOrUniversity",
-      name: 'Sofia University "St. Kliment Ohridski"',
+      name: "Sofia University “St. Kliment Ohridski”",
     },
-    knowsAbout: ["Linocut", "Watercolor", "Printmaking", "Visual narrative"],
+    knowsAbout: [...PRACTICE, "Mixed media"],
     jobTitle: "Visual artist",
   });
 }
