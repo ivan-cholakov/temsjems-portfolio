@@ -38,20 +38,14 @@ const mono = JetBrains_Mono({
 export const metadata: Metadata = {
   metadataBase: new URL(SITE.url),
   title: { default: `${SITE.name}`, template: `%s - ${SITE.name}` },
-  description: SITE.bio.slice(0, 200),
+  description: SITE.metaDescription,
   applicationName: SITE.name,
   authors: [{ name: SITE.artist }],
   creator: SITE.artist,
-  keywords: [
-    SITE.artist,
-    SITE.name,
-    "linocut",
-    "watercolor",
-    "printmaking",
-    "Bulgarian visual artist",
-    "Sofia",
-    "contemporary art",
-  ],
+  keywords: [...SITE.keywords],
+  /* The two descriptions are deliberately different voices, not a leftover:
+     `description` is the factual sentence a search result should show, while a
+     social card is a piece of the artist's own writing and gets the tagline. */
   openGraph: {
     type: "website",
     locale: "en_US",

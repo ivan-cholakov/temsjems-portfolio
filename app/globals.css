@@ -25,6 +25,14 @@
   --container-shell: 100rem;   /* 1600px */
   --spacing-shell-x: 2.5rem;   /* 40px, the shell gutter at md and up */
 
+  /* The measure for long-form prose: how many characters a line should carry
+     before the eye loses the return sweep. Set in `ch` so it tracks whatever
+     size `--text-prose` resolves to rather than fixing a pixel width that is
+     right at one breakpoint and wrong at the next. Named here because a page
+     that sets two prose blocks must set them to the same measure or the
+     column edge visibly steps. */
+  --container-measure: 58ch;
+
   /* What a block outside <main> needs on its left to line up with page
      content, which the layout insets by the rail and the shell then pads. */
   --spacing-rail-inset: calc(var(--spacing-rail) + var(--spacing-shell-x));

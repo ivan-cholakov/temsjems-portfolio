@@ -2,16 +2,17 @@ import type { Metadata } from "next";
 import Image from "next/image";
 
 import { Eyebrow } from "@/components/Eyebrow";
+import { Prose, WorkTitle } from "@/components/Prose";
 import { CV, SITE, OG_IMAGE } from "@/content/site";
 import { personSchema } from "@/lib/structured-data";
 
 export const metadata: Metadata = {
   title: "About",
-  description: SITE.bio.slice(0, 200),
+  description: SITE.metaDescription,
   alternates: { canonical: "/about" },
   openGraph: {
-    title: `About — ${SITE.name}`,
-    description: SITE.bio.slice(0, 200),
+    title: `About - ${SITE.name}`,
+    description: SITE.metaDescription,
     url: "/about",
     type: "profile",
     images: [OG_IMAGE],
@@ -42,16 +43,23 @@ export default function AboutPage() {
           </div>
         </section>
 
-        {/* ── Statement + portrait + CV ────────────────────────────────
+        {/* ── Statement + portrait + bio + CV ──────────────────────────────
              Wide screens are one block flow with the portrait floated right,
              not a two-column grid: the statement sits beside the photo, and the
              CV wraps past its bottom edge to reclaim the full width instead of
              running down a narrow column beside empty paper. Below xl the menu
              and gutter leave too little room to set two columns, so the column
              stacks, and grid row placement holds the reading order (statement,
-             portrait, CV) that the source order alone would lose. */}
+             portrait, bio, CV) that the source order alone would lose. */}
         <section className="shell mx-auto py-16 md:py-24">
           <div className="grid grid-cols-1 gap-y-12 xl:flow-root">
+            {/* `sizes` is derived from the widths beside it, not guessed, and has
+                to be re-derived if either changes. At xl the photo is 44% of a
+                column that the rail and gutter have already taken roughly a
+                quarter of the viewport from, so 0.44 x ~0.77vw rounds to 34vw.
+                Between md and xl it is the stacked column capped at 720px, and
+                below md it is the full viewport. Over-declaring here costs a
+                needlessly large download on every phone. */}
             <div className="row-start-2 max-w-[720px] xl:float-right xl:mb-10 xl:ml-12 xl:w-[44%]">
               <Image
                 src={SITE.portrait.src}
@@ -68,44 +76,55 @@ export default function AboutPage() {
                 short and the rest running under it. */}
             <div className="row-start-1 xl:flow-root">
               <Eyebrow as="h2" size="section">Artist statement</Eyebrow>
-              <p className="mt-8 max-w-[58ch] text-prose leading-relaxed">
-                {SITE.bio}
+              <div className="mt-8 max-w-measure space-y-6 text-prose leading-relaxed">
+                {/* Keyed by the text itself: the statement is fixed copy with no
+                    two paragraphs alike, so the paragraph is its own identity. */}
+                {SITE.statement.map((paragraph) => (
+                  <p key={paragraph}>{paragraph}</p>
+                ))}
+              </div>
+            </div>
+
+            {/* Same block formatting context as the statement: on a tall
+                portrait the float can still be running when the bio starts, and
+                a clean narrow column reads better than three short lines
+                followed by full-width ones. */}
+            <div className="row-start-3 xl:mt-16 xl:flow-root">
+              <Eyebrow as="h2" size="section">Bio</Eyebrow>
+              <p className="mt-8 max-w-measure text-prose leading-relaxed">
+                <Prose runs={SITE.bio} />
               </p>
             </div>
 
-            <div className="row-start-3 xl:mt-16">
+            <div className="row-start-4 xl:mt-16">
               <Eyebrow as="h2" size="section">Curriculum vitae</Eyebrow>
 
               {/* Set at the statement's size, not body size: the CV is primary
                   page copy, and a list of proper nouns is unforgiving to read
                   small. No measure cap, unlike the statement: these are list
                   entries, which read best unwrapped. */}
-              <div className="mt-8 text-prose leading-relaxed">
-                <p>{SITE.artist}</p>
-                <p className="mt-2">{CV.born}</p>
-                <p>{CV.based}</p>
+              <div className="mt-8 space-y-12">
+                {CV.map((section) => (
+                  <div key={section.heading}>
+                    <Eyebrow as="h3" size="label">{section.heading}</Eyebrow>
+                    <ul className="mt-5 space-y-3 text-prose leading-relaxed">
+                      {section.entries.map((entry) => (
+                        <li key={`${entry.year} ${entry.work?.title ?? entry.venue}`}>
+                          {entry.year}
+                          {section.yearSeparator}{" "}
+                          {entry.work && (
+                            <>
+                              {entry.work.lead && `${entry.work.lead} `}
+                              <WorkTitle>{entry.work.title}</WorkTitle>,{" "}
+                            </>
+                          )}
+                          {entry.venue}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                ))}
               </div>
-
-              {CV.sections.map((section) => (
-                <div key={section.heading} className="mt-12">
-                  <Eyebrow as="h3" size="label">{section.heading}</Eyebrow>
-                  <ul className="mt-5 space-y-3 text-prose leading-relaxed">
-                    {section.entries.map((entry) => (
-                      <li key={`${entry.year} ${entry.work?.title ?? entry.venue}`}>
-                        {entry.year}
-                        {section.yearSeparator}{" "}
-                        {entry.work && (
-                          <>
-                            {entry.work.lead && `${entry.work.lead} `}
-                            <em>{entry.work.title}</em>,{" "}
-                          </>
-                        )}
-                        {entry.venue}
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              ))}
             </div>
           </div>
         </section>
