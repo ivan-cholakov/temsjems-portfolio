@@ -1,8 +1,8 @@
 import { HomeCanvas } from "@/components/HomeCanvas";
-import { visualArtistSchema, websiteSchema } from "@/lib/structured-data";
+import { personSchema, websiteSchema } from "@/lib/structured-data";
 
 export default function Home() {
-  const jsonLd = [websiteSchema(), visualArtistSchema()];
+  const jsonLd = [websiteSchema(), personSchema()];
 
   return (
     <>

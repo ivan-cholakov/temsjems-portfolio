@@ -43,7 +43,7 @@ export type Project = {
   body: string | null;
   /** Year(s) the work was made — exposed as brutalist metadata stamp. */
   year: string | null;
-  /** Medium label, e.g. "Linocut + Watercolor". */
+  /** Medium label, e.g. "Ink, pen and brush on paper". */
   medium: string | null;
   /** Body of work this piece belongs to. Null = unclassified (only shown under "All"). */
   category: Category | null;
