@@ -28,7 +28,7 @@ export async function generateMetadata(
     description,
     alternates: { canonical: `/work/${project.slug}` },
     openGraph: {
-      title: `${title} — ${SITE.name}`,
+      title: `${title} - ${SITE.name}`,
       description,
       url: `/work/${project.slug}`,
       images: [{ url: project.image, width: project.width, height: project.height, alt: title }],
@@ -36,7 +36,7 @@ export async function generateMetadata(
     },
     twitter: {
       card: "summary_large_image",
-      title: `${title} — ${SITE.name}`,
+      title: `${title} - ${SITE.name}`,
       description,
       images: [project.image],
     },

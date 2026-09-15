@@ -18,10 +18,17 @@ const bioText = runsText(SITE.bio);
  * What the artist practises, for schema.org `knowsAbout`. Stated rather than
  * derived from `SITE.keywords`: that list is search vocabulary in the artist's
  * own casing and carries terms like her own name and city, which are facts
- * about the page rather than subjects she works in. Overlap is expected; the
- * two lists answer different questions and are allowed to diverge.
+ * about the page rather than subjects she works in. Overlap with the keywords
+ * is expected; the two lists answer different questions and are allowed to
+ * diverge. Every block that publishes the artist as an entity emits this set
+ * whole, so the site never claims two different practices for one person.
  */
-const PRACTICE = ["Linocut", "Relief printmaking", "Printmaking on cloth"] as const;
+const PRACTICE = [
+  "Linocut",
+  "Relief printmaking",
+  "Printmaking on cloth",
+  "Mixed media",
+] as const;
 
 export function websiteSchema() {
   return {
@@ -59,7 +66,7 @@ export function personSchema() {
       "@type": "CollegeOrUniversity",
       name: "Sofia University “St. Kliment Ohridski”",
     },
-    knowsAbout: [...PRACTICE, "Mixed media"],
+    knowsAbout: [...PRACTICE],
     jobTitle: "Visual artist",
   });
 }

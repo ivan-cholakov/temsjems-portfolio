@@ -6,10 +6,10 @@ import { SITE, OG_IMAGE } from "@/content/site";
 
 export const metadata: Metadata = {
   title: "Blog",
-  description: `Writing from ${SITE.artist} on the practice — linocut, watercolor, the studio.`,
+  description: `Writing from ${SITE.artist} on the practice - linocut, printing on cloth, the studio.`,
   alternates: { canonical: "/blog" },
   openGraph: {
-    title: `Blog — ${SITE.name}`,
+    title: `Blog - ${SITE.name}`,
     description: `Writing from ${SITE.artist} on the practice.`,
     url: "/blog",
     type: "website",
