@@ -98,7 +98,7 @@ export const SITE = {
   ] satisfies ReadonlyArray<string>,
   /**
    * Third-person biography - the About page prints it under the statement, and
-   * every JSON-LD `description` is derived from it via `runsText`.
+   * the artist's JSON-LD `description` is derived from it via `runsText`.
    */
   bio: [
     { kind: "text",  text: 'Teomira Smilenova (b. 1999, Pazardzhik) is a printmaker living and working in Sofia. She studied Fine Arts at Sofia University “St. Kliment Ohridski”, graduating in 2022 with her series ' },
