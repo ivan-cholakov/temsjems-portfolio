@@ -8,7 +8,7 @@ namespace_name=moiraemoss
 function_name=contact
 runtime=node24
 
-for tool in scw jq zip; do
+for tool in scw jq zip npm; do
   command -v "$tool" >/dev/null || { echo "deploy.sh: $tool is not on PATH" >&2; exit 1; }
 done
 
@@ -16,7 +16,7 @@ set -a
 . "$env_file"
 set +a
 
-for var in SCW_DEFAULT_PROJECT_ID SCW_DEPLOY_ACCESS_KEY SCW_DEPLOY_SECRET_KEY SCW_TEM_SECRET_KEY; do
+for var in SCW_DEFAULT_PROJECT_ID SCW_DEPLOY_ACCESS_KEY SCW_DEPLOY_SECRET_KEY SCW_TEM_SMTP_PASSWORD; do
   [ -n "${!var:-}" ] || { echo "deploy.sh: $var is not set in $env_file" >&2; exit 1; }
 done
 
@@ -51,13 +51,12 @@ settings=(
   min-scale=0
   max-scale=2
   memory-limit=128
-  timeout=30s
+  timeout=20s
   privacy=public
   http-option=redirected
-  secret-environment-variables.0.key=TEM_SECRET_KEY
-  secret-environment-variables.0.value="$SCW_TEM_SECRET_KEY"
-  secret-environment-variables.1.key=TEM_PROJECT_ID
-  secret-environment-variables.1.value="$SCW_DEFAULT_PROJECT_ID"
+  environment-variables.TEM_SMTP_USERNAME="$SCW_DEFAULT_PROJECT_ID"
+  secret-environment-variables.0.key=TEM_SMTP_PASSWORD
+  secret-environment-variables.0.value="$SCW_TEM_SMTP_PASSWORD"
 )
 
 function_id=$(scw function function list namespace-id="$namespace_id" name="$function_name" -o json \
@@ -71,7 +70,9 @@ else
   scw function function update "$function_id" "${settings[@]}" redeploy=false -o json >/dev/null
 fi
 
-(cd "$here" && zip -q "$workdir/function.zip" handler.js contract.js package.json)
+mkdir "$workdir/build"
+cp "$here"/{handler.js,contact.js,contract.js,package.json,package-lock.json} "$workdir/build/"
+(cd "$workdir/build" && npm ci --omit=dev --silent && zip -qr "$workdir/function.zip" .)
 
 echo "Uploading and deploying code"
 scw function deploy namespace-id="$namespace_id" name="$function_name" runtime="$runtime" zip-file="$workdir/function.zip" -o json >/dev/null

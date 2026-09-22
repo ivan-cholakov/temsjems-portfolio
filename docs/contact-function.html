@@ -31,7 +31,7 @@
 <h2>How it works</h2>
 <p>The site is a static export on GitHub Pages, so the form cannot send mail by itself.
 When a visitor submits the form on <code>/contact</code>, the browser posts the fields as JSON to a Scaleway Serverless Function.
-The function checks the request and sends one email through the Scaleway Transactional Email (TEM) API.</p>
+The function checks the request and sends one email through the SMTP relay of Scaleway Transactional Email (TEM), <code>smtp.tem.scaleway.com</code>, on port 465 with implicit TLS.</p>
 <ul>
   <li>From: <code>Moirae Moss website &lt;website@moiraemoss.com&gt;</code>. moiraemoss.com is a verified TEM domain with SPF and DKIM published.</li>
   <li>To: <code>contact@moiraemoss.com</code>.</li>
@@ -41,9 +41,10 @@ The function checks the request and sends one email through the Scaleway Transac
 <p>The code lives in <code>functions/contact/</code>:</p>
 <table>
   <tr><th>File</th><th>Role</th></tr>
-  <tr><td><code>handler.js</code></td><td>The function. Scaleway calls <code>handler.handle</code>.</td></tr>
+  <tr><td><code>handler.js</code></td><td>The entry point Scaleway calls (<code>handler.handle</code>). It builds the SMTP transport with <a href="https://nodemailer.com">Nodemailer</a> from the function's environment.</td></tr>
+  <tr><td><code>contact.js</code></td><td>Everything else: CORS, rate limit, parsing, validation, the honeypot and the message itself. The sender is passed in, so it is tested without a network.</td></tr>
   <tr><td><code>contract.js</code></td><td>Field length limits and the honeypot field name. The site's form imports the same module, so the browser and the function enforce the same limits.</td></tr>
-  <tr><td><code>handler.test.js</code></td><td>Unit tests (<code>pnpm test</code>, also run in CI).</td></tr>
+  <tr><td><code>contact.test.js</code></td><td>Unit tests (<code>pnpm test</code>, also run in CI).</td></tr>
   <tr><td><code>deploy.sh</code></td><td>Creates or updates the Scaleway namespace and function, sets its secrets, uploads the code and prints the endpoint.</td></tr>
 </table>
 <p>The form reads the endpoint from <code>NEXT_PUBLIC_CONTACT_ENDPOINT</code>, which is inlined when the site is built.
@@ -53,7 +54,7 @@ If the variable is unset or empty at build time, the form falls back to opening 
 <p><code>POST</code> with <code>Content-Type: application/json</code> or <code>application/x-www-form-urlencoded</code>, carrying <code>firstName</code>, <code>lastName</code>, <code>email</code>, <code>message</code> and the honeypot field <code>website</code>, which must be empty.</p>
 <table>
   <tr><th>Status</th><th>Body</th><th>When</th></tr>
-  <tr><td>200</td><td><code>{"ok":true,"id":"&lt;TEM email id&gt;"}</code></td><td>TEM accepted the email.</td></tr>
+  <tr><td>200</td><td><code>{"ok":true,"id":"&lt;Message-ID&gt;"}</code></td><td>The TEM relay accepted the email for contact@moiraemoss.com.</td></tr>
   <tr><td>200</td><td><code>{"ok":true}</code></td><td>The honeypot was filled. Nothing is sent, and the bot is not told.</td></tr>
   <tr><td>204</td><td>empty</td><td>CORS preflight from an allowed origin.</td></tr>
   <tr><td>400</td><td><code>{"ok":false,"error":"invalid_fields","fields":[...]}</code></td><td>A field is missing, too long, has control characters, or the email is not address-shaped. Also <code>malformed_body</code> for bad JSON.</td></tr>
@@ -62,8 +63,8 @@ If the variable is unset or empty at build time, the form falls back to opening 
   <tr><td>413</td><td><code>{"ok":false,"error":"payload_too_large"}</code></td><td>Body over 32 KiB.</td></tr>
   <tr><td>415</td><td><code>{"ok":false,"error":"unsupported_media_type"}</code></td><td>Any other content type.</td></tr>
   <tr><td>429</td><td><code>{"ok":false,"error":"rate_limited"}</code> with <code>Retry-After</code></td><td>More than 5 posts from one IP in 10 minutes.</td></tr>
-  <tr><td>500</td><td><code>{"ok":false,"error":"not_configured"}</code></td><td>The function's secrets are missing.</td></tr>
-  <tr><td>502</td><td><code>{"ok":false,"error":"send_failed"}</code></td><td>TEM refused the email or could not be reached. The reason is written to the function's logs, not returned.</td></tr>
+  <tr><td>500</td><td><code>{"ok":false,"error":"not_configured"}</code></td><td>The SMTP username or password is not set on the function.</td></tr>
+  <tr><td>502</td><td><code>{"ok":false,"error":"send_failed"}</code></td><td>The relay refused the email or could not be reached in time. The reason is written to the function's logs, not returned.</td></tr>
 </table>
 <p>Allowed origins are <code>https://moiraemoss.com</code>, plus <code>http://localhost</code> and <code>http://127.0.0.1</code> on any port for development.</p>
 <p>Field limits: first and last name 100 characters each, email 254, message 5000.</p>
@@ -76,12 +77,13 @@ If spam gets through, add a challenge such as Cloudflare Turnstile (see follow-u
 
 <h2>Secrets and configuration</h2>
 <p>No secret is in the repository.
-The function reads these environment variables, which <code>deploy.sh</code> sets as Scaleway <em>secret</em> environment variables on the function:</p>
+The function sends with the existing Scaleway IAM application <code>stalwart-smtp</code>, whose only permission is <code>TransactionalEmailEmailSmtpCreate</code>.
+<code>deploy.sh</code> sets these variables on the function:</p>
 <table>
-  <tr><th>Variable</th><th>Value</th></tr>
-  <tr><td><code>TEM_SECRET_KEY</code></td><td>Secret key of an IAM application that holds only <code>TransactionalEmailEmailFullAccess</code>.</td></tr>
-  <tr><td><code>TEM_PROJECT_ID</code></td><td>The Scaleway project that owns the moiraemoss.com TEM domain.</td></tr>
-  <tr><td><code>TEM_REGION</code> (optional)</td><td>Defaults to <code>fr-par</code>, the only region TEM runs in.</td></tr>
+  <tr><th>Variable</th><th>Kind</th><th>Value</th></tr>
+  <tr><td><code>TEM_SMTP_USERNAME</code></td><td>plain</td><td>The Project ID that owns the moiraemoss.com TEM domain. It is public anyway: it is the DKIM selector in DNS.</td></tr>
+  <tr><td><code>TEM_SMTP_PASSWORD</code></td><td>secret</td><td>The secret key of <code>stalwart-smtp</code>.</td></tr>
+  <tr><td><code>TEM_SMTP_PORT</code> (optional)</td><td>plain</td><td>Defaults to 465. 2465 (TLS) and 587 or 2587 (STARTTLS) also work if a port is ever blocked.</td></tr>
 </table>
 <p>The deploy script reads its inputs from an env file kept outside every repository, mode 0600, at <code>~/.config/scaleway/moiraemoss-contact-form.env</code>:</p>
 <pre><code>SCW_DEFAULT_ORGANIZATION_ID=...
@@ -89,22 +91,23 @@ SCW_DEFAULT_PROJECT_ID=...
 SCW_DEFAULT_REGION=fr-par
 SCW_DEPLOY_ACCESS_KEY=...   # IAM application with FunctionsFullAccess only
 SCW_DEPLOY_SECRET_KEY=...
-SCW_TEM_SECRET_KEY=...      # IAM application with TransactionalEmailEmailFullAccess only</code></pre>
+SCW_TEM_SMTP_PASSWORD=...   # secret key of the stalwart-smtp IAM application</code></pre>
 <p>The script deploys with the deploy key only.
 It points <code>SCW_CONFIG_PATH</code> at an empty temporary path, so any other Scaleway profile on the machine is ignored.</p>
 
 <h2>Deploy and redeploy</h2>
-<p>You need the <a href="https://github.com/scaleway/scaleway-cli/releases">Scaleway CLI</a> (<code>scw</code>, v2.62 or later), <code>jq</code> and <code>zip</code> on <code>PATH</code>.
+<p>You need the <a href="https://github.com/scaleway/scaleway-cli/releases">Scaleway CLI</a> (<code>scw</code>, v2.62 or later), <code>jq</code>, <code>zip</code> and <code>npm</code> on <code>PATH</code>.
 The same command does the first deploy and every redeploy:</p>
 <pre><code>functions/contact/deploy.sh ~/.config/scaleway/moiraemoss-contact-form.env</code></pre>
 <p>It is safe to run again. Each run:</p>
 <ol>
   <li>Finds or creates the <code>moiraemoss</code> function namespace in the project, and waits for it to be ready.</li>
-  <li>Finds or creates the <code>contact</code> function, and sets its runtime (<code>node24</code>), handler, scaling (0 to 2 instances, 128 MB, 30 s timeout), public access, HTTPS redirect and secrets.</li>
-  <li>Zips <code>handler.js</code>, <code>contract.js</code> and <code>package.json</code>, uploads the zip, and deploys it.</li>
+  <li>Finds or creates the <code>contact</code> function, and sets its runtime (<code>node24</code>), handler, scaling (0 to 2 instances, 128 MB, 20 s timeout), public access, HTTPS redirect and SMTP credentials.</li>
+  <li>Copies the function's files to a temporary directory, installs its production dependencies from <code>package-lock.json</code>, zips the result with <code>node_modules</code>, uploads it and deploys it.</li>
   <li>Prints the function status and its public endpoint, <code>https://&lt;id&gt;.functions.fnc.fr-par.scw.cloud</code>.</li>
 </ol>
-<p>To rotate the TEM key, create a new key for the TEM IAM application, put it in the env file, run the script again, then delete the old key.</p>
+<p>To rotate the SMTP password, create a new API key for <code>stalwart-smtp</code>, put its secret in the env file, run the script again, then delete the old key.
+Anything else that uses <code>stalwart-smtp</code> needs the new key too.</p>
 
 <h3>Point the site at the function</h3>
 <p>The site build reads the endpoint from the GitHub repository variable <code>NEXT_PUBLIC_CONTACT_ENDPOINT</code> (a variable, not a secret, because the URL is public in the built JavaScript anyway).
@@ -119,9 +122,9 @@ The function accepts <code>http://localhost</code> origins, so a local build can
   -H 'Origin: https://moiraemoss.com' \
   -H 'Content-Type: application/json' \
   -d '{"firstName":"Test","lastName":"Message","email":"you@example.com","message":"Test from the deploy doc."}'</code></pre>
-<p>A <code>{"ok":true,"id":"..."}</code> reply means TEM accepted the email.
+<p>A <code>{"ok":true,"id":"..."}</code> reply means the TEM relay accepted the email.
 Delivery is confirmed only when the message arrives in the contact@moiraemoss.com mailbox.
-The TEM section of the Scaleway console shows each email's status (<code>new</code>, <code>sending</code>, <code>sent</code>, <code>failed</code>), and the function's logs show every rejection with its reason.</p>
+The TEM section of the Scaleway console shows each email's status (<code>new</code>, <code>sending</code>, <code>sent</code>, <code>failed</code>), and the function's logs show the relay's reply for every send and the reason for every rejection.</p>
 
 <h2>Follow-ups not built yet</h2>
 <ul>

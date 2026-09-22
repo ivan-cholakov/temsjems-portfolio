@@ -20,7 +20,7 @@ export type SendResult =
   | { ok: true }
   | { ok: false; message: string };
 
-const RESPONSE_TIMEOUT_MS = 15_000;
+const RESPONSE_TIMEOUT_MS = 25_000;
 
 const FIELD_NAMES: Record<keyof Enquiry, string> = {
   firstName: "first name",
