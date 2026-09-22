@@ -34,6 +34,7 @@ jobs:
       - run: pnpm build
         env:
           NEXT_PUBLIC_PLAUSIBLE_SRC: ${{ secrets.NEXT_PUBLIC_PLAUSIBLE_SRC }}
+          NEXT_PUBLIC_CONTACT_ENDPOINT: ${{ vars.NEXT_PUBLIC_CONTACT_ENDPOINT }}
 
       - uses: actions/upload-pages-artifact@v5
         with:
