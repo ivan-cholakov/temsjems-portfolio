@@ -34,14 +34,14 @@ function setup({ fail, configured = true } = {}) {
   return { handle, sent, logs, advance: (ms) => { clock += ms; } };
 }
 
-function post(body, { origin = "https://moiraemoss.com", type = "application/json", ip = "203.0.113.7", base64 = false } = {}) {
+function post(body, { origin = "https://moiraemoss.com", type = "application/json", ip = "203.0.113.7", forged, base64 = false } = {}) {
   const raw = typeof body === "string" ? body : JSON.stringify(body);
   return {
     httpMethod: "POST",
     headers: {
       ...(origin ? { Origin: origin } : {}),
       ...(type ? { "Content-Type": type } : {}),
-      "X-Forwarded-For": `${ip}, 10.0.0.1`,
+      "X-Forwarded-For": forged ? `${forged}, ${ip}` : ip,
     },
     body: base64 ? Buffer.from(raw).toString("base64") : raw,
     isBase64Encoded: base64,
@@ -51,15 +51,13 @@ function post(body, { origin = "https://moiraemoss.com", type = "application/jso
 const json = (response) => JSON.parse(response.body);
 
 describe("origins", () => {
-  it("allows the site and local development only", () => {
+  it("allows the site origin only", () => {
     assert.equal(isAllowedOrigin("https://moiraemoss.com"), true);
-    assert.equal(isAllowedOrigin("http://localhost:3000"), true);
-    assert.equal(isAllowedOrigin("http://127.0.0.1:4173"), true);
-    assert.equal(isAllowedOrigin("http://localhost"), true);
     assert.equal(isAllowedOrigin("https://www.moiraemoss.com"), false);
     assert.equal(isAllowedOrigin("http://moiraemoss.com"), false);
     assert.equal(isAllowedOrigin("https://moiraemoss.com.evil.test"), false);
-    assert.equal(isAllowedOrigin("http://localhost.evil.test"), false);
+    assert.equal(isAllowedOrigin("http://localhost:3000"), false);
+    assert.equal(isAllowedOrigin("http://127.0.0.1:4173"), false);
     assert.equal(isAllowedOrigin(undefined), false);
   });
 
@@ -113,15 +111,11 @@ describe("sending", () => {
     assert.match(message.text, /Name: Ada Lovelace\nEmail: ada@example.com\n\nI would like to ask about Saturn\./);
   });
 
-  it("accepts form-encoded and base64-encoded bodies", async () => {
+  it("accepts base64-encoded bodies", async () => {
     const { handle, sent } = setup();
-    const form = new URLSearchParams({ ...VALID, website: "" }).toString();
-    const encoded = await handle(post(form, { type: "application/x-www-form-urlencoded; charset=UTF-8" }));
-    assert.equal(encoded.statusCode, 200);
-
-    const base64 = await handle(post(VALID, { base64: true, ip: "198.51.100.2" }));
+    const base64 = await handle(post(VALID, { base64: true }));
     assert.equal(base64.statusCode, 200);
-    assert.equal(sent.length, 2);
+    assert.equal(sent.length, 1);
   });
 
   it("trims fields before sending", async () => {
@@ -169,9 +163,14 @@ describe("rejections", () => {
   });
 
   it("rejects unsupported and malformed bodies", async () => {
-    const { handle } = setup();
+    const { handle, sent } = setup();
     const text = await handle(post("hello", { type: "text/plain" }));
     assert.equal(text.statusCode, 415);
+    const form = new URLSearchParams({ ...VALID, website: "" }).toString();
+    const encoded = await handle(post(form, { type: "application/x-www-form-urlencoded; charset=UTF-8", ip: "198.51.100.2" }));
+    assert.equal(encoded.statusCode, 415);
+    assert.equal(json(encoded).error, "unsupported_media_type");
+    assert.equal(sent.length, 0);
     const broken = await handle(post("{not json", { ip: "198.51.100.3" }));
     assert.equal(broken.statusCode, 400);
     assert.equal(json(broken).error, "malformed_body");
@@ -232,5 +231,17 @@ describe("rate limiting", () => {
 
     advance(RATE_LIMIT.windowMs);
     assert.equal((await handle(post(VALID))).statusCode, 200);
+  });
+
+  it("keys on the last forwarded address, so a forged leading entry does not escape the limit", async () => {
+    const { handle, sent } = setup();
+    for (let i = 0; i < RATE_LIMIT.max; i++) {
+      assert.equal((await handle(post(VALID, { forged: `198.51.100.${i}` }))).statusCode, 200);
+    }
+    const forged = await handle(post(VALID, { forged: "198.51.100.99" }));
+    assert.equal(forged.statusCode, 429);
+    const plain = await handle(post(VALID));
+    assert.equal(plain.statusCode, 429);
+    assert.equal(sent.length, RATE_LIMIT.max);
   });
 });

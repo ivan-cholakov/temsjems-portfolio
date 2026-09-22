@@ -51,7 +51,7 @@ The function checks the request and sends one email through the SMTP relay of Sc
 If the variable is unset or empty at build time, the form falls back to opening a <code>mailto:</code> link to <code>SITE.email</code> in the visitor's own mail app, so a local build without the variable still works.</p>
 
 <h2>Request and response</h2>
-<p><code>POST</code> with <code>Content-Type: application/json</code> or <code>application/x-www-form-urlencoded</code>, carrying <code>firstName</code>, <code>lastName</code>, <code>email</code>, <code>message</code> and the honeypot field <code>website</code>, which must be empty.</p>
+<p><code>POST</code> with <code>Content-Type: application/json</code>, carrying <code>firstName</code>, <code>lastName</code>, <code>email</code>, <code>message</code> and the honeypot field <code>website</code>, which must be empty.</p>
 <table>
   <tr><th>Status</th><th>Body</th><th>When</th></tr>
   <tr><td>200</td><td><code>{"ok":true,"id":"&lt;Message-ID&gt;"}</code></td><td>The TEM relay accepted the email for contact@moiraemoss.com.</td></tr>
@@ -66,10 +66,14 @@ If the variable is unset or empty at build time, the form falls back to opening 
   <tr><td>500</td><td><code>{"ok":false,"error":"not_configured"}</code></td><td>The SMTP username or password is not set on the function.</td></tr>
   <tr><td>502</td><td><code>{"ok":false,"error":"send_failed"}</code></td><td>The relay refused the email or could not be reached in time. The reason is written to the function's logs, not returned.</td></tr>
 </table>
-<p>Allowed origins are <code>https://moiraemoss.com</code>, plus <code>http://localhost</code> and <code>http://127.0.0.1</code> on any port for development.</p>
+<p>The only allowed origin is <code>https://moiraemoss.com</code>.</p>
 <p>Field limits: first and last name 100 characters each, email 254, message 5000.</p>
 
-<h3>Rate limit caveat</h3>
+<h3>Rate limit</h3>
+<p>The limiter keys each request on the last entry of the <code>X-Forwarded-For</code> header, which is the address the Scaleway platform appends.
+Observed against the deployed function on 2026-09-22: Scaleway keeps any <code>X-Forwarded-For</code> value the client sends as the leading entries and appends the real client address after them, so the first entry is attacker-controlled and only the last one can be trusted.
+In that probe, posts with an invalid body from one client hit 429 after 5; the same client sending a fresh forged leading value on every request was, with the first entry as the key, never limited.
+The unit tests cover the same case: a different forged leading entry on each request still counts against the real address.</p>
 <p>The per-IP rate limit is kept in memory inside each function instance.
 It resets when an instance scales to zero after being idle, and each instance keeps its own count (the function scales to at most 2 instances).
 That is enough to stop one client from flooding the inbox in a burst, but it is not a durable quota.
@@ -83,8 +87,8 @@ The function sends with the existing Scaleway IAM application <code>stalwart-smt
   <tr><th>Variable</th><th>Kind</th><th>Value</th></tr>
   <tr><td><code>TEM_SMTP_USERNAME</code></td><td>plain</td><td>The Project ID that owns the moiraemoss.com TEM domain. It is public anyway: it is the DKIM selector in DNS.</td></tr>
   <tr><td><code>TEM_SMTP_PASSWORD</code></td><td>secret</td><td>The secret key of <code>stalwart-smtp</code>.</td></tr>
-  <tr><td><code>TEM_SMTP_PORT</code> (optional)</td><td>plain</td><td>Defaults to 465. 2465 (TLS) and 587 or 2587 (STARTTLS) also work if a port is ever blocked.</td></tr>
 </table>
+<p>The relay host and port are fixed in <code>handler.js</code>: <code>smtp.tem.scaleway.com</code> on 465 with implicit TLS.</p>
 <p>The deploy script reads its inputs from an env file kept outside every repository, mode 0600, at <code>~/.config/scaleway/moiraemoss-contact-form.env</code>:</p>
 <pre><code>SCW_DEFAULT_PROJECT_ID=...
 SCW_DEFAULT_ORGANIZATION_ID=... # optional, defaults to the project id
@@ -116,7 +120,8 @@ Set it once, then rebuild the site:</p>
 <pre><code>gh variable set NEXT_PUBLIC_CONTACT_ENDPOINT --body "https://&lt;id&gt;.functions.fnc.fr-par.scw.cloud"
 gh workflow run deploy.yml</code></pre>
 <p>For a local build, put the same line in <code>.env.local</code> (see <code>.env.example</code>).
-The function accepts <code>http://localhost</code> origins, so a local build can post to the deployed function.</p>
+The function accepts only the <code>https://moiraemoss.com</code> origin, so a browser on localhost cannot post to the deployed function.
+Exercise the function locally through its unit tests or a local harness such as the Scaleway function emulator, not through the live function.</p>
 
 <h2>Checking it works</h2>
 <pre><code>curl -sS -X POST "$ENDPOINT" \

@@ -1,7 +1,6 @@
 import { FIELD_LIMITS, HONEYPOT_FIELD } from "./contract.js";
 
 export const SITE_ORIGIN = "https://moiraemoss.com";
-const LOCAL_ORIGIN = /^http:\/\/(localhost|127\.0\.0\.1)(:\d{1,5})?$/;
 
 export const FROM = { address: "website@moiraemoss.com", name: "Moirae Moss website" };
 export const TO = { address: "contact@moiraemoss.com", name: "Moirae Moss" };
@@ -39,7 +38,7 @@ export function createRateLimiter({ max, windowMs }) {
 }
 
 export function isAllowedOrigin(origin) {
-  return origin === SITE_ORIGIN || LOCAL_ORIGIN.test(origin ?? "");
+  return origin === SITE_ORIGIN;
 }
 
 function header(event, name) {
@@ -53,7 +52,7 @@ function header(event, name) {
 
 function clientIp(event) {
   const forwarded = header(event, "x-forwarded-for");
-  if (forwarded) return forwarded.split(",")[0].trim();
+  if (forwarded) return forwarded.split(",").at(-1).trim();
   return header(event, "x-real-ip") ?? "unknown";
 }
 
@@ -76,10 +75,6 @@ export function parseBody(contentType, body) {
       return { ok: false, status: 400, error: "malformed_body" };
     }
     return { ok: true, data };
-  }
-
-  if (type === "application/x-www-form-urlencoded") {
-    return { ok: true, data: Object.fromEntries(new URLSearchParams(body)) };
   }
 
   return { ok: false, status: 415, error: "unsupported_media_type" };

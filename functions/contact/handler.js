@@ -3,17 +3,16 @@ import nodemailer from "nodemailer";
 import { createHandler } from "./contact.js";
 
 const SMTP_HOST = "smtp.tem.scaleway.com";
+const SMTP_PORT = 465;
 const SMTP_TIMEOUTS = { connectionTimeout: 5_000, greetingTimeout: 5_000, socketTimeout: 8_000 };
 
 export function createSmtpSender(env) {
   if (!env.TEM_SMTP_USERNAME || !env.TEM_SMTP_PASSWORD) return null;
 
-  const port = Number(env.TEM_SMTP_PORT || 465);
   const transport = nodemailer.createTransport({
     host: SMTP_HOST,
-    port,
-    secure: port === 465 || port === 2465,
-    requireTLS: true,
+    port: SMTP_PORT,
+    secure: true,
     auth: { user: env.TEM_SMTP_USERNAME, pass: env.TEM_SMTP_PASSWORD },
     ...SMTP_TIMEOUTS,
   });
