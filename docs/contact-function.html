@@ -86,12 +86,13 @@ The function sends with the existing Scaleway IAM application <code>stalwart-smt
   <tr><td><code>TEM_SMTP_PORT</code> (optional)</td><td>plain</td><td>Defaults to 465. 2465 (TLS) and 587 or 2587 (STARTTLS) also work if a port is ever blocked.</td></tr>
 </table>
 <p>The deploy script reads its inputs from an env file kept outside every repository, mode 0600, at <code>~/.config/scaleway/moiraemoss-contact-form.env</code>:</p>
-<pre><code>SCW_DEFAULT_ORGANIZATION_ID=...
-SCW_DEFAULT_PROJECT_ID=...
+<pre><code>SCW_DEFAULT_PROJECT_ID=...
+SCW_DEFAULT_ORGANIZATION_ID=... # optional, defaults to the project id
 SCW_DEFAULT_REGION=fr-par
 SCW_DEPLOY_ACCESS_KEY=...   # IAM application with FunctionsFullAccess only
 SCW_DEPLOY_SECRET_KEY=...
 SCW_TEM_SMTP_PASSWORD=...   # secret key of the stalwart-smtp IAM application</code></pre>
+<p>The CLI needs an organization id. When the file does not set one, the script uses the project id, which is the organization id when the project is the organization's default project.</p>
 <p>The script deploys with the deploy key only.
 It points <code>SCW_CONFIG_PATH</code> at an empty temporary path, so any other Scaleway profile on the machine is ignored.</p>
 

@@ -27,6 +27,7 @@ export SCW_CONFIG_PATH=$workdir/no-config.yaml
 export SCW_ACCESS_KEY=$SCW_DEPLOY_ACCESS_KEY
 export SCW_SECRET_KEY=$SCW_DEPLOY_SECRET_KEY
 export SCW_DEFAULT_REGION=${SCW_DEFAULT_REGION:-fr-par}
+export SCW_DEFAULT_ORGANIZATION_ID=${SCW_DEFAULT_ORGANIZATION_ID:-$SCW_DEFAULT_PROJECT_ID}
 unset SCW_PROFILE SCW_API_URL
 
 namespace_id=$(scw function namespace list name="$namespace_name" project-id="$SCW_DEFAULT_PROJECT_ID" -o json \
