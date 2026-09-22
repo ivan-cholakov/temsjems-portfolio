@@ -133,7 +133,7 @@ export const SITE = {
     "Sofia",
     "contemporary art",
   ],
-  email: "artteomira@gmail.com",
+  email: "contact@moiraemoss.com",
   portrait: {
     src: "/art/about/portrait.webp",
     width: 1120,
