@@ -262,6 +262,18 @@ export const CV: ReadonlyArray<CvSection> = [
     ],
   },
   {
+    heading: "Residencies",
+    yearSeparator: ",",
+    entries: [
+      {
+        year: "2026",
+        work: { lead: null, title: "PAKT – Artivist Residency" },
+        venue:
+          "GLAS Foundation & Community Centre “Badeshte Sega 2006”, Gudevitsa, Rhodope Mountains",
+      },
+    ],
+  },
+  {
     heading: "Exhibitions",
     yearSeparator: ",",
     entries: [
@@ -291,6 +303,11 @@ export const CV: ReadonlyArray<CvSection> = [
     heading: "Workshops",
     yearSeparator: ",",
     entries: [
+      {
+        year: "2026",
+        work: { lead: null, title: "Monoprint Workshop" },
+        venue: "Magnit, Sofia",
+      },
       {
         year: "2026",
         work: { lead: null, title: "Botanical Impressions" },
