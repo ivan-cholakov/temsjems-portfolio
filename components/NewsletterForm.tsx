@@ -3,7 +3,7 @@
 import { useState } from "react";
 
 import { track } from "@/lib/analytics";
-import { subscribe } from "@/lib/mailchimp";
+import { subscribe } from "@/lib/listmonk";
 
 // Submit lifecycle as a sum type — no invalid combinations of loading/error/done
 // booleans, and each state carries exactly the data that state needs.
