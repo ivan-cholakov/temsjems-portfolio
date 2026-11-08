@@ -9,9 +9,9 @@ type SeriesEntry = {
 };
 
 /**
- * The bodies of work the Work menu offers, in menu order. Every work belongs to
- * exactly one, so there is no unfiled state and no "all works" filter to build:
- * "Other work" is where a piece goes when it is not part of a series.
+ * The bodies of work the Work menu offers after "All", in menu order. Every
+ * work belongs to exactly one, so there is no unfiled state: "Other work" is
+ * where a piece goes when it is not part of a series.
  */
 const SERIES_ENTRIES = [
   { slug: "the-fabric-of",       title: "The Fabric of",       intro: null },
@@ -56,6 +56,10 @@ export type Project = {
   year: string | null;
   /** Technique and support, e.g. "Ink, pen and brush on paper". */
   medium: string | null;
+  /** Where the work sits in a larger piece, in the artist's words, e.g. "Part I of the polyptych “The Fabric of”". */
+  partOf: string | null;
+  /** Exhibitions the work has been shown in, one line each as the artist writes it. */
+  exhibited: ReadonlyArray<string>;
   /** Long-form description for the detail page. Null until written. */
   body: string | null;
   /** Hero image - path under /public. Works are photographed at 4:5, 2000 × 2500. */
@@ -67,14 +71,18 @@ export type Project = {
   extraImages?: ExtraImage[];
 };
 
-export type CatalogDetail = { label: "Size" | "Year" | "Technique"; value: string };
+export type CatalogDetail = { label: "Year" | "Part of" | "Technique" | "Size"; value: string };
 
-/** The catalog line of a work - size, year, technique - leaving out what is not yet known. */
+/**
+ * The catalog lines of a work in the order the artist sets them - year, place
+ * in a larger piece, technique, size - leaving out what is not yet known.
+ */
 export function catalogDetails(project: Project): CatalogDetail[] {
   const details: Array<{ label: CatalogDetail["label"]; value: string | null }> = [
-    { label: "Size", value: project.size },
     { label: "Year", value: project.year },
+    { label: "Part of", value: project.partOf },
     { label: "Technique", value: project.medium },
+    { label: "Size", value: project.size },
   ];
   return details.filter((d): d is CatalogDetail => d.value !== null);
 }
@@ -353,7 +361,9 @@ export const PROJECTS: Project[] = [
     series: "the-fabric-of",
     size: "54 × 58 cm",
     year: "2026",
-    medium: "Linocut on reclaimed woven polypropylene, framed with raw branches",
+    medium: "Linocut on reclaimed polypropylene sack, thread, branches",
+    partOf: "Part I of the polyptych “The Fabric of”",
+    exhibited: ["10th National Exhibition “Graphic Forum”, Lubor Bayer Exhibition Hall, Stara Zagora, 2026"],
     body: null,
     image: "/art/work/the-fabric-of-touch.webp",
     width: 2000,
@@ -363,9 +373,11 @@ export const PROJECTS: Project[] = [
     slug: "the-fabric-of-threads",
     title: "The Fabric of Threads",
     series: "the-fabric-of",
-    size: null,
-    year: null,
-    medium: null,
+    size: "54 × 58 cm",
+    year: "2026",
+    medium: "Linocut on reclaimed polypropylene sack, thread, branches",
+    partOf: "Part II of the polyptych “The Fabric of”",
+    exhibited: ["10th National Exhibition “Graphic Forum”, Lubor Bayer Exhibition Hall, Stara Zagora, 2026"],
     body: null,
     image: "/art/work/the-fabric-of-threads.webp",
     width: 2000,
@@ -375,9 +387,11 @@ export const PROJECTS: Project[] = [
     slug: "the-fabric-of-grasping",
     title: "The Fabric of Grasping",
     series: "the-fabric-of",
-    size: null,
-    year: null,
-    medium: null,
+    size: "57 × 59 cm",
+    year: "2026",
+    medium: "Linocut on reclaimed polypropylene sack, thread, branches",
+    partOf: "Part III of the polyptych “The Fabric of”",
+    exhibited: [],
     body: null,
     image: "/art/work/the-fabric-of-grasping.webp",
     width: 2000,
@@ -388,9 +402,11 @@ export const PROJECTS: Project[] = [
     slug: "spirit-of-the-stage",
     title: "Spirit of the Stage",
     series: "ex-libris",
-    size: null,
-    year: null,
-    medium: null,
+    size: "17 × 11.5 cm",
+    year: "2026",
+    medium: "Linocut",
+    partOf: null,
+    exhibited: [],
     body: null,
     image: "/art/work/spirit-of-the-stage.webp",
     width: 2000,
@@ -400,9 +416,11 @@ export const PROJECTS: Project[] = [
     slug: "ivan-vazov-national-theatre",
     title: "Ivan Vazov National Theatre",
     series: "ex-libris",
-    size: null,
-    year: null,
-    medium: null,
+    size: "18 × 16 cm",
+    year: "2026",
+    medium: "Linocut",
+    partOf: null,
+    exhibited: [],
     body: null,
     image: "/art/work/ivan-vazov-national-theatre.webp",
     width: 2000,
@@ -412,9 +430,11 @@ export const PROJECTS: Project[] = [
     slug: "ancient-theatre-plovdiv",
     title: "Ancient Theatre Plovdiv",
     series: "ex-libris",
-    size: null,
-    year: null,
-    medium: null,
+    size: "17 × 10 cm",
+    year: "2026",
+    medium: "Linocut",
+    partOf: null,
+    exhibited: [],
     body: null,
     image: "/art/work/ancient-theatre-plovdiv.webp",
     width: 2000,
@@ -424,9 +444,11 @@ export const PROJECTS: Project[] = [
     slug: "vrana-palace",
     title: "Vrana Palace",
     series: "ex-libris",
-    size: null,
-    year: null,
-    medium: null,
+    size: "19 × 12 cm",
+    year: "2026",
+    medium: "Linocut",
+    partOf: null,
+    exhibited: [],
     body: null,
     image: "/art/work/vrana-palace.webp",
     width: 2000,
@@ -440,6 +462,8 @@ export const PROJECTS: Project[] = [
     size: "30 × 42 cm",
     year: "2026",
     medium: "Ink, pen and brush on paper",
+    partOf: null,
+    exhibited: [],
     body: "Selected for presentation in Dissonances, a national contemporary visual arts exhibition-competition held at the Art Gallery – Ruse (14 March – 12 April 2026), bringing together 147 artists from across Bulgaria.",
     image: "/art/home/cyclical-dissonance.webp",
     width: 1800,
@@ -452,6 +476,8 @@ export const PROJECTS: Project[] = [
     size: "12 × 28 cm",
     year: "2020",
     medium: "Siligraphy, toner-lavis",
+    partOf: null,
+    exhibited: [],
     body: null,
     image: "/art/home/stardust.webp",
     width: 1600,
@@ -465,6 +491,8 @@ export const PROJECTS: Project[] = [
     size: "65 × 42 cm",
     year: "2026",
     medium: "Linocut on a sisal sack with natural wood",
+    partOf: null,
+    exhibited: [],
     body: null,
     image: "/art/home/indigo-lake.webp",
     width: 1600,
@@ -477,6 +505,8 @@ export const PROJECTS: Project[] = [
     size: "50 × 80 cm",
     year: "2023",
     medium: "Deconstructed linocut collage on raw burlap",
+    partOf: null,
+    exhibited: [],
     body: null,
     image: "/art/home/saturn.png",
     width: 1690,

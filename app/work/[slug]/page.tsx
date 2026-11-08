@@ -120,6 +120,14 @@ export default async function ProjectPage(
               </dl>
             )}
 
+            {project.exhibited.length > 0 && (
+              <ul className="mt-6 max-w-[60ch] space-y-2 text-lead leading-snug">
+                {project.exhibited.map((exhibition) => (
+                  <li key={exhibition}>Exhibited: {exhibition}</li>
+                ))}
+              </ul>
+            )}
+
             {project.body && (
               <p className="mt-6 max-w-[60ch] leading-relaxed">{project.body}</p>
             )}
