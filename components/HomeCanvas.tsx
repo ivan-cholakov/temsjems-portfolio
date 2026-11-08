@@ -239,7 +239,7 @@ export function HomeCanvas() {
                   alt={p.title}
                   width={p.width}
                   height={p.height}
-                  priority={i < CARDS_IN_VIEW || p.lcp}
+                  priority={i < CARDS_IN_VIEW}
                   draggable={false}
                   className={
                     isLandscape

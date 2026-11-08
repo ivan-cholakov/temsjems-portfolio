@@ -2,13 +2,14 @@
 
 /* ---------------------------------------------------------------------- */
 /*  Design tokens — palette aligned to the sage-olive M monogram in the   */
-/*  logo. Paper is a warm cream, ink is a deep warm charcoal, the muted   */
-/*  tone is the logo's sage. The artwork remains the loudest colour on    */
-/*  every page.                                                           */
+/*  logo. Paper is plain white, so the works, photographed on white, sit  */
+/*  on the page without a frame of their own; ink is a deep warm          */
+/*  charcoal, the muted tone is the logo's sage. The artwork remains the  */
+/*  loudest colour on every page.                                         */
 /* ---------------------------------------------------------------------- */
 
 @theme {
-  --color-paper:  #faf7ed;   /* soft warm cream, harmonises with sage */
+  --color-paper:  #ffffff;
   --color-ink:    #1f2017;   /* deep warm charcoal with olive cast */
   --color-mute:   #a0a876;   /* sage olive — the M monogram itself */
   --color-accent: #a0a876;   /* alias for hover / decorative use */
@@ -169,6 +170,19 @@
   .underline-link:hover::after {
     transform: scaleX(0);
     transform-origin: 100% 50%;
+  }
+  /* The .underline-link hairline for text that may wrap: drawn line by line,
+     so a two-line title is underlined under its words, not across its box. */
+  .underline-text {
+    background: linear-gradient(currentColor, currentColor) 0 100% / 100% 1px no-repeat;
+    -webkit-box-decoration-break: clone;
+    box-decoration-break: clone;
+    padding-bottom: 1px;
+    transition: background-size 220ms ease;
+  }
+  .underline-text:hover {
+    background-position: 100% 100%;
+    background-size: 0 1px;
   }
   .no-scrollbar {
     -ms-overflow-style: none;

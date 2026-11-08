@@ -1,4 +1,4 @@
-import { mediumOf, runsText, SITE, SOCIAL_CHANNELS, type Project } from "@/content/site";
+import { runsText, SITE, SOCIAL_CHANNELS, type Project } from "@/content/site";
 import type { Post } from "@/content/blog";
 
 const SCHEMA_CONTEXT = "https://schema.org";
@@ -65,9 +65,9 @@ export function artworkSchema(project: Project) {
     name: project.title,
     creator: { "@type": "Person", name: SITE.artist },
     artform: "Printmaking",
-    artMedium: mediumOf(project),
     image: new URL(project.image, SITE.url).toString(),
     url: new URL(`/work/${project.slug}`, SITE.url).toString(),
+    ...(project.medium ? { artMedium: project.medium } : {}),
   };
   return project.body ? { ...base, description: project.body } : base;
 }

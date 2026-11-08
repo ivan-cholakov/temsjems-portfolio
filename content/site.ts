@@ -1,26 +1,38 @@
 import type { AnalyticsEvent } from "@/lib/analytics";
 
-export type Category =
-  | "monoprint-ink"
-  | "printmaking-collage";
-
-export const CATEGORIES: ReadonlyArray<{ value: Category; label: string }> = [
-  { value: "monoprint-ink",       label: "Monoprint & Ink" },
-  { value: "printmaking-collage", label: "Printmaking & Collage" },
-];
-
-// Exhaustive over Category — adding a new variant forces an answer here,
-// so the medium label can never silently fall back to a wrong default.
-export const DEFAULT_MEDIUM_BY_CATEGORY: Record<Category, string> = {
-  "monoprint-ink":       "Monoprint",
-  "printmaking-collage": "Linocut collage",
+type SeriesEntry = {
+  slug: string;
+  /** As the Work menu prints it, and the heading of the series page. */
+  title: string;
+  /** Short text set under the heading. Null until the artist supplies it. */
+  intro: string | null;
 };
 
-export function mediumOf(project: Pick<Project, "medium" | "category">): string {
-  if (project.medium) return project.medium;
-  if (project.category) return DEFAULT_MEDIUM_BY_CATEGORY[project.category];
-  return "Mixed media";
+/**
+ * The bodies of work the Work menu offers, in menu order. Every work belongs to
+ * exactly one, so there is no unfiled state and no "all works" filter to build:
+ * "Other work" is where a piece goes when it is not part of a series.
+ */
+const SERIES_ENTRIES = [
+  { slug: "the-fabric-of",       title: "The Fabric of",       intro: null },
+  { slug: "ex-libris",           title: "Ex libris",           intro: null },
+  { slug: "cyclical-dissonance", title: "Cyclical Dissonance", intro: null },
+  { slug: "other-work",          title: "Other work",          intro: null },
+] as const satisfies ReadonlyArray<SeriesEntry>;
+
+/** The slug union is read off the list, so a series cannot be named without being listed. */
+export type SeriesSlug = (typeof SERIES_ENTRIES)[number]["slug"];
+export type Series = SeriesEntry & { slug: SeriesSlug };
+
+export const SERIES: ReadonlyArray<Series> = SERIES_ENTRIES;
+
+export function seriesBySlug(slug: SeriesSlug): Series {
+  const series = SERIES.find((s) => s.slug === slug);
+  if (!series) throw new Error(`No series: ${slug}`);
+  return series;
 }
+
+export const seriesPath = (slug: SeriesSlug): string => `/work/series/${slug}`;
 
 export type ExtraImage = {
   src: string;
@@ -37,30 +49,35 @@ export type ExtraImage = {
 export type Project = {
   slug: string;
   title: string;
-  /** One-line subtitle used on cards and detail hero. */
-  tagline: string | null;
+  series: SeriesSlug;
+  /** Physical dimensions as the artist writes them, e.g. "54 × 58 cm". */
+  size: string | null;
+  /** Year(s) the work was made. */
+  year: string | null;
+  /** Technique and support, e.g. "Ink, pen and brush on paper". */
+  medium: string | null;
   /** Long-form description for the detail page. Null until written. */
   body: string | null;
-  /** Year(s) the work was made — exposed as brutalist metadata stamp. */
-  year: string | null;
-  /** Medium label, e.g. "Ink, pen and brush on paper". */
-  medium: string | null;
-  /** Body of work this piece belongs to. Null = unclassified (only shown under "All"). */
-  category: Category | null;
-  /** Hero image — path under /public. */
+  /** Hero image - path under /public. Works are photographed at 4:5, 2000 × 2500. */
   image: string;
   /** Intrinsic dimensions of the image (for next/image). */
   width: number;
   height: number;
   /** Optional gallery of additional images of the same work, rendered on the detail page. */
   extraImages?: ExtraImage[];
-  /**
-   * LCP hint. If this image tends to be the Largest Contentful Paint when
-   * shown in a list (gallery / carousel), set true so consumers can pass
-   * `priority` to next/image regardless of position-based heuristics.
-   */
-  lcp?: boolean;
 };
+
+export type CatalogDetail = { label: "Size" | "Year" | "Technique"; value: string };
+
+/** The catalog line of a work - size, year, technique - leaving out what is not yet known. */
+export function catalogDetails(project: Project): CatalogDetail[] {
+  const details: Array<{ label: CatalogDetail["label"]; value: string | null }> = [
+    { label: "Size", value: project.size },
+    { label: "Year", value: project.year },
+    { label: "Technique", value: project.medium },
+  ];
+  return details.filter((d): d is CatalogDetail => d.value !== null);
+}
 
 /**
  * One run of About-page prose. The split is two-way rather than a general
@@ -327,53 +344,103 @@ export const CV: ReadonlyArray<CvSection> = [
 export const MAILCHIMP_URL =
   "https://moiraemoss.us7.list-manage.com/subscribe/post?u=88840ac2714ae8bb3f41c47be&id=130f874e34&f_id=009db2e4f0";
 
+/** In series order, and within a series in the order its page shows the works. */
 export const PROJECTS: Project[] = [
-  // ── Monoprint & Ink ──
+  // ── The Fabric of ──
   {
-    slug: "midnight-bloom",
-    title: "Midnight Bloom",
-    tagline: "31 × 41 cm | 2026 | Gel plate & natural materials",
-    body: null,
+    slug: "the-fabric-of-touch",
+    title: "The Fabric of Touch",
+    series: "the-fabric-of",
+    size: "54 × 58 cm",
     year: "2026",
-    medium: "Gel plate & natural materials",
-    category: "monoprint-ink",
-    image: "/art/home/midnight-bloom.webp",
-    width: 1600,
-    height: 2000,
-    lcp: true,
+    medium: "Linocut on reclaimed woven polypropylene, framed with raw branches",
+    body: null,
+    image: "/art/work/the-fabric-of-touch.webp",
+    width: 2000,
+    height: 2500,
   },
   {
-    slug: "echoes-of-a-rose",
-    title: "Echoes of a Rose",
-    tagline: "22 × 35 cm | 2026 | Mixed-media Gelli plate monoprint",
+    slug: "the-fabric-of-threads",
+    title: "The Fabric of Threads",
+    series: "the-fabric-of",
+    size: null,
+    year: null,
+    medium: null,
     body: null,
-    year: "2026",
-    medium: "Mixed-media Gelli plate monoprint",
-    category: "monoprint-ink",
-    image: "/art/home/echoes-of-a-rose.webp",
-    width: 1600,
-    height: 2000,
+    image: "/art/work/the-fabric-of-threads.webp",
+    width: 2000,
+    height: 2500,
   },
   {
-    slug: "verde",
-    title: "Verde",
-    tagline: "22 × 35 cm | 2026 | Mixed-media Gelli plate monoprint",
+    slug: "the-fabric-of-grasping",
+    title: "The Fabric of Grasping",
+    series: "the-fabric-of",
+    size: null,
+    year: null,
+    medium: null,
     body: null,
-    year: "2026",
-    medium: "Mixed-media Gelli plate monoprint",
-    category: "monoprint-ink",
-    image: "/art/home/verde.webp",
-    width: 1600,
-    height: 2000,
+    image: "/art/work/the-fabric-of-grasping.webp",
+    width: 2000,
+    height: 2500,
   },
+  // ── Ex libris ──
+  {
+    slug: "spirit-of-the-stage",
+    title: "Spirit of the Stage",
+    series: "ex-libris",
+    size: null,
+    year: null,
+    medium: null,
+    body: null,
+    image: "/art/work/spirit-of-the-stage.webp",
+    width: 2000,
+    height: 2500,
+  },
+  {
+    slug: "ivan-vazov-national-theatre",
+    title: "Ivan Vazov National Theatre",
+    series: "ex-libris",
+    size: null,
+    year: null,
+    medium: null,
+    body: null,
+    image: "/art/work/ivan-vazov-national-theatre.webp",
+    width: 2000,
+    height: 2500,
+  },
+  {
+    slug: "ancient-theatre-plovdiv",
+    title: "Ancient Theatre Plovdiv",
+    series: "ex-libris",
+    size: null,
+    year: null,
+    medium: null,
+    body: null,
+    image: "/art/work/ancient-theatre-plovdiv.webp",
+    width: 2000,
+    height: 2500,
+  },
+  {
+    slug: "vrana-palace",
+    title: "Vrana Palace",
+    series: "ex-libris",
+    size: null,
+    year: null,
+    medium: null,
+    body: null,
+    image: "/art/work/vrana-palace.webp",
+    width: 2000,
+    height: 2500,
+  },
+  // ── Cyclical Dissonance ──
   {
     slug: "cyclical-dissonance",
     title: "Cyclical Dissonance",
-    tagline: "30 × 42 cm | 2026 | Ink, pen and brush on paper",
-    body: "Selected for presentation in Dissonances, a national contemporary visual arts exhibition-competition held at the Art Gallery – Ruse (14 March – 12 April 2026), bringing together 147 artists from across Bulgaria.",
+    series: "cyclical-dissonance",
+    size: "30 × 42 cm",
     year: "2026",
     medium: "Ink, pen and brush on paper",
-    category: "monoprint-ink",
+    body: "Selected for presentation in Dissonances, a national contemporary visual arts exhibition-competition held at the Art Gallery – Ruse (14 March – 12 April 2026), bringing together 147 artists from across Bulgaria.",
     image: "/art/home/cyclical-dissonance.webp",
     width: 1800,
     height: 1028,
@@ -381,36 +448,24 @@ export const PROJECTS: Project[] = [
   {
     slug: "stardust",
     title: "Stardust",
-    tagline: "12 × 28 cm | 2020 | Siligraphy, toner-lavis",
-    body: null,
+    series: "cyclical-dissonance",
+    size: "12 × 28 cm",
     year: "2020",
     medium: "Siligraphy, toner-lavis",
-    category: "monoprint-ink",
+    body: null,
     image: "/art/home/stardust.webp",
     width: 1600,
     height: 2000,
   },
-  // ── Printmaking & Collage ──
-  {
-    slug: "the-fabric-of-touch",
-    title: "The Fabric of Touch",
-    tagline: "54 × 58 cm | 2026 | Linocut on reclaimed woven polypropylene, framed with raw branches",
-    body: null,
-    year: "2026",
-    medium: "Linocut on reclaimed woven polypropylene, framed with raw branches",
-    category: "printmaking-collage",
-    image: "/art/home/88857e5b2d52.png",
-    width: 1440,
-    height: 1390,
-  },
+  // ── Other work ──
   {
     slug: "indigo-lake",
     title: "Indigo Lake",
-    tagline: "65 × 42 cm | 2026 | Linocut on a sisal sack with natural wood",
-    body: null,
+    series: "other-work",
+    size: "65 × 42 cm",
     year: "2026",
     medium: "Linocut on a sisal sack with natural wood",
-    category: "printmaking-collage",
+    body: null,
     image: "/art/home/indigo-lake.webp",
     width: 1600,
     height: 2000,
@@ -418,19 +473,22 @@ export const PROJECTS: Project[] = [
   {
     slug: "saturn",
     title: "Saturn",
-    tagline: "50 × 80 cm | 2023 | Deconstructed linocut collage on raw burlap",
-    body: null,
+    series: "other-work",
+    size: "50 × 80 cm",
     year: "2023",
     medium: "Deconstructed linocut collage on raw burlap",
-    category: "printmaking-collage",
+    body: null,
     image: "/art/home/saturn.png",
-    width: 1440,
-    height: 1746,
+    width: 1690,
+    height: 2048,
   },
 ];
 
 export const projectBySlug = (slug: string): Project | undefined =>
   PROJECTS.find((p) => p.slug === slug);
+
+export const projectsInSeries = (slug: SeriesSlug): Project[] =>
+  PROJECTS.filter((p) => p.series === slug);
 
 // The home-page carousel runs in its own order, independent of the Work grid
 // (which follows PROJECTS). Listed slugs come first in this order; any project
@@ -438,12 +496,9 @@ export const projectBySlug = (slug: string): Project | undefined =>
 // silently vanish from the carousel.
 const HOME_CAROUSEL_ORDER: ReadonlyArray<string> = [
   "the-fabric-of-touch",
-  "verde",
   "saturn",
   "cyclical-dissonance",
-  "echoes-of-a-rose",
   "stardust",
-  "midnight-bloom",
   "indigo-lake",
 ];
 

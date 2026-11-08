@@ -1,5 +1,5 @@
 import type { MetadataRoute } from "next";
-import { PROJECTS, SITE } from "@/content/site";
+import { PROJECTS, SERIES, SITE, seriesPath } from "@/content/site";
 import { POSTS } from "@/content/blog";
 
 export const dynamic = "force-static";
@@ -15,6 +15,13 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: `${SITE.url}/contact`, lastModified, changeFrequency: "yearly",  priority: 0.5 },
   ];
 
+  const seriesRoutes: MetadataRoute.Sitemap = SERIES.map((s) => ({
+    url: `${SITE.url}${seriesPath(s.slug)}`,
+    lastModified,
+    changeFrequency: "monthly",
+    priority: 0.85,
+  }));
+
   const projectRoutes: MetadataRoute.Sitemap = PROJECTS.map((p) => ({
     url: `${SITE.url}/work/${p.slug}`,
     lastModified,
@@ -29,5 +36,5 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: 0.7,
   }));
 
-  return [...staticRoutes, ...projectRoutes, ...postRoutes];
+  return [...staticRoutes, ...seriesRoutes, ...projectRoutes, ...postRoutes];
 }
