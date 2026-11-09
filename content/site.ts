@@ -304,6 +304,16 @@ export const CV: ReadonlyArray<CvSection> = [
     entries: [
       {
         year: "2026",
+        work: { lead: "X National Exhibition", title: "Graphic Forum" },
+        venue: "Lubor Bayer Exhibition Hall (UBA), Stara Zagora",
+      },
+      {
+        year: "2026",
+        work: { lead: null, title: "Biennial of Illustration" },
+        venue: "Regional History Museum, Sofia",
+      },
+      {
+        year: "2026",
         work: { lead: "International forum", title: "FISAE" },
         venue: "Varna",
       },
@@ -463,18 +473,18 @@ export const PROJECTS: Project[] = [
     year: "2026",
     medium: "Ink, pen and brush on paper",
     partOf: null,
-    exhibited: [],
-    body: "Selected for presentation in Dissonances, a national contemporary visual arts exhibition-competition held at the Art Gallery – Ruse (14 March – 12 April 2026), bringing together 147 artists from across Bulgaria.",
-    image: "/art/home/cyclical-dissonance.webp",
-    width: 1800,
-    height: 1028,
+    exhibited: ["National Exhibition-Competition “Dissonances”, Art Gallery – Ruse (14 March – 12 April 2026)"],
+    body: null,
+    image: "/art/work/cyclical-dissonance.webp",
+    width: 2000,
+    height: 2500,
   },
   {
     slug: "stardust",
     title: "Stardust",
     series: "cyclical-dissonance",
-    size: "12 × 28 cm",
-    year: "2020",
+    size: "28 × 12 cm",
+    year: null,
     medium: "Siligraphy, toner-lavis",
     partOf: null,
     exhibited: [],
@@ -485,32 +495,18 @@ export const PROJECTS: Project[] = [
   },
   // ── Other work ──
   {
-    slug: "indigo-lake",
-    title: "Indigo Lake",
+    slug: "shadow-of-antlers",
+    title: "Shadow of Antlers",
     series: "other-work",
-    size: "65 × 42 cm",
+    size: "34.5 × 27 cm",
     year: "2026",
-    medium: "Linocut on a sisal sack with natural wood",
+    medium: "Linocut",
     partOf: null,
     exhibited: [],
     body: null,
-    image: "/art/home/indigo-lake.webp",
-    width: 1600,
-    height: 2000,
-  },
-  {
-    slug: "saturn",
-    title: "Saturn",
-    series: "other-work",
-    size: "50 × 80 cm",
-    year: "2023",
-    medium: "Deconstructed linocut collage on raw burlap",
-    partOf: null,
-    exhibited: [],
-    body: null,
-    image: "/art/home/saturn.png",
-    width: 1690,
-    height: 2048,
+    image: "/art/work/shadow-of-antlers.webp",
+    width: 2000,
+    height: 2500,
   },
 ];
 
@@ -526,10 +522,8 @@ export const projectsInSeries = (slug: SeriesSlug): Project[] =>
 // silently vanish from the carousel.
 const HOME_CAROUSEL_ORDER: ReadonlyArray<string> = [
   "the-fabric-of-touch",
-  "saturn",
   "cyclical-dissonance",
   "stardust",
-  "indigo-lake",
 ];
 
 export const HOME_CAROUSEL: Project[] = [
