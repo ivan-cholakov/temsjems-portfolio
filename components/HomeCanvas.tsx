@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
-import { HOME_CAROUSEL, SITE } from "@/content/site";
+import { HOME_CAROUSEL } from "@/content/site";
 
 /** Within this many pixels of either end, the rail counts as parked there. */
 const EDGE_TOLERANCE_PX = 2;
@@ -259,10 +259,6 @@ export function HomeCanvas() {
           <div aria-hidden className={EDGE_SPACER_CLASS} />
         </div>
       </div>
-
-      <p className="mt-8 text-center font-sans text-lead italic text-ink">
-        {SITE.tagline}
-      </p>
     </section>
   );
 }

@@ -43,22 +43,19 @@ export const metadata: Metadata = {
   authors: [{ name: SITE.artist }],
   creator: SITE.artist,
   keywords: [...SITE.keywords],
-  /* The two descriptions are deliberately different voices, not a leftover:
-     `description` is the factual sentence a search result should show, while a
-     social card is a piece of the artist's own writing and gets the tagline. */
   openGraph: {
     type: "website",
     locale: "en_US",
     url: SITE.url,
     siteName: SITE.name,
     title: `${SITE.name}`,
-    description: SITE.tagline,
+    description: SITE.metaDescription,
     images: [OG_IMAGE],
   },
   twitter: {
     card: "summary_large_image",
     title: `${SITE.name}`,
-    description: SITE.tagline,
+    description: SITE.metaDescription,
     images: [OG_IMAGE.url],
   },
   robots: { index: true, follow: true },

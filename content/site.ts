@@ -109,7 +109,6 @@ export function runsText(runs: ReadonlyArray<ProseRun>): string {
 export const SITE = {
   name: "Moirae Moss",
   artist: "Teomira Smilenova",
-  tagline: "Exploring the intersection of shadows, human form, and organic textures.",
   /**
    * Artist statement, in the artist's own first person - the long-form prose on
    * the About page. Held as paragraphs rather than one blob with newlines in it
@@ -135,12 +134,12 @@ export const SITE = {
     { kind: "text",  text: " forum in Varna. She works under the name Moirae Moss." },
   ] satisfies ReadonlyArray<ProseRun>,
   /**
-   * Default meta description - one sentence, short enough to survive a search
-   * result intact. Stated rather than sliced off the bio: a truncated sentence
-   * is what a reader sees in the SERP, and the cut landed mid-clause.
+   * Default description for search results and social cards - short enough to
+   * survive a search result intact. Stated rather than sliced off the bio: a
+   * truncated sentence is what a reader sees in the SERP.
    */
   metaDescription:
-    "Teomira Smilenova is a printmaker based in Sofia, working in relief printmaking on cloth and alternative supports.",
+    "Moirae Moss is the studio of Teomira Smilenova, a printmaker based in Sofia. Linocut on cloth, ex libris and works on paper.",
   /**
    * The search vocabulary the artist wants the site to answer to, in her own
    * wording. Copy, not configuration, so it belongs beside the rest of the
